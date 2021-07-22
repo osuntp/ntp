@@ -5,6 +5,7 @@ Created on Thu Jul 15 04:57:18 2021
 @author: Jacob Stonehill
 """
 import serial
+import logging
 
 class Arduino:
     def __init__(self):
@@ -14,6 +15,7 @@ class Arduino:
         self._serial_is_open = True
         
         self._serial = serial.Serial(port='COM3', baudrate=9600)
+        logging.info("Serial port opened on COM3.")
         
     def data_point_is_available(self):
         if not(self._serial_is_open):
