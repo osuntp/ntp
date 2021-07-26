@@ -5,17 +5,21 @@ Created on Thu Jul 15 04:57:18 2021
 @author: Jacob Stonehill
 """
 import serial
-import logging
 
 class Arduino:
     def __init__(self):
         self._serial_is_open = False
-        
+
+        # Default Value for port
+        self.port = 'COM3'
+
+    def set_COM(self, port: str):
+        self.port = port
+
     def open_serial(self):
         self._serial_is_open = True
         
-        self._serial = serial.Serial(port='COM3', baudrate=9600)
-        logging.info("Serial port opened on COM3.")
+        self._serial = serial.Serial(port=self.port, baudrate=9600)
         
     def data_point_is_available(self):
         if not(self._serial_is_open):

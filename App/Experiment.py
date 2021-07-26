@@ -7,7 +7,6 @@ Created on Fri Jul  9 10:48:57 2021
 import time
 from Data import Data
 from Arduino import Arduino
-from GUI import GUI
 import threading
 
 class Experiment:
@@ -19,9 +18,6 @@ class Experiment:
         # Dependencies
         self.arduino = Arduino()
 
-        # This will be refactored with QT designer           
-        self.GUI = GUI(self)   
-        self.GUI.start()
         
     def run(self):
         if(self.experiment_is_running):
@@ -29,13 +25,10 @@ class Experiment:
             return
         
         self.dataframe = Data.get_new_dataframe()
-        
+
         self.arduino.open_serial()
         
         time.sleep(0.5)
-        
-        # This will be refactored with QT designer
-        self.GUI.set_plots_are_animating(True)
         
         # Run data collection loop on separate thread. Otherwise it will impede GUI event loop.
         self.data_collection_thread = threading.Thread(target = self.experiment_loop)
@@ -57,7 +50,6 @@ class Experiment:
         self.experiment_is_running = False
         self.data_collection_thread.join()
         self.arduino.close_serial()
-        self.GUI.set_plots_are_animating(False)
         
         Data.save_to_csv(self.dataframe)
         
