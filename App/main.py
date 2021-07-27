@@ -13,7 +13,7 @@ from Controller import Controller
 import sys
 
 if __name__ == "__main__":
-    Log.create()
+    Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
     experiment = Experiment()
     app = QtWidgets.QApplication(sys.argv)
     window = QtWidgets.QMainWindow()
