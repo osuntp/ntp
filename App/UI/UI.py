@@ -6,7 +6,6 @@ from UI.Stylize import Stylize
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import os
-import logging as log
 
 class UI:
     def __init__(self, window):       
@@ -35,8 +34,6 @@ class UI:
         # END OF TEST SECTION
 
     def set_current_tab(self, tab_index):
-        print(tab_index)
-        log.debug('UI says tab changed')
         new_tab = self.tabs[tab_index]
         prev_tab = self.current_tab
 
@@ -54,19 +51,6 @@ class UI:
     
     def set_heater_status_light_is_lit(self, isLit: bool):
         Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
-
-    def update_logs(self):
-        path = os.getcwd()
-        path = path + "\\app.log"
-
-        with open(path, 'r') as file:
-            data_list = file.readlines()
-            data = ""
-
-            for line in data_list:
-                data += line + "<br><br>"
-            self.logs_python_log.setHtml(data)
-            print(data)
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_window):
@@ -113,7 +97,7 @@ class Logs:
     def __init__(self, pyqt5: Ui_window):
         self.python = pyqt5.logs_python_log
 
-    def read_log_file(self):
+    def update_python_log(self):
         path = os.getcwd()
         path = path + "\\app.log"
 

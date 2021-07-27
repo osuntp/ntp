@@ -1,6 +1,5 @@
-
 from UI.UI import UI
-import logging as log
+from Log import Log
 import random
 from pandas import DataFrame
 from UI.Stylize import Stylize
@@ -10,8 +9,6 @@ class Controller:
         self.ui = ui
 
         self.__setup_functionality()
-
-        log.basicConfig(level=log.DEBUG,filename='app.log',format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
     
     def __setup_functionality(self):
         
@@ -31,13 +28,12 @@ class Controller:
         self.ui.TEST_hot_stand_to_red_button.clicked.connect(self.TEST_set_hot_stand_to_red)
 
     def tab_clicked(self, tab_index):
-        log.debug('Tab Clicked: ' + str(tab_index))
+        Log.debug('A tab was clicked: This is a new test of the logging system. This system will be implemented in all classes going forward')
 
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
             return
 
         self.ui.set_current_tab(tab_index)
-        self.ui.logs.read_log_file()
 
     def abort_clicked(self):
         print('abort clicked')
