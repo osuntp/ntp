@@ -43,7 +43,7 @@ void setup() {
   Serial.begin(9600);
 
   while (!Serial) delay(1); // wait for Serial on Leonardo/Zero, etc
-
+  Serial.println("id_daq");
   //Serial.println("MAX31855 test");
   // wait for MAX chip to stabilize
   delay(500);
