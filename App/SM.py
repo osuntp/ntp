@@ -52,7 +52,7 @@ class SerialMonitor:
 
             id = connection.readline().decode("utf-8")
 
-            # Only letters and underscores - REPLACE WITH METHOD FROM LD.PY IN THE FUTURE
+            # TODO: Only letters and underscores - REPLACE WITH METHOD FROM LD.PY IN THE FUTURE
             id = re.sub(r'[\W]+', '', id)
 
             if(id == self.daq_id):
