@@ -64,6 +64,7 @@ class SerialMonitor:
             else:
                 pass
 
+        # TODO: Uncomment this when we're ready to work with two arduinos at once.
         # If one arduino wasn't able to connect, disconnect the other.
         # if self.DAQ_arduino is None:
         #     Log.error('SerialMonitor: connect_arduinos(): Unable to connect DAQ Arduino, closing any open Arduino connections.')
@@ -107,11 +108,3 @@ class SerialMonitor:
                 pass
 
         return result
-
-
-
-    
-
-if __name__ == "__main__":
-    sm = SerialMonitor()
-    sm.connect_arduinos()
