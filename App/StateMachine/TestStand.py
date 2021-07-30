@@ -1,14 +1,13 @@
 import threading
 import time
-from IdleState import IdleState
-from AutoState import AutoState
-class TestStandStateMachine:
+import TestStandStates
+
+class TestStand:
 
     state_machine_stopped = False
 
     def __init__(self):
-        self.idle_state = IdleState(self)
-        self.auto_state = AutoState(self)
+        self.idle_state = TestStandStates.IdleState(self)
 
         self.current_state = self.idle_state
         self.current_state.enter_state()
@@ -18,7 +17,6 @@ class TestStandStateMachine:
 
     def tick(self):
         while(True):
-
             if(self.state_machine_stopped):
                 return
             self.current_state.tick()
@@ -35,12 +33,7 @@ class TestStandStateMachine:
         self.state_machine_stopped = True
 
 if __name__ == "__main__":
-    instance = TestStandStateMachine()
+    instance = TestStand()
 
-    time.sleep(5)
-    instance.switch_state(instance.auto_state)
-    time.sleep(5)
-    instance.switch_state(instance.idle_state)
-    time.sleep(3)
     instance.turn_off_state_machine()
     instance.tick_thread.join()

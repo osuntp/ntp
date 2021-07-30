@@ -39,11 +39,14 @@ Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 //#define MAXCS   10
 //Adafruit_MAX31855 thermocouple(MAXCS, SPI1);
 
+
+float value = 0;
+
 void setup() {
   Serial.begin(9600);
 
   while (!Serial) delay(1); // wait for Serial on Leonardo/Zero, etc
-  Serial.println("id_daq");
+  Serial.print("id, daq\n");
   //Serial.println("MAX31855 test");
   // wait for MAX chip to stabilize
   delay(500);
@@ -57,18 +60,29 @@ void setup() {
 
 void loop() {
 
-  double temp = thermocouple.readCelsius();
-  double internalTemp = thermocouple.readInternal();
-  Serial.print(temp);
+  if(Serial.available() > 0)
+  {
+    String message = Serial.readString();
+    if(message == "test")
+    {
+      value = 1;
+    }
+  }
+
+//  double temp = thermocouple.readCelsius();
+//  double internalTemp = thermocouple.readInternal();
+
+  Serial.print("da");
   Serial.print(", ");
-  Serial.print(internalTemp);
+  Serial.print(value);
+  Serial.print(", ");
+  Serial.print("2");
+  Serial.print(", ");
+  Serial.print("3");
   Serial.print("\n");
-  //Serial.println(5);
+
   delay(1000);
-  // basic readout test, just print the current temp
-   //Serial.print("Internal Temp = ");
-//   Serial.println(thermocouple.readInternal());
-//
+
 //   double c = thermocouple.readCelsius();
 //   if (isnan(c)) {
 //     Serial.println("Something wrong with thermocouple!");

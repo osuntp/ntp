@@ -21,17 +21,21 @@ def save_to_csv(dataframe: DataFrame):
     dataframe.to_csv(CSV_file_name)
 
 # TODO: Revisit, we'll want a different reg ex so that we can handle other types of messages from arduino (like ID and errors)
-def clean(data_point: str):
-    clean_data_point = []
+def clean(raw_message_string: str):
+    raw_message = raw_message_string.split(sep = ', ')
+
+    clean_message = []
     
-    for i in range(len(data_point)):
-        numbers_as_string = re.sub("/[-+]?\d*\.?\d+/", "", data_point[i])
-        
-        numbers_as_float = float(numbers_as_string)
-        
-        clean_data_point.append(numbers_as_float)
-        
-    return clean_data_point    
+    for i in range(len(raw_message)):
+        # clean_message_value = re.sub("/[-+]?\d*\.?\d+/", "", raw_message[i])
+        clean_message_value = re.sub("\n", "", raw_message[i])
+        clean_message.append(clean_message_value)
+
+    if(clean_message[0] == 'da'):
+        for i in range(1, len(clean_message)):
+            clean_message[i] = float(clean_message[i])
+    print(clean_message)
+    return clean_message    
 
 def get_new_dataframe():
     return DataFrame(columns=columns)

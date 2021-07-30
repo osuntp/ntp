@@ -4,7 +4,7 @@ import random
 from pandas import DataFrame
 from UI.Stylize import Stylize
 
-class Controller:
+class Presenter:
     def __init__(self, ui: UI):
         self.ui = ui
 

@@ -1,68 +1,87 @@
 
 import serial
-from serial.serialutil import SerialException
 import sys
 import glob
+
+from Model import Model
 from Log import Log
 import time
-import re
+
+import threading
+import LD
 
 class SerialMonitor:
 
-    daq_id = 'id_daq'
-    controller_id = 'id_controller'
+    daq_id = 'daq'
+    controller_id = 'controller'
     arduinos_are_connected = False
 
-    def __init__(self):
+    def __init__(self, model: Model):
         self.baudrate = 9600
-        self.DAQ_arduino = None
+        self.model = model
+        self.daq_arduino = None
         self.controller_arduino = None
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
 
+    def write_to_controller(self, message):
+        self.daq_arduino.write(message.encode())
+
     def disconnect_arduinos(self):
-        if not self.DAQ_arduino is None:
-            self.DAQ_arduino.close()
-            self.DAQ_arduino = None
+        if not self.daq_arduino is None:
+            self.daq_arduino.close()
+            self.daq_arduino = None
+
         if not self.controller_arduino is None:
             self.controller_arduino.close()
             self.controller_arduino = None
 
+    def read_from_daq(self):
+        if(self.daq_arduino.in_waiting > 0):
+            raw_message_line = self.daq_arduino.readline().decode('utf-8')
+
+            clean_message = LD.clean(raw_message_line)
+ 
+            self.model.handle_daq_message(clean_message)
+            
     def connect_arduinos(self):
         ports = self.__get_serial_ports()
+
         for port in ports:
+            print(str(port))
             connection = serial.Serial(port=port, baudrate=self.baudrate)
 
             timeout = time.time() + 5
 
             # Wait for arduino's ID signal or a time out
-            while(True):
+            while time.time() < timeout:
 
                 time.sleep(0.1)
-
-                # if Timeout
-                if(time.time() > timeout):
-                    Log.error('SerialMonitor: connect_arduinos(): Timed out while trying to connect to the arduino at port: ' + port)
-                    return
-
+                    
                 # If ID line has been sent from Arduino
                 if (connection.in_waiting > 0):
+                    message = connection.readline().decode('utf-8')
+
+                    clean_message = LD.clean(message)
+                    prefix = clean_message[0]
+
+                    if(prefix == 'id'):
+
+                        arduino_id = clean_message[1]
+
+                        if(arduino_id == self.daq_id):
+                            self.daq_arduino = connection
+
+                        elif(arduino_id == self.controller_id):
+                            self.controller_arduino = connection
+                            
+                        else:
+                            Log.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
+                    else:
+                        Log.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
+
                     break
-
-            id = connection.readline().decode("utf-8")
-
-            # TODO: Only letters and underscores - REPLACE WITH METHOD FROM LD.PY IN THE FUTURE
-            id = re.sub(r'[\W]+', '', id)
-
-            if(id == self.daq_id):
-                self.DAQ_arduino = connection
-                print('hit')
-
-            elif(id == self.controller_id):
-                self.controller_arduino = connection
-            else:
-                pass
 
         # TODO: Uncomment this when we're ready to work with two arduinos at once.
         # If one arduino wasn't able to connect, disconnect the other.
@@ -88,7 +107,6 @@ class SerialMonitor:
         if sys.platform.startswith('win'):
             ports = ['COM%s' % (i + 1) for i in range(256)]
 
-
         # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
             # this excludes your current terminal "/dev/tty"
@@ -108,3 +126,32 @@ class SerialMonitor:
                 pass
 
         return result
+
+loop_is_running = True
+
+def read_loop():
+    global monitor
+    while(loop_is_running):     
+        monitor.read_from_daq()
+
+        time.sleep(1)
+
+if __name__ == "__main__":
+    model = Model()
+
+    global monitor
+    monitor = SerialMonitor(model)
+    monitor.connect_arduinos()
+
+    thread = threading.Thread(target = read_loop)
+    thread.start()
+
+    time.sleep(3)
+    monitor.write_to_controller('test')
+    time.sleep(3)
+    monitor.write_to_controller('not test')
+    time.sleep(3)
+
+    loop_is_running = False
+
+    monitor.disconnect_arduinos()
