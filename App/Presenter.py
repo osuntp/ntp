@@ -1,8 +1,8 @@
 from UI.UI import UI
 from Log import Log
-import random
-from pandas import DataFrame
-from UI.Stylize import Stylize
+import threading
+import Config
+import time
 
 class Presenter:
     def __init__(self, ui: UI):
@@ -22,10 +22,13 @@ class Presenter:
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
 
-        # TEST: Delete later
-        self.ui.TEST_diagnostics_button.clicked.connect(self.TEST_update_diagnostic_page)
-        self.ui.TEST_hot_stand_to_green_button.clicked.connect(self.TEST_set_hot_stand_to_green)
-        self.ui.TEST_hot_stand_to_red_button.clicked.connect(self.TEST_set_hot_stand_to_red)
+        self.ui.configuration.blue_lines_plus_button.clicked.connect(self.configuration_blue_lines_plus_clicked)
+        self.ui.configuration.blue_lines_minus_button.clicked.connect(self.configuration_blue_lines_minus_clicked)
+
+        self.ui.configuration.sequence_plus_button.clicked.connect(self.configuration_sequence_plus_clicked)
+        self.ui.configuration.sequence_minus_button.clicked.connect(self.configuration_sequence_minus_clicked)
+
+        self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
 
     def tab_clicked(self, tab_index):
         Log.debug('A tab was clicked: This is a new test of the logging system. This system will be implemented in all classes going forward')
@@ -35,40 +38,48 @@ class Presenter:
 
         self.ui.set_current_tab(tab_index)
 
+    # TODO: Define abort procedure
     def abort_clicked(self):
         print('abort clicked')
 
-    def TEST_update_diagnostic_page(self):
-        self.ui.diagnostics.set_valve_voltage(random.randrange(0, 50000))
-        self.ui.diagnostics.set_mass_flow(random.randrange(0, 50000))
-        self.ui.diagnostics.set_heater_current(random.randrange(0, 50000))
-        self.ui.diagnostics.set_heater_duty_cycle(random.randrange(0, 50000))
-        self.ui.diagnostics.set_heater_power(random.randrange(0, 50000))
-
-        if(random.choice([True, False])):
-            status_text = "COOLING"
-        else:
-            status_text = "HEATING"
-
-        self.ui.diagnostics.set_heater_state(status_text)
-
-        self.ui.diagnostics.set_heater_set_point(random.randrange(0, 50000))
-
-        x = [0,1,2,3,4,5]
-        y = []
-
-        for i in range(6):
-            y.append(random.randrange(0,10))
-
-        dataframe = DataFrame({'column1': x, 'column2': y},  columns=['column1', 'column2'])
-
-        self.ui.diagnostics.update_plots(dataframe)
-
-    def TEST_set_hot_stand_to_green(self):
-        Stylize.set_status_light_is_lit(self.ui.hot_stand_status_light, True)
-
-    def TEST_set_hot_stand_to_red(self):
-        Stylize.set_status_light_is_lit(self.ui.hot_stand_status_light, False)
-        
-        
+    def configuration_blue_lines_plus_clicked(self):
+        self.ui.configuration.add_row_to_blue_lines_table()
+    def configuration_blue_lines_minus_clicked(self):
+        self.ui.configuration.remove_row_from_blue_lines_table()
     
+    def configuration_sequence_plus_clicked(self):
+        self.ui.configuration.add_row_to_sequence_table()
+    def configuration_sequence_minus_clicked(self):
+        self.ui.configuration.remove_row_from_sequence_table()
+
+    def configuration_save_clicked(self):
+        
+        self.configuration_save_validation_thread = threading.Thread(target = self.__configuration_save_validation).start()
+
+        # trial_name = self.ui.configuration.trial_name_field.text()
+        # description = self.ui.configuration.description_field.text()
+
+    def __configuration_save_validation(self):
+        self.ui.configuration.set_status_text('Validating.')
+        time.sleep(0.3)
+        self.ui.configuration.set_status_text('Validating. .')
+        time.sleep(0.3)
+        self.ui.configuration.set_status_text('Validating. . .')
+        time.sleep(0.1)
+
+        blue_lines_table = self.ui.configuration.blue_lines_table
+        test_sequence_table = self.ui.configuration.sequence_table
+
+        message = Config.blue_lines_is_valid(blue_lines_table)
+
+        if message != 'valid':
+            self.ui.configuration.set_status_text('INVALID CONFIGURATION\n' + message)
+            return
+
+        message = Config.test_sequence_is_valid(test_sequence_table)
+
+        if message != 'valid':
+            self.ui.configuration.set_status_text('INVALID CONFIGURATION\n' + message)
+            return
+
+        self.ui.configuration.set_status_text('Valid Configuration\nSaving to configuration file.')

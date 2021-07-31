@@ -1,10 +1,12 @@
 
+from PyQt5.QtGui import QBrush, QColor, QPalette
 from numpy import vdot
 from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5 import QtWidgets
 import os
 
 class UI:
@@ -25,13 +27,7 @@ class UI:
 
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
-
-        # TEST SECTION: DELETE LATER
-        self.TEST_diagnostics_button = self.pyqt5.TEST_diagnostics_page
-        self.TEST_hot_stand_to_green_button = self.pyqt5.TEST_hot_stand_to_green
-        self.TEST_hot_stand_to_red_button = self.pyqt5.TEST_hot_stand_to_red
-        self.hot_stand_status_light = self.pyqt5.side_bar_hot_stand_status
-        # END OF TEST SECTION
+        self.configuration = Configuration(self.pyqt5)
 
     def set_current_tab(self, tab_index):
         new_tab = self.tabs[tab_index]
@@ -54,8 +50,8 @@ class UI:
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_window):
-        self.plot1 = Canvas(pyqt5.diagnostics_plot1, "Time (s)", "Temperature (C)")
-        self.plot2 = Canvas(pyqt5.diagnostics_plot2, "Time (s)", "Pressure (Pa)")
+        self.plot1 = Canvas(pyqt5.diagnostics_plot1, 'Time (s)', 'Temperature (C)')
+        self.plot2 = Canvas(pyqt5.diagnostics_plot2, 'Time (s)', 'Pressure (Pa)')
 
         self.test_stand_status = pyqt5.diagnostics_state_value
         self.valve_voltage = pyqt5.diagnostics_r01_value
@@ -109,6 +105,102 @@ class Logs:
                 data += line + "<br><br>"
             self.python.setHtml(data)
 
+class Configuration:
+    def __init__(self, pyqt5: Ui_window):
+        self.trial_name_field = pyqt5.configuration_trialname_field
+        self.description_field = pyqt5.configuration_trialname_field
+
+        self.blue_lines_table = pyqt5.configuration_blue_lines_table
+        self.blue_lines_plus_button = pyqt5.configuration_blue_lines_plus
+        self.blue_lines_minus_button = pyqt5.configuration_blue_lines_minus
+
+        self.sequence_table = pyqt5.configuration_sequence_table
+        self.sequence_plus_button = pyqt5.configuration_sequence_plus
+        self.sequence_minus_button = pyqt5.configuration_sequence_minus
+
+        self.status = pyqt5.configuration_status_label
+        self.clear_button = pyqt5.configuration_clear_button
+        self.save_button = pyqt5.configuration_save_button
+
+        self.clear_all()
+        self.add_row_to_blue_lines_table()
+
+    def add_row_to_blue_lines_table(self):
+        table = self.blue_lines_table
+        row_count = table.rowCount()
+        column_count = table.columnCount()
+        combo_box_options = ['Min', 'Max']    
+        combo = QtWidgets.QComboBox()
+
+        # if((row_count % 2) == 0):
+
+        #     combo.setStyleSheet('border: 0px; background-color: rgb(206, 211, 230);')
+        # else:
+        #     combo.setStyleSheet('border: 0px; background-color: rgb(229, 231, 240);')
+
+        for option in combo_box_options:
+            combo.addItem(option)
+
+        table.insertRow(row_count)
+        table.setCellWidget(row_count, 2, combo)
+
+        Stylize.table(table)
+
+    def remove_row_from_blue_lines_table(self):
+        table = self.blue_lines_table
+        row_count = table.rowCount()
+
+        if(row_count - 1 < 0.5):
+            return
+
+        table.removeRow(row_count - 1)
+
+    def add_row_to_sequence_table(self):
+        table = self.sequence_table
+        row_count = table.rowCount()
+        column_count = table.columnCount()
+
+        table.insertRow(row_count)
+
+    def remove_row_from_sequence_table(self):
+        table = self.sequence_table
+        row_count = table.rowCount()
+
+        if(row_count - 1 < 0.5):
+            return
+
+        table.removeRow(row_count - 1)
+
+    def set_status_text(self, text: str):
+        self.status.setText(text)
+
+    def clear_all(self):
+        self.clear_blue_line_table()
+        self.clear_sequence_table()
+
+        self.status.setText('')
+
+    def clear_blue_line_table(self):
+        table = self.blue_lines_table
+
+        while(table.rowCount() > 0.5):
+            table.removeRow(table.rowCount() - 1)
+
+        # Result will be 1 empty row
+        self.add_row_to_blue_lines_table
+
+    def clear_sequence_table(self):
+        table = self.sequence_table
+
+        while(table.rowCount() > 0.5):
+            table.removeRow(table.rowCount() - 1)
+
+        # Result will be 1 empty row
+        self.add_row_to_sequence_table()
+    
+
+
+            
 
 class Canvas(FigureCanvas):
     def __init__(self, parent, xlabel, ylabel):

@@ -45,3 +45,7 @@ class Stylize:
         else:
             status_light.setStyleSheet(cls.side_bar_status_red)
 
+    @classmethod
+    def table(cls, table: QtWidgets.QTableWidget):
+        pass
+
