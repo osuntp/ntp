@@ -1,8 +1,8 @@
-
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from configparser import ConfigParser
 from dataclasses import dataclass
-from enum import Enum
 from PyQt5 import QtWidgets
+import time
 
 @dataclass
 class Config:
@@ -10,8 +10,100 @@ class Config:
     description: str
     blue_lines: dict
 
-def create():
-    pass
+class ValidationThread(QThread):
+
+    validation_message = pyqtSignal(object)
+    validation_is_complete = pyqtSignal(object)
+
+    def __init__(self, ui):
+        QThread.__init__(self)
+        self.ui = ui
+
+    def run(self):
+        self.validation_message.emit('Validating.')
+        time.sleep(0.5)
+        self.validation_message.emit('Validating. .')
+        time.sleep(0.5)
+        self.validation_message.emit('Validating. . .')
+        time.sleep(0.3)
+
+        blue_lines_table = self.ui.configuration.blue_lines_table
+        test_sequence_table = self.ui.configuration.sequence_table
+        message = 'valid'
+
+        if(message == 'valid'):
+            message = blue_lines_is_valid(blue_lines_table)
+
+        if(message == 'valid'):
+            message = test_sequence_is_valid(test_sequence_table)
+
+        if(message == 'valid'):
+            message = 'Valid Configuration\nSaving to configuration file.'
+            self.validation_message.emit(message)
+            self.validation_is_complete.emit(True)
+        else:
+            message = 'INVALID CONFIGURATION\n' + message
+            self.validation_message.emit(message)
+            self.validation_is_complete.emit(False)
+
+def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, test_sequence: QtWidgets.QTableWidget):
+    print('at the beginning: ' + blue_lines.cellWidget(0,2).currentText())
+    config = ConfigParser()
+
+    config.add_section('main')
+    config.add_section('blue_lines')
+    config.add_section('test_sequence')
+
+    config.set('main','trial_name', trial_name)
+    config.set('main', 'decription', description)
+
+    for i in range(blue_lines.rowCount()):
+        time_step_id = "time_step_" + str(i)
+        time_step_value = blue_lines.item(i,0).text()
+
+        temperature_id = "temperature_"+str(i)
+        temperature_value = blue_lines.item(i,1).text()
+
+        limit_type_id = "limit_type_" + str(i)
+        limit_type_value = blue_lines.cellWidget(i, 2).currentText()
+
+        config.set('blue_lines', time_step_id, time_step_value)
+        config.set('blue_lines', temperature_id, temperature_value)
+        config.set('blue_lines', limit_type_id, limit_type_value)
+
+    for i in range(test_sequence.rowCount()):
+        time_step_id = "time_step_" + str(i)
+        time_step_value = test_sequence.item(i,0).text()
+
+        power_id = "power_" + str(i)
+        power_value = test_sequence.item(i,1).text()
+
+        temperature_id = "temperature_"+str(i)
+        temperature_value = test_sequence.item(i,2).text()
+
+        mass_flow_id = "mass_flow_" + str(i)
+        mass_flow_value = test_sequence.item(i,3).text()
+
+        config.set('test_sequence', time_step_id, time_step_value)
+        config.set('test_sequence', power_id, power_value)
+        config.set('test_sequence', temperature_id, temperature_value)
+        config.set('test_sequence', mass_flow_id, mass_flow_value)
+    
+    with open(file_name, 'w') as f:
+        config.write(f)
+
+def get_save_file_name_from_user():
+    file_dialog = QtWidgets.QFileDialog()
+    file_filter = 'Config File (*.ini)'
+
+    response = file_dialog.getSaveFileName(
+        caption = 'Select a config file',
+        directory = 'test_config_file.ini',
+        filter = file_filter,
+        initialFilter = 'Config File (*.ini)'
+    )
+
+    return response[0]
 
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
@@ -77,29 +169,3 @@ def create_blue_line_dict(time_step: float, temp: float, is_max: str):
     }
 
     return return_dict
-
-
-
-if __name__ == "__main__":
-
-    pass
-
-
-
-# config = ConfigParser()
-# config.add_section('main')
-# config.set('main','key1','1')
-# config.set('main','key2','2')
-# config.set('main','key3','3')
-# config.set('main','key4','4')
-
-# with open('config.ini', 'w') as f:
-#     config.write(f)
-
-# config.read('config.ini')
-
-# value1 = config.get('main', 'key1')
-
-# a_float = config.getfloat('main','key1')
-
-# print('a_float says ' + str(a_float))

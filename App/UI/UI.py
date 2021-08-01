@@ -108,7 +108,7 @@ class Logs:
 class Configuration:
     def __init__(self, pyqt5: Ui_window):
         self.trial_name_field = pyqt5.configuration_trialname_field
-        self.description_field = pyqt5.configuration_trialname_field
+        self.description_field = pyqt5.configuration_description_field
 
         self.blue_lines_table = pyqt5.configuration_blue_lines_table
         self.blue_lines_plus_button = pyqt5.configuration_blue_lines_plus
@@ -121,6 +121,10 @@ class Configuration:
         self.status = pyqt5.configuration_status_label
         self.clear_button = pyqt5.configuration_clear_button
         self.save_button = pyqt5.configuration_save_button
+
+        buttons = [self.save_button, self.clear_button, pyqt5.configuration_sequence_plus, pyqt5.configuration_blue_lines_plus, pyqt5.configuration_sequence_minus, pyqt5.configuration_blue_lines_minus]
+
+        Stylize.all_tabs(buttons, pyqt5.diagnostics_tab)
 
         self.clear_all()
         self.add_row_to_blue_lines_table()

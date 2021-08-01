@@ -1,3 +1,5 @@
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5 import QtWidgets
 from UI.UI import UI
 from Log import Log
 import threading
@@ -53,33 +55,26 @@ class Presenter:
         self.ui.configuration.remove_row_from_sequence_table()
 
     def configuration_save_clicked(self):
-        
-        self.configuration_save_validation_thread = threading.Thread(target = self.__configuration_save_validation).start()
+        self.my_thread = Config.ValidationThread(self.ui)
 
-        # trial_name = self.ui.configuration.trial_name_field.text()
-        # description = self.ui.configuration.description_field.text()
+        self.my_thread.validation_message.connect(self.on_configuration_validation_message)
+        self.my_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
 
-    def __configuration_save_validation(self):
-        self.ui.configuration.set_status_text('Validating.')
-        time.sleep(0.3)
-        self.ui.configuration.set_status_text('Validating. .')
-        time.sleep(0.3)
-        self.ui.configuration.set_status_text('Validating. . .')
-        time.sleep(0.1)
+        self.my_thread.start()
 
-        blue_lines_table = self.ui.configuration.blue_lines_table
-        test_sequence_table = self.ui.configuration.sequence_table
+    def on_configuration_validation_message(self, message):
+        self.ui.configuration.set_status_text(message)
 
-        message = Config.blue_lines_is_valid(blue_lines_table)
+    def on_configuration_validation_is_complete(self, validation_was_successful):
+        if(validation_was_successful):
+            file_name = Config.get_save_file_name_from_user()
 
-        if message != 'valid':
-            self.ui.configuration.set_status_text('INVALID CONFIGURATION\n' + message)
-            return
+            if(file_name == ""):
+                return
 
-        message = Config.test_sequence_is_valid(test_sequence_table)
-
-        if message != 'valid':
-            self.ui.configuration.set_status_text('INVALID CONFIGURATION\n' + message)
-            return
-
-        self.ui.configuration.set_status_text('Valid Configuration\nSaving to configuration file.')
+            trial_name = self.ui.configuration.trial_name_field.text()
+            description = self.ui.configuration.description_field.toPlainText()
+            blue_lines = self.ui.configuration.blue_lines_table
+            test_sequence = self.ui.configuration.sequence_table
+            
+            Config.create_file(file_name, trial_name, description, blue_lines, test_sequence)
