@@ -32,6 +32,8 @@ class Presenter:
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
 
+        self.ui.run.load_button.clicked.connect(self.run_load_clicked)
+
     def tab_clicked(self, tab_index):
         Log.debug('A tab was clicked: This is a new test of the logging system. This system will be implemented in all classes going forward')
 
@@ -44,6 +46,8 @@ class Presenter:
     def abort_clicked(self):
         print('abort clicked')
 
+
+# CONFIGURATION PAGE LOGIC
     def configuration_blue_lines_plus_clicked(self):
         self.ui.configuration.add_row_to_blue_lines_table()
     def configuration_blue_lines_minus_clicked(self):
@@ -53,6 +57,9 @@ class Presenter:
         self.ui.configuration.add_row_to_sequence_table()
     def configuration_sequence_minus_clicked(self):
         self.ui.configuration.remove_row_from_sequence_table()
+
+    def configuration_clear_clicked(self):
+        pass
 
     def configuration_save_clicked(self):
         self.my_thread = Config.ValidationThread(self.ui)
@@ -78,3 +85,15 @@ class Presenter:
             test_sequence = self.ui.configuration.sequence_table
             
             Config.create_file(file_name, trial_name, description, blue_lines, test_sequence)
+
+# RUN PAGE LOGIC
+    def run_load_clicked(self):
+        file_name = Config.select_file()
+        
+        if(file_name == ""):
+            return
+
+        trial_name = Config.open_file(file_name)
+        
+        self.ui.run.set_loaded_trial_text(trial_name)
+        self.ui.run.set_start_button_active(True)

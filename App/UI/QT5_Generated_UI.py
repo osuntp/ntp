@@ -75,6 +75,7 @@ class Ui_window(object):
         font.setBold(False)
         font.setWeight(50)
         self.manual_control_tab.setFont(font)
+        self.manual_control_tab.setStyleSheet("")
         self.manual_control_tab.setObjectName("manual_control_tab")
         self.logs_tab_frame = QtWidgets.QFrame(self.tab_bar)
         self.logs_tab_frame.setGeometry(QtCore.QRect(236, 12, 184, 50))
@@ -388,7 +389,7 @@ class Ui_window(object):
         font.setWeight(75)
         self.diagnostics_plot1_title.setFont(font)
         self.diagnostics_plot1_title.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
-        self.diagnostics_plot1_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.diagnostics_plot1_title.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.diagnostics_plot1_title.setIndent(15)
         self.diagnostics_plot1_title.setObjectName("diagnostics_plot1_title")
         self.diagnostics_plot2_title_frame = QtWidgets.QFrame(self.page_diagnostics)
@@ -406,7 +407,7 @@ class Ui_window(object):
         font.setWeight(75)
         self.diagnostics_plot2_title.setFont(font)
         self.diagnostics_plot2_title.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
-        self.diagnostics_plot2_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.diagnostics_plot2_title.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.diagnostics_plot2_title.setIndent(15)
         self.diagnostics_plot2_title.setObjectName("diagnostics_plot2_title")
         self.stacked_widget.addWidget(self.page_diagnostics)
@@ -487,25 +488,40 @@ class Ui_window(object):
         self.stacked_widget.addWidget(self.page_manual_control)
         self.page_configuration = QtWidgets.QWidget()
         self.page_configuration.setObjectName("page_configuration")
-        self.configuration_save_button = QtWidgets.QPushButton(self.page_configuration)
-        self.configuration_save_button.setGeometry(QtCore.QRect(430, 623, 120, 40))
-        self.configuration_save_button.setObjectName("configuration_save_button")
         self.configuration_status_label = QtWidgets.QLabel(self.page_configuration)
-        self.configuration_status_label.setGeometry(QtCore.QRect(570, 620, 501, 31))
-        self.configuration_status_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.configuration_status_label.setGeometry(QtCore.QRect(413, 613, 681, 50))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.configuration_status_label.setFont(font)
+        self.configuration_status_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.configuration_status_label.setObjectName("configuration_status_label")
-        self.configuration_clear_button = QtWidgets.QPushButton(self.page_configuration)
-        self.configuration_clear_button.setGeometry(QtCore.QRect(284, 623, 120, 40))
-        self.configuration_clear_button.setObjectName("configuration_clear_button")
         self.configuration_trialname_frame = QtWidgets.QFrame(self.page_configuration)
-        self.configuration_trialname_frame.setGeometry(QtCore.QRect(15, 15, 535, 83))
+        self.configuration_trialname_frame.setGeometry(QtCore.QRect(15, 15, 535, 42))
         self.configuration_trialname_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.configuration_trialname_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.configuration_trialname_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.configuration_trialname_frame.setObjectName("configuration_trialname_frame")
+        self.configuration_trialname_field_frame = QtWidgets.QFrame(self.configuration_trialname_frame)
+        self.configuration_trialname_field_frame.setGeometry(QtCore.QRect(179, 1, 355, 40))
+        self.configuration_trialname_field_frame.setStyleSheet("border: 0px;\n"
+"background-color: rgb(0, 0, 0);")
+        self.configuration_trialname_field_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_trialname_field_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_trialname_field_frame.setObjectName("configuration_trialname_field_frame")
+        self.configuration_trialname_field = QtWidgets.QLineEdit(self.configuration_trialname_field_frame)
+        self.configuration_trialname_field.setGeometry(QtCore.QRect(1, 1, 353, 38))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(False)
+        font.setWeight(50)
+        self.configuration_trialname_field.setFont(font)
+        self.configuration_trialname_field.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
+"background-color: rgb(230, 230, 230);")
+        self.configuration_trialname_field.setText("")
+        self.configuration_trialname_field.setObjectName("configuration_trialname_field")
         self.configuration_trialname_label = QtWidgets.QLabel(self.configuration_trialname_frame)
         self.configuration_trialname_label.setEnabled(True)
-        self.configuration_trialname_label.setGeometry(QtCore.QRect(1, 1, 533, 40))
+        self.configuration_trialname_label.setGeometry(QtCore.QRect(1, 1, 177, 40))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -514,22 +530,6 @@ class Ui_window(object):
         self.configuration_trialname_label.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
         self.configuration_trialname_label.setIndent(15)
         self.configuration_trialname_label.setObjectName("configuration_trialname_label")
-        self.configuration_trialname_field_frame = QtWidgets.QFrame(self.configuration_trialname_frame)
-        self.configuration_trialname_field_frame.setGeometry(QtCore.QRect(1, 42, 533, 40))
-        self.configuration_trialname_field_frame.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
-"background-color: rgb(206, 211, 230);")
-        self.configuration_trialname_field_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.configuration_trialname_field_frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.configuration_trialname_field_frame.setObjectName("configuration_trialname_field_frame")
-        self.configuration_trialname_field = QtWidgets.QLineEdit(self.configuration_trialname_field_frame)
-        self.configuration_trialname_field.setGeometry(QtCore.QRect(15, 0, 503, 40))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        self.configuration_trialname_field.setFont(font)
-        self.configuration_trialname_field.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
-"background-color: rgb(206, 211, 230);")
-        self.configuration_trialname_field.setText("")
-        self.configuration_trialname_field.setObjectName("configuration_trialname_field")
         self.configuration_description_frame = QtWidgets.QFrame(self.page_configuration)
         self.configuration_description_frame.setGeometry(QtCore.QRect(15, 113, 535, 243))
         self.configuration_description_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -549,16 +549,18 @@ class Ui_window(object):
         self.configuration_description_label.setObjectName("configuration_description_label")
         self.configuration_description_field_frame = QtWidgets.QFrame(self.configuration_description_frame)
         self.configuration_description_field_frame.setGeometry(QtCore.QRect(1, 42, 533, 200))
-        self.configuration_description_field_frame.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
-"background-color: rgb(206, 211, 230);")
+        self.configuration_description_field_frame.setStyleSheet("border: 0px;\n"
+"background-color: rgb(0, 0, 0);")
         self.configuration_description_field_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.configuration_description_field_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.configuration_description_field_frame.setObjectName("configuration_description_field_frame")
         self.configuration_description_field = QtWidgets.QPlainTextEdit(self.configuration_description_field_frame)
-        self.configuration_description_field.setGeometry(QtCore.QRect(15, 0, 503, 185))
+        self.configuration_description_field.setGeometry(QtCore.QRect(1, 1, 531, 198))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.configuration_description_field.setFont(font)
+        self.configuration_description_field.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
+"background-color: rgb(230, 230, 230);")
         self.configuration_description_field.setPlainText("")
         self.configuration_description_field.setObjectName("configuration_description_field")
         self.configuration_blue_lines_frame = QtWidgets.QFrame(self.page_configuration)
@@ -580,16 +582,21 @@ class Ui_window(object):
         self.configuration_blue_lines_label.setObjectName("configuration_blue_lines_label")
         self.configuration_blue_lines_table_frame = QtWidgets.QFrame(self.configuration_blue_lines_frame)
         self.configuration_blue_lines_table_frame.setGeometry(QtCore.QRect(1, 42, 533, 241))
-        self.configuration_blue_lines_table_frame.setStyleSheet("background-color: rgb(230, 230, 230);")
+        self.configuration_blue_lines_table_frame.setStyleSheet("border: 0px;\n"
+"background-color: rgb(0, 0, 0);")
         self.configuration_blue_lines_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.configuration_blue_lines_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.configuration_blue_lines_table_frame.setObjectName("configuration_blue_lines_table_frame")
-        self.configuration_blue_lines_table = QtWidgets.QTableWidget(self.configuration_blue_lines_table_frame)
-        self.configuration_blue_lines_table.setGeometry(QtCore.QRect(0, 0, 533, 181))
-        self.configuration_blue_lines_table.setStyleSheet("border: 0px;\n"
-"td{\n"
-"width: 300px;\n"
-"}")
+        self.configuration_blue_lines_table_frame_2 = QtWidgets.QFrame(self.configuration_blue_lines_table_frame)
+        self.configuration_blue_lines_table_frame_2.setGeometry(QtCore.QRect(1, 1, 531, 239))
+        self.configuration_blue_lines_table_frame_2.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
+"background-color: rgb(230, 230, 230);")
+        self.configuration_blue_lines_table_frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_blue_lines_table_frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_blue_lines_table_frame_2.setObjectName("configuration_blue_lines_table_frame_2")
+        self.configuration_blue_lines_table = QtWidgets.QTableWidget(self.configuration_blue_lines_table_frame_2)
+        self.configuration_blue_lines_table.setGeometry(QtCore.QRect(0, 0, 531, 179))
+        self.configuration_blue_lines_table.setStyleSheet("")
         self.configuration_blue_lines_table.setObjectName("configuration_blue_lines_table")
         self.configuration_blue_lines_table.setColumnCount(3)
         self.configuration_blue_lines_table.setRowCount(1)
@@ -607,15 +614,39 @@ class Ui_window(object):
         self.configuration_blue_lines_table.setItem(0, 1, item)
         item = QtWidgets.QTableWidgetItem()
         self.configuration_blue_lines_table.setItem(0, 2, item)
-        self.configuration_blue_lines_plus = QtWidgets.QPushButton(self.configuration_blue_lines_table_frame)
-        self.configuration_blue_lines_plus.setGeometry(QtCore.QRect(443, 196, 30, 30))
-        self.configuration_blue_lines_plus.setObjectName("configuration_blue_lines_plus")
-        self.configuration_blue_lines_minus = QtWidgets.QPushButton(self.configuration_blue_lines_table_frame)
-        self.configuration_blue_lines_minus.setGeometry(QtCore.QRect(488, 196, 30, 30))
-        self.configuration_blue_lines_minus.setIconSize(QtCore.QSize(25, 25))
+        self.configuration_blue_lines_minus_frame = QtWidgets.QFrame(self.configuration_blue_lines_table_frame_2)
+        self.configuration_blue_lines_minus_frame.setGeometry(QtCore.QRect(487, 195, 30, 30))
+        self.configuration_blue_lines_minus_frame.setStyleSheet("background-color: rgb(0, 0, 0);\n"
+"")
+        self.configuration_blue_lines_minus_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_blue_lines_minus_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_blue_lines_minus_frame.setObjectName("configuration_blue_lines_minus_frame")
+        self.configuration_blue_lines_minus = QtWidgets.QPushButton(self.configuration_blue_lines_minus_frame)
+        self.configuration_blue_lines_minus.setGeometry(QtCore.QRect(2, 2, 26, 26))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_blue_lines_minus.setFont(font)
+        self.configuration_blue_lines_minus.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
         self.configuration_blue_lines_minus.setObjectName("configuration_blue_lines_minus")
+        self.configuration_blue_lines_plus_frame = QtWidgets.QFrame(self.configuration_blue_lines_table_frame_2)
+        self.configuration_blue_lines_plus_frame.setGeometry(QtCore.QRect(442, 195, 30, 30))
+        self.configuration_blue_lines_plus_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.configuration_blue_lines_plus_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_blue_lines_plus_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_blue_lines_plus_frame.setObjectName("configuration_blue_lines_plus_frame")
+        self.configuration_blue_lines_plus = QtWidgets.QPushButton(self.configuration_blue_lines_plus_frame)
+        self.configuration_blue_lines_plus.setGeometry(QtCore.QRect(2, 2, 26, 26))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_blue_lines_plus.setFont(font)
+        self.configuration_blue_lines_plus.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
+        self.configuration_blue_lines_plus.setObjectName("configuration_blue_lines_plus")
         self.configuration_sequence_frame = QtWidgets.QFrame(self.page_configuration)
-        self.configuration_sequence_frame.setGeometry(QtCore.QRect(570, 310, 535, 284))
+        self.configuration_sequence_frame.setGeometry(QtCore.QRect(565, 310, 535, 284))
         self.configuration_sequence_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.configuration_sequence_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.configuration_sequence_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -633,18 +664,51 @@ class Ui_window(object):
         self.configuration_sequence_label.setObjectName("configuration_sequence_label")
         self.configuration_sequence_table_frame = QtWidgets.QFrame(self.configuration_sequence_frame)
         self.configuration_sequence_table_frame.setGeometry(QtCore.QRect(1, 42, 533, 241))
-        self.configuration_sequence_table_frame.setStyleSheet("background-color: rgb(230, 230, 230);")
+        self.configuration_sequence_table_frame.setStyleSheet("background-color: rgb(230, 230, 230);\n"
+"border: 0px;\n"
+"background-color: rgb(0, 0, 0);")
         self.configuration_sequence_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.configuration_sequence_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.configuration_sequence_table_frame.setObjectName("configuration_sequence_table_frame")
-        self.configuration_sequence_plus = QtWidgets.QPushButton(self.configuration_sequence_table_frame)
-        self.configuration_sequence_plus.setGeometry(QtCore.QRect(443, 196, 30, 30))
-        self.configuration_sequence_plus.setObjectName("configuration_sequence_plus")
-        self.configuration_sequence_minus = QtWidgets.QPushButton(self.configuration_sequence_table_frame)
-        self.configuration_sequence_minus.setGeometry(QtCore.QRect(488, 196, 30, 30))
-        self.configuration_sequence_minus.setIconSize(QtCore.QSize(25, 25))
+        self.configuration_sequence_table_frame_2 = QtWidgets.QFrame(self.configuration_sequence_table_frame)
+        self.configuration_sequence_table_frame_2.setGeometry(QtCore.QRect(1, 1, 531, 239))
+        self.configuration_sequence_table_frame_2.setStyleSheet("color: rgb(0, 0, 0); border: 0px;\n"
+"background-color: rgb(230, 230, 230);")
+        self.configuration_sequence_table_frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_sequence_table_frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_sequence_table_frame_2.setObjectName("configuration_sequence_table_frame_2")
+        self.configuration_sequence_minus_frame = QtWidgets.QFrame(self.configuration_sequence_table_frame_2)
+        self.configuration_sequence_minus_frame.setGeometry(QtCore.QRect(487, 195, 30, 30))
+        self.configuration_sequence_minus_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.configuration_sequence_minus_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_sequence_minus_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_sequence_minus_frame.setObjectName("configuration_sequence_minus_frame")
+        self.configuration_sequence_minus = QtWidgets.QPushButton(self.configuration_sequence_minus_frame)
+        self.configuration_sequence_minus.setGeometry(QtCore.QRect(2, 2, 26, 26))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_sequence_minus.setFont(font)
+        self.configuration_sequence_minus.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
         self.configuration_sequence_minus.setObjectName("configuration_sequence_minus")
-        self.configuration_sequence_table = QtWidgets.QTableWidget(self.configuration_sequence_table_frame)
+        self.configuration_sequence_plus_frame = QtWidgets.QFrame(self.configuration_sequence_table_frame_2)
+        self.configuration_sequence_plus_frame.setGeometry(QtCore.QRect(442, 195, 30, 30))
+        self.configuration_sequence_plus_frame.setStyleSheet("background-color: rgb(0, 0, 0);\n"
+"")
+        self.configuration_sequence_plus_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_sequence_plus_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_sequence_plus_frame.setObjectName("configuration_sequence_plus_frame")
+        self.configuration_sequence_plus = QtWidgets.QPushButton(self.configuration_sequence_plus_frame)
+        self.configuration_sequence_plus.setGeometry(QtCore.QRect(2, 2, 26, 26))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_sequence_plus.setFont(font)
+        self.configuration_sequence_plus.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
+        self.configuration_sequence_plus.setObjectName("configuration_sequence_plus")
+        self.configuration_sequence_table = QtWidgets.QTableWidget(self.configuration_sequence_table_frame_2)
         self.configuration_sequence_table.setGeometry(QtCore.QRect(0, 0, 533, 181))
         self.configuration_sequence_table.setStyleSheet("border: 0px;")
         self.configuration_sequence_table.setObjectName("configuration_sequence_table")
@@ -668,12 +732,128 @@ class Ui_window(object):
         self.configuration_sequence_table.setItem(0, 2, item)
         item = QtWidgets.QTableWidgetItem()
         self.configuration_sequence_table.setItem(0, 3, item)
+        self.configuration_clear_button_frame = QtWidgets.QFrame(self.page_configuration)
+        self.configuration_clear_button_frame.setGeometry(QtCore.QRect(15, 613, 184, 50))
+        self.configuration_clear_button_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.configuration_clear_button_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_clear_button_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_clear_button_frame.setObjectName("configuration_clear_button_frame")
+        self.configuration_clear_button = QtWidgets.QPushButton(self.configuration_clear_button_frame)
+        self.configuration_clear_button.setGeometry(QtCore.QRect(2, 2, 180, 46))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_clear_button.setFont(font)
+        self.configuration_clear_button.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
+        self.configuration_clear_button.setObjectName("configuration_clear_button")
+        self.configuration_save_button_frame = QtWidgets.QFrame(self.page_configuration)
+        self.configuration_save_button_frame.setGeometry(QtCore.QRect(214, 613, 184, 50))
+        self.configuration_save_button_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.configuration_save_button_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.configuration_save_button_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configuration_save_button_frame.setObjectName("configuration_save_button_frame")
+        self.configuration_save_button = QtWidgets.QPushButton(self.configuration_save_button_frame)
+        self.configuration_save_button.setGeometry(QtCore.QRect(2, 2, 180, 46))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.configuration_save_button.setFont(font)
+        self.configuration_save_button.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
+        self.configuration_save_button.setObjectName("configuration_save_button")
         self.stacked_widget.addWidget(self.page_configuration)
         self.page_run = QtWidgets.QWidget()
         self.page_run.setObjectName("page_run")
-        self.TEMP_run_label = QtWidgets.QLabel(self.page_run)
-        self.TEMP_run_label.setGeometry(QtCore.QRect(530, 190, 200, 13))
-        self.TEMP_run_label.setObjectName("TEMP_run_label")
+        self.run_plot1 = QtWidgets.QGraphicsView(self.page_run)
+        self.run_plot1.setGeometry(QtCore.QRect(533, 55, 567, 276))
+        self.run_plot1.setObjectName("run_plot1")
+        self.run_plot1_title_frame = QtWidgets.QFrame(self.page_run)
+        self.run_plot1_title_frame.setGeometry(QtCore.QRect(533, 15, 567, 40))
+        self.run_plot1_title_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.run_plot1_title_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.run_plot1_title_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.run_plot1_title_frame.setObjectName("run_plot1_title_frame")
+        self.run_plot1_title = QtWidgets.QLabel(self.run_plot1_title_frame)
+        self.run_plot1_title.setEnabled(True)
+        self.run_plot1_title.setGeometry(QtCore.QRect(1, 1, 565, 38))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.run_plot1_title.setFont(font)
+        self.run_plot1_title.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
+        self.run_plot1_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.run_plot1_title.setIndent(15)
+        self.run_plot1_title.setObjectName("run_plot1_title")
+        self.run_plot2 = QtWidgets.QGraphicsView(self.page_run)
+        self.run_plot2.setGeometry(QtCore.QRect(533, 387, 567, 276))
+        self.run_plot2.setObjectName("run_plot2")
+        self.run_plot2_title_frame = QtWidgets.QFrame(self.page_run)
+        self.run_plot2_title_frame.setGeometry(QtCore.QRect(533, 347, 567, 40))
+        self.run_plot2_title_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.run_plot2_title_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.run_plot2_title_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.run_plot2_title_frame.setObjectName("run_plot2_title_frame")
+        self.run_plot2_title = QtWidgets.QLabel(self.run_plot2_title_frame)
+        self.run_plot2_title.setEnabled(True)
+        self.run_plot2_title.setGeometry(QtCore.QRect(1, 1, 565, 38))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.run_plot2_title.setFont(font)
+        self.run_plot2_title.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
+        self.run_plot2_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.run_plot2_title.setIndent(15)
+        self.run_plot2_title.setObjectName("run_plot2_title")
+        self.run_load_configuration_button_frame = QtWidgets.QFrame(self.page_run)
+        self.run_load_configuration_button_frame.setGeometry(QtCore.QRect(15, 15, 244, 50))
+        self.run_load_configuration_button_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.run_load_configuration_button_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.run_load_configuration_button_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.run_load_configuration_button_frame.setObjectName("run_load_configuration_button_frame")
+        self.run_load_configuration_button = QtWidgets.QPushButton(self.run_load_configuration_button_frame)
+        self.run_load_configuration_button.setGeometry(QtCore.QRect(2, 2, 240, 46))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.run_load_configuration_button.setFont(font)
+        self.run_load_configuration_button.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:0px;")
+        self.run_load_configuration_button.setObjectName("run_load_configuration_button")
+        self.run_start_button_frame = QtWidgets.QFrame(self.page_run)
+        self.run_start_button_frame.setGeometry(QtCore.QRect(274, 15, 244, 50))
+        self.run_start_button_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.run_start_button_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.run_start_button_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.run_start_button_frame.setObjectName("run_start_button_frame")
+        self.run_start_button = QtWidgets.QPushButton(self.run_start_button_frame)
+        self.run_start_button.setGeometry(QtCore.QRect(2, 2, 240, 46))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.run_start_button.setFont(font)
+        self.run_start_button.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(0, 85, 0);\n"
+"border:0px;")
+        self.run_start_button.setObjectName("run_start_button")
+        self.run_trialname_frame = QtWidgets.QFrame(self.page_run)
+        self.run_trialname_frame.setGeometry(QtCore.QRect(15, 110, 503, 42))
+        self.run_trialname_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.run_trialname_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.run_trialname_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.run_trialname_frame.setObjectName("run_trialname_frame")
+        self.run_trialname = QtWidgets.QLabel(self.run_trialname_frame)
+        self.run_trialname.setEnabled(True)
+        self.run_trialname.setGeometry(QtCore.QRect(1, 1, 501, 40))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.run_trialname.setFont(font)
+        self.run_trialname.setStyleSheet(" background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;")
+        self.run_trialname.setIndent(15)
+        self.run_trialname.setObjectName("run_trialname")
         self.stacked_widget.addWidget(self.page_run)
         self.side_bar = QtWidgets.QFrame(self.central)
         self.side_bar.setGeometry(QtCore.QRect(15, 75, 120, 678))
@@ -747,7 +927,7 @@ class Ui_window(object):
         window.setCentralWidget(self.central)
 
         self.retranslateUi(window)
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(window)
 
     def retranslateUi(self, window):
@@ -784,148 +964,24 @@ class Ui_window(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p></body></html>"))
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.log_daq_log_header.setText(_translate("window", "DAQ Arduino Log"))
         self.logs_daq_log.setHtml(_translate("window", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">&gt;&gt; I think we need to implement our own logging class.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">&gt;&gt; Python\'s built in logging feature will currently log everything and save it to app.log</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">&gt;&gt; Unfortunately, this means that it will also be saving any log\'s stored from imported classes like QT and pandas. </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">&gt;&gt; The logs in the python log to the left of this probably include a lot of findfont() logs, I think this is coming from QT\'s logs.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">&gt;&gt; Additionally, if we implement our own logging system, it will be much easier to separate the logs into the Python/DAQ/Controller sections. We could save them as 3 files or save them as 1 combined log file, either one would work just fine</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p></body></html>"))
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.logs_controller_log_header.setText(_translate("window", "Controller Arduino Log"))
         self.logs_controller_log.setHtml(_translate("window", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#000000;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; log output, adding some more text to make it length</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt; adding some more text to make it length other log output</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">&gt;&gt;  make it length other log output adding some more text </span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; color:#000000;\"><br /></p></body></html>"))
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.TEMP_manual_control_label.setText(_translate("window", "This is manual control page"))
-        self.configuration_save_button.setText(_translate("window", "Save"))
         self.configuration_status_label.setText(_translate("window", "example\n"
 "more"))
-        self.configuration_clear_button.setText(_translate("window", "Clear"))
         self.configuration_trialname_label.setText(_translate("window", "Trial Name"))
-        self.configuration_description_label.setText(_translate("window", "Description"))
+        self.configuration_description_label.setText(_translate("window", "Description (Optional)"))
         self.configuration_blue_lines_label.setText(_translate("window", "Blue Lines"))
         item = self.configuration_blue_lines_table.verticalHeaderItem(0)
         item.setText(_translate("window", "1"))
@@ -944,11 +1000,11 @@ class Ui_window(object):
         item = self.configuration_blue_lines_table.item(0, 2)
         item.setText(_translate("window", "value 3"))
         self.configuration_blue_lines_table.setSortingEnabled(__sortingEnabled)
-        self.configuration_blue_lines_plus.setText(_translate("window", "+"))
         self.configuration_blue_lines_minus.setText(_translate("window", "-"))
+        self.configuration_blue_lines_plus.setText(_translate("window", "+"))
         self.configuration_sequence_label.setText(_translate("window", "Test Sequence"))
-        self.configuration_sequence_plus.setText(_translate("window", "+"))
         self.configuration_sequence_minus.setText(_translate("window", "-"))
+        self.configuration_sequence_plus.setText(_translate("window", "+"))
         item = self.configuration_sequence_table.verticalHeaderItem(0)
         item.setText(_translate("window", "1"))
         item = self.configuration_sequence_table.horizontalHeaderItem(0)
@@ -970,7 +1026,13 @@ class Ui_window(object):
         item = self.configuration_sequence_table.item(0, 3)
         item.setText(_translate("window", "value 4"))
         self.configuration_sequence_table.setSortingEnabled(__sortingEnabled)
-        self.TEMP_run_label.setText(_translate("window", "This is run page"))
+        self.configuration_clear_button.setText(_translate("window", "Clear"))
+        self.configuration_save_button.setText(_translate("window", "Save"))
+        self.run_plot1_title.setText(_translate("window", "Live Data"))
+        self.run_plot2_title.setText(_translate("window", "OpenFOAM Progress"))
+        self.run_load_configuration_button.setText(_translate("window", "Load Configuration"))
+        self.run_start_button.setText(_translate("window", "Start"))
+        self.run_trialname.setText(_translate("window", "No file loaded. . ."))
         self.side_bar_valve_open_label.setText(_translate("window", "OPEN VALVE"))
         self.side_bar_heater_label.setText(_translate("window", "HEATER ON"))
         self.side_bar_state_label.setText(_translate("window", "STAND STATE:"))

@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from dataclasses import dataclass
 from PyQt5 import QtWidgets
 import time
+import os
 
 @dataclass
 class Config:
@@ -21,11 +22,11 @@ class ValidationThread(QThread):
 
     def run(self):
         self.validation_message.emit('Validating.')
-        time.sleep(0.5)
+        time.sleep(0.25)
         self.validation_message.emit('Validating. .')
-        time.sleep(0.5)
+        time.sleep(0.25)
         self.validation_message.emit('Validating. . .')
-        time.sleep(0.3)
+        time.sleep(0.2)
 
         blue_lines_table = self.ui.configuration.blue_lines_table
         test_sequence_table = self.ui.configuration.sequence_table
@@ -47,7 +48,6 @@ class ValidationThread(QThread):
             self.validation_is_complete.emit(False)
 
 def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, test_sequence: QtWidgets.QTableWidget):
-    print('at the beginning: ' + blue_lines.cellWidget(0,2).currentText())
     config = ConfigParser()
 
     config.add_section('main')
@@ -56,6 +56,8 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
 
     config.set('main','trial_name', trial_name)
     config.set('main', 'decription', description)
+
+    config.set('blue_lines', 'row_count', str(blue_lines.rowCount()))
 
     for i in range(blue_lines.rowCount()):
         time_step_id = "time_step_" + str(i)
@@ -70,6 +72,8 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
         config.set('blue_lines', time_step_id, time_step_value)
         config.set('blue_lines', temperature_id, temperature_value)
         config.set('blue_lines', limit_type_id, limit_type_value)
+
+    config.set('test_sequence', 'row_count', str(test_sequence.rowCount()))
 
     for i in range(test_sequence.rowCount()):
         time_step_id = "time_step_" + str(i)
@@ -98,13 +102,32 @@ def get_save_file_name_from_user():
 
     response = file_dialog.getSaveFileName(
         caption = 'Select a config file',
-        directory = 'test_config_file.ini',
+        directory = 'Config.ini',
         filter = file_filter,
         initialFilter = 'Config File (*.ini)'
     )
 
     return response[0]
 
+def select_file():
+    file_dialog = QtWidgets.QFileDialog()
+    file_filter = 'Config File (*.ini)'
+
+    response = file_dialog.getOpenFileName(
+        caption = 'Select a config file',
+        directory = os.getcwd(),
+        filter = file_filter,
+        initialFilter = 'Config File (*.ini)'
+    )
+    
+    return response[0]
+
+def open_file(file_name: str):
+    config = ConfigParser()
+    config.read(file_name)
+
+    return config.get('main', 'trial_name')
+    
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
     previous_time_step = 0
@@ -161,11 +184,3 @@ def test_sequence_is_valid(table: QtWidgets.QTableWidget):
 
     return 'valid'
 
-def create_blue_line_dict(time_step: float, temp: float, is_max: str):
-    return_dict = {
-        'Timestep' : time_step,
-        'Temperature' : temp,
-        'Limit': is_max
-    }
-
-    return return_dict

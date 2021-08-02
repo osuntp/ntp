@@ -22,12 +22,15 @@ class UI:
         self.current_tab = self.pyqt5.diagnostics_tab
         self.abort_tab = self.pyqt5.abort_tab
 
-        Stylize.all_tabs(self.tabs, starting_tab = self.pyqt5.diagnostics_tab)
+        Stylize.all_tabs(self.tabs)
+        self.current_tab = self.tabs[1]
+        self.set_current_tab(0)
         Stylize.abort(self.abort_tab)
 
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.configuration = Configuration(self.pyqt5)
+        self.run = Run(self.pyqt5)
 
     def set_current_tab(self, tab_index):
         new_tab = self.tabs[tab_index]
@@ -122,9 +125,8 @@ class Configuration:
         self.clear_button = pyqt5.configuration_clear_button
         self.save_button = pyqt5.configuration_save_button
 
-        buttons = [self.save_button, self.clear_button, pyqt5.configuration_sequence_plus, pyqt5.configuration_blue_lines_plus, pyqt5.configuration_sequence_minus, pyqt5.configuration_blue_lines_minus]
-
-        Stylize.all_tabs(buttons, pyqt5.diagnostics_tab)
+        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button]
+        Stylize.button(buttons)
 
         self.clear_all()
         self.add_row_to_blue_lines_table()
@@ -202,8 +204,20 @@ class Configuration:
         # Result will be 1 empty row
         self.add_row_to_sequence_table()
     
+class Run:
+    def __init__(self, pyqt5: Ui_window):
+        self.load_button = pyqt5.run_load_configuration_button
+        self.start_button = pyqt5.run_start_button
+        self.loaded_trial_text = pyqt5.run_trialname
 
+        Stylize.button([self.load_button])
+        Stylize.set_start_button_active(self.start_button, False)
 
+    def set_start_button_active(self, isActive: bool):
+        Stylize.set_start_button_active(self.start_button, isActive)
+
+    def set_loaded_trial_text(self, text: str):
+        self.loaded_trial_text.setText(text)
             
 
 class Canvas(FigureCanvas):

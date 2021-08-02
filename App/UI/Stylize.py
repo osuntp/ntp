@@ -16,6 +16,21 @@ class Stylize:
     QPushButton:hover{ background-color: rgb(170, 0, 0); color: rgb(255, 255, 255); border: 0px;} \
     QPushButton:pressed{ background-color: rgb(95, 0, 0); color: rgb(255, 255, 255); border: 0px;} "
 
+    standard_button = "\
+    QPushButton{ background-color: rgb(39, 59, 94); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton:hover{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton:pressed{ background-color: rgb(61, 93, 148); color: rgb(255, 255, 255); border: 0px;}"
+
+    start_button_inactive = "\
+    QPushButton{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;} \
+    QPushButton:hover{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;} \
+    QPushButton:pressed{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;}"
+
+    start_button_active = "\
+    QPushButton{ background-color: rgb(0, 130, 0); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton:hover{ background-color: rgb(0, 170, 0); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton:pressed{ background-color: rgb(0, 50, 0); color: rgb(255, 255, 255); border: 0px;}"
+
     side_bar_status_green = "\
     QGraphicsView{background-color: rgb(0, 170, 0);}"
 
@@ -27,11 +42,21 @@ class Stylize:
         button.setStyleSheet(cls.abort_tab)
 
     @classmethod
-    def all_tabs(cls, tabs, starting_tab):
+    def all_tabs(cls, tabs):
         for tab in tabs:
             tab.setStyleSheet(cls.standard_tab)
-        
-        starting_tab.setStyleSheet(cls.current_tab)
+
+    @classmethod
+    def button(cls, buttons):
+        for button in buttons:
+            button.setStyleSheet(cls.standard_button)
+
+    @classmethod
+    def set_start_button_active(cls,button, isActive):
+        if(isActive):
+            button.setStyleSheet(cls.start_button_active)
+        else:
+            button.setStyleSheet(cls.start_button_inactive)
 
     @classmethod
     def set_current_tab(cls, new_tab, prev_tab):
