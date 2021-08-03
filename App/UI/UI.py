@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import QtWidgets
 import os
+import Config
 
 class UI:
     def __init__(self, window):       
@@ -209,6 +210,7 @@ class Run:
         self.load_button = pyqt5.run_load_configuration_button
         self.start_button = pyqt5.run_start_button
         self.loaded_trial_text = pyqt5.run_trialname
+        self.sequence_table = pyqt5.run_test_sequence_table
 
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, False)
@@ -218,6 +220,40 @@ class Run:
 
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
+
+    def set_sequence_table(self, config: Config.Config):
+
+        table = self.sequence_table
+
+        while(table.rowCount() > 0.5):
+            table.removeRow(table.rowCount() - 1)
+
+        for i in range(len(config.sequence_time_step)):
+            table.insertRow(table.rowCount())
+            
+            item = QtWidgets.QTableWidgetItem()
+            item.setText('')
+            table.setVerticalHeaderItem(table.rowCount()-1, item)
+
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(str(config.sequence_time_step[i]))
+            table.setItem(i, 0, item)
+
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(str(config.sequence_power[i]))
+            table.setItem(i, 1, item)
+            
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(str(config.sequence_temperature[i]))
+            table.setItem(i, 2, item)
+
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(str(config.sequence_mass_flow[i]))
+            table.setItem(i, 3, item)
+            # self.sequence_table.item(i, 0).setText(str(config.sequence_time_step[i]))
+            # self.sequence_table.item(i, 1).setText(str(config.sequence_power[i]))
+            # self.sequence_table.item(i, 2).setText(str(config.sequence_temperature[i]))
+            # self.sequence_table.item(i, 3).setText(str(config.sequence_mass_flow[i]))
             
 
 class Canvas(FigureCanvas):

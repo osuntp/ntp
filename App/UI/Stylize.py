@@ -12,8 +12,8 @@ class Stylize:
     QPushButton:pressed{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 0px;}"
 
     abort_tab = "\
-    QPushButton{ background-color: rgb(249, 19, 19); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(170, 0, 0); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton{ background-color: rgb(170, 0, 0); color: rgb(255, 255, 255); border: 0px;} \
+    QPushButton:hover{ background-color: rgb(249, 19, 19); color: rgb(255, 255, 255); border: 0px;} \
     QPushButton:pressed{ background-color: rgb(95, 0, 0); color: rgb(255, 255, 255); border: 0px;} "
 
     standard_button = "\

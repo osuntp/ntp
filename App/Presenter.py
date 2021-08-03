@@ -93,7 +93,8 @@ class Presenter:
         if(file_name == ""):
             return
 
-        trial_name = Config.open_file(file_name)
+        config: Config.Config = Config.open_file(file_name)
         
-        self.ui.run.set_loaded_trial_text(trial_name)
+        self.ui.run.set_loaded_trial_text(config.trial_name)
         self.ui.run.set_start_button_active(True)
+        self.ui.run.set_sequence_table(config)

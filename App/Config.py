@@ -2,6 +2,7 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from configparser import ConfigParser
 from dataclasses import dataclass
 from PyQt5 import QtWidgets
+from typing import List
 import time
 import os
 
@@ -9,7 +10,16 @@ import os
 class Config:
     trial_name: str
     description: str
-    blue_lines: dict
+
+    blue_lines_time_step: List[float]
+    blue_lines_temperature: List[float]
+    blue_lines_limit_type: List[str]
+
+    sequence_time_step: List[float]
+    sequence_power: List[float]
+    sequence_temperature: List[float]
+    sequence_mass_flow: List[float]
+
 
 class ValidationThread(QThread):
 
@@ -55,43 +65,50 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
     config.add_section('test_sequence')
 
     config.set('main','trial_name', trial_name)
-    config.set('main', 'decription', description)
+    config.set('main', 'description', description)
 
-    config.set('blue_lines', 'row_count', str(blue_lines.rowCount()))
-
+# Blue Lines Data
+    time_step = ''
+    temperature = ''
+    limit_type = ''
     for i in range(blue_lines.rowCount()):
-        time_step_id = "time_step_" + str(i)
-        time_step_value = blue_lines.item(i,0).text()
 
-        temperature_id = "temperature_"+str(i)
-        temperature_value = blue_lines.item(i,1).text()
+        time_step += (str(blue_lines.item(i,0).text()))
+        temperature += (str(blue_lines.item(i, 1).text()))
+        limit_type += blue_lines.cellWidget(i, 2).currentText()
 
-        limit_type_id = "limit_type_" + str(i)
-        limit_type_value = blue_lines.cellWidget(i, 2).currentText()
+        if(i < (blue_lines.rowCount() - 1)):
+            time_step += ', '
+            temperature += ', '
+            limit_type +=', '
 
-        config.set('blue_lines', time_step_id, time_step_value)
-        config.set('blue_lines', temperature_id, temperature_value)
-        config.set('blue_lines', limit_type_id, limit_type_value)
+    
+    config.set('blue_lines', 'time_step', time_step)
+    config.set('blue_lines', 'temperature', temperature)
+    config.set('blue_lines', 'limit_type', limit_type)
 
-    config.set('test_sequence', 'row_count', str(test_sequence.rowCount()))
+# Test Sequence Data
+    time_step = ''
+    power = ''
+    temperature = ''
+    mass_flow = ''
 
     for i in range(test_sequence.rowCount()):
-        time_step_id = "time_step_" + str(i)
-        time_step_value = test_sequence.item(i,0).text()
+        time_step += (str(test_sequence.item(i,0).text()))
+        power += (str(test_sequence.item(i, 1).text()))
+        temperature += (str(test_sequence.item(i, 2).text()))
+        mass_flow += (str(test_sequence.item(i, 3).text()))
 
-        power_id = "power_" + str(i)
-        power_value = test_sequence.item(i,1).text()
+        if(i < (test_sequence.rowCount() - 1)):
+            time_step += ', '
+            power += ', '
+            temperature += ', '
+            mass_flow += ', '
 
-        temperature_id = "temperature_"+str(i)
-        temperature_value = test_sequence.item(i,2).text()
-
-        mass_flow_id = "mass_flow_" + str(i)
-        mass_flow_value = test_sequence.item(i,3).text()
-
-        config.set('test_sequence', time_step_id, time_step_value)
-        config.set('test_sequence', power_id, power_value)
-        config.set('test_sequence', temperature_id, temperature_value)
-        config.set('test_sequence', mass_flow_id, mass_flow_value)
+    config.set('test_sequence', 'time_step', time_step)
+    config.set('test_sequence', 'power', power)
+    config.set('test_sequence', 'temperature', temperature)
+    config.set('test_sequence', 'mass_flow', mass_flow)
     
     with open(file_name, 'w') as f:
         config.write(f)
@@ -123,10 +140,30 @@ def select_file():
     return response[0]
 
 def open_file(file_name: str):
-    config = ConfigParser()
-    config.read(file_name)
+    parser = ConfigParser()
+    parser.read(file_name)
 
-    return config.get('main', 'trial_name')
+    trial_name = parser.get('main', 'trial_name')
+    description = parser.get('main','description')
+
+    blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
+    blue_lines_temperature = parser.get('blue_lines', 'temperature').split(sep = ', ')
+    blue_lines_limit_type = parser.get('blue_lines', 'limit_type').split(sep=', ')
+
+    blue_lines_time_step = [float(x) for x in blue_lines_time_step]
+    blue_lines_temperature = [float(x) for x in blue_lines_temperature]
+
+    sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
+    sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
+    sequence_temperature = parser.get('test_sequence', 'temperature').split(sep = ', ')
+    sequence_mass_flow = parser.get('test_sequence', 'mass_flow').split(sep = ', ')
+
+    sequence_time_step = [float(x) for x in sequence_time_step]
+    sequence_power = [float(x) for x in sequence_power]
+    sequence_temperature = [float(x) for x in sequence_temperature]
+    sequence_mass_flow = [float(x) for x in sequence_mass_flow]
+
+    return Config(trial_name, description, blue_lines_time_step, blue_lines_temperature, blue_lines_limit_type, sequence_time_step, sequence_power, sequence_temperature, sequence_mass_flow)
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
