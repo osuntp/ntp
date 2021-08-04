@@ -1,20 +1,24 @@
+import Model
+import SM
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5 import QtWidgets
-from UI.UI import UI
+from UI import UI
 from Log import Log
 import threading
 import Config
 import time
 
 class Presenter:
-    def __init__(self, ui: UI):
-        self.ui = ui
 
-        self.__setup_functionality()
+    ui: UI.UI = None
+    model: Model.Model = None
+    serial_monitor: SM.SerialMonitor = None
+    def __init__(self):
+        pass
     
-    def __setup_functionality(self):
+    def setup(self):
         
-        # This isn't working in a for loop for some reason, might be because of the lambda expression? revisit
+        # TODO: This isn't working in a for loop for some reason, might be because of the lambda expression? revisit
         self.ui.tabs[0].clicked.connect(lambda: self.tab_clicked(0))
         self.ui.tabs[1].clicked.connect(lambda: self.tab_clicked(1))
         self.ui.tabs[2].clicked.connect(lambda: self.tab_clicked(2))
@@ -34,6 +38,26 @@ class Presenter:
 
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
 
+        self.__start_ui_update_loop()
+
+    def __start_ui_update_loop(self):
+        self.ui_update_thread = UI.UpdateThread()
+        self.ui_update_thread.set_max_frequency(1)
+        self.ui_update_thread.update_signal.connect(self.on_ui_update)
+        self.ui_update_thread.start()
+
+    def on_ui_update(self):
+        temperature = self.model.get_ui_data('Temperature')
+        plot_time = self.model.get_ui_data('Time')
+        max_value = max(plot_time)
+        for i in range(len(plot_time)):
+            plot_time[i] -= max_value
+            plot_time[i] = plot_time[i] / 1000 #convert from milliseconds to seconds
+
+        print(plot_time)
+        self.ui.run.plot1.update_vals(plot_time, temperature)
+
+
     def tab_clicked(self, tab_index):
         Log.debug('A tab was clicked: This is a new test of the logging system. This system will be implemented in all classes going forward')
 
@@ -44,7 +68,8 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        print('abort clicked')
+        pass
+        # self.serial_monitor.stop_collection_loop()
 
 
 # CONFIGURATION PAGE LOGIC
@@ -62,12 +87,12 @@ class Presenter:
         pass
 
     def configuration_save_clicked(self):
-        self.my_thread = Config.ValidationThread(self.ui)
+        self.config_validation_thread = Config.ValidationThread(self.ui)
 
-        self.my_thread.validation_message.connect(self.on_configuration_validation_message)
-        self.my_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
+        self.config_validation_thread.validation_message.connect(self.on_configuration_validation_message)
+        self.config_validation_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
 
-        self.my_thread.start()
+        self.config_validation_thread.start()
 
     def on_configuration_validation_message(self, message):
         self.ui.configuration.set_status_text(message)
@@ -90,7 +115,7 @@ class Presenter:
     def run_load_clicked(self):
         file_name = Config.select_file()
         
-        if(file_name == ""):
+        if(file_name == ''):
             return
 
         config: Config.Config = Config.open_file(file_name)

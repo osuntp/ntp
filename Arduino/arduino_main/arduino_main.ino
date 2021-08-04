@@ -41,6 +41,7 @@ Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 
 
 float value = 0;
+unsigned long timeSinceStart = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -62,23 +63,25 @@ void loop() {
 
   if(Serial.available() > 0)
   {
-    String message = Serial.readString();
+    String message = Serial.readStringUntil('\n');
     if(message == "test")
     {
       value = 1;
     }
   }
 
-//  double temp = thermocouple.readCelsius();
-//  double internalTemp = thermocouple.readInternal();
+  double temp = thermocouple.readCelsius();
+  double internalTemp = thermocouple.readInternal();
+
+  timeSinceStart = millis();
 
   Serial.print("da");
   Serial.print(", ");
-  Serial.print(value);
+  Serial.print(timeSinceStart);
   Serial.print(", ");
-  Serial.print("2");
+  Serial.print(temp);
   Serial.print(", ");
-  Serial.print("3");
+  Serial.print(internalTemp);
   Serial.print("\n");
 
   delay(1000);

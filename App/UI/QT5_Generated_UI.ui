@@ -2118,22 +2118,12 @@ border:0px;</string>
        </property>
        <item>
         <property name="text">
-         <string>  Inlet Temperature</string>
+         <string>  Temperature</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>  Inlet Pressure</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>  Exit Temperature</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>  Exit Pressure</string>
+         <string>  Internal Temperature</string>
         </property>
        </item>
       </widget>

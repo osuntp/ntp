@@ -15,17 +15,16 @@ class SerialMonitor:
     daq_id = 'daq'
     controller_id = 'controller'
     arduinos_are_connected = False
+    daq_arduino = None
+    controller_arduino = None
+    baudrate = 9600
 
-    def __init__(self, model: Model):
-        self.baudrate = 9600
-        self.model = model
-        self.daq_arduino = None
-        self.controller_arduino = None
+    model = None
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
 
-    def write_to_controller(self, message):
+    def write_to_controller(self, message: str):
         self.daq_arduino.write(message.encode())
 
     def disconnect_arduinos(self):
@@ -43,8 +42,22 @@ class SerialMonitor:
 
             clean_message = LD.clean(raw_message_line)
  
-            self.model.handle_daq_message(clean_message)
-            
+            self.__handle_daq_message(clean_message)
+
+    def __handle_daq_message(self, message: list):
+
+        prefix = message[0]
+        message.pop(0)
+
+        if(prefix == 'da'):
+            self.model.update(message)
+        elif(prefix == 'er'):
+            print('Arduino Error: ' + message[0])
+        elif(prefix == 'id'):
+            print('Arduino Debug: Unexpected ID message from ' + message[0] + '. Ignoring this message.')
+        else:
+            Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
+
     def connect_arduinos(self):
         ports = self.__get_serial_ports()
 
@@ -72,6 +85,8 @@ class SerialMonitor:
 
                         if(arduino_id == self.daq_id):
                             self.daq_arduino = connection
+                            self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
+                            self.data_collection_thread.start()
 
                         elif(arduino_id == self.controller_id):
                             self.controller_arduino = connection
@@ -94,6 +109,18 @@ class SerialMonitor:
         #     self.disconnect_arduinos()
         # else:
         #     self.arduinos_are_connected = True
+    def data_collection_loop(self):
+
+        self.loop_is_running = True
+
+        while(self.loop_is_running):
+            self.read_from_daq()
+            time.sleep(0.1)
+
+        print('data collection loop exiting')
+
+    def on_window_exit(self):
+        self.loop_is_running = False
 
 # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
     def __get_serial_ports(self):
@@ -126,6 +153,8 @@ class SerialMonitor:
                 pass
 
         return result
+
+
 
 loop_is_running = True
 

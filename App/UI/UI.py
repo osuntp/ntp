@@ -1,6 +1,5 @@
 
-from PyQt5.QtGui import QBrush, QColor, QPalette
-from numpy import vdot
+from PyQt5.QtCore import QThread, pyqtSignal
 from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
 
@@ -9,6 +8,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import QtWidgets
 import os
 import Config
+import time
 
 class UI:
     def __init__(self, window):       
@@ -24,9 +24,11 @@ class UI:
         self.abort_tab = self.pyqt5.abort_tab
 
         Stylize.all_tabs(self.tabs)
+        Stylize.abort(self.abort_tab)
+
         self.current_tab = self.tabs[1]
         self.set_current_tab(0)
-        Stylize.abort(self.abort_tab)
+
 
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
@@ -212,6 +214,8 @@ class Run:
         self.loaded_trial_text = pyqt5.run_trialname
         self.sequence_table = pyqt5.run_test_sequence_table
 
+        self.plot1 = Canvas(pyqt5.run_plot1, 'Time (s)', 'Temperature (C)')
+
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, False)
 
@@ -255,8 +259,14 @@ class Run:
             # self.sequence_table.item(i, 2).setText(str(config.sequence_temperature[i]))
             # self.sequence_table.item(i, 3).setText(str(config.sequence_mass_flow[i]))
             
-
 class Canvas(FigureCanvas):
+
+    xscale_min = -10
+    xscale_max = 0
+
+    yscale_min = 0
+    yscale_max = 50
+
     def __init__(self, parent, xlabel, ylabel):
         self.fig, self.ax = plt.subplots(figsize=(5.67,2.76), dpi=100)
         super().__init__(self.fig)
@@ -277,12 +287,30 @@ class Canvas(FigureCanvas):
         self.draw()
 
     def __set_format(self):
-        self.ax.set_xticks([0,1,2,3,4,5])
-        self.ax.set_yticks([0,1,2,3,4,5,6,7,8,9,10])
+        self.ax.set_xticks([-10, -8, -6, -4, -2, 0])
+        self.ax.set_yticks([0,5,10,15,20,25,30,35,40,45,50])
         plt.subplots_adjust(bottom = 0.2)
-        self.ax.set_xlim(0, 5)
+        self.ax.set_xlim(self.xscale_min, self.xscale_max)
         self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylim(0,10)
+        self.ax.set_ylim(self.yscale_min, self.yscale_max)
         self.ax.set_ylabel(self.ylabel)
         self.ax.margins(0)
         self.ax.grid()
+
+class UpdateThread(QThread):
+    update_signal = pyqtSignal()
+
+    def __init__(self):
+        QThread.__init__(self)
+        self.wait_time = 0.5
+        self.thread_is_running = True
+
+    def set_max_frequency(self, frequency):
+        self.wait_time = 1 / frequency
+
+    def run(self):
+        while (self.thread_is_running):
+            self.update_signal.emit()
+            time.sleep(self.wait_time)
+        
+        

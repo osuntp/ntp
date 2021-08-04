@@ -20,7 +20,6 @@ class Config:
     sequence_temperature: List[float]
     sequence_mass_flow: List[float]
 
-
 class ValidationThread(QThread):
 
     validation_message = pyqtSignal(object)

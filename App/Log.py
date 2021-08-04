@@ -1,5 +1,5 @@
 import logging
-from UI.UI import UI
+import UI.UI
 
 class Log:
 
@@ -7,7 +7,7 @@ class Log:
     default_file_path = 'app.log'
     default_file_format = '%(asctime)s : %(process)d : %(levelname)s : %(message)s'
 
-    ui_is_attached = False
+    ui: UI = None
 
     @classmethod
     def create(cls, name: str=None, file_path: str=None, file_format: str=None):
@@ -34,11 +34,6 @@ class Log:
 
         # cls.logger is now ready to be used
         cls.logger.addHandler(handler)
-
-    @classmethod
-    def attach_ui(cls, ui: UI):
-        cls.ui = ui
-        cls.ui_is_attached = True
 
     @classmethod
     def info(cls, message: str):
@@ -82,10 +77,7 @@ class Log:
 
     @classmethod
     def __update_log_ui(cls):
-        if(cls.ui_is_attached):
-            cls.ui.logs.update_python_log()
-        else:
-            cls.logger.error('Log.py: __update_log_ui(): Tried to update the ui but it has not been assigned.')
+        cls.ui.logs.update_python_log()
 
     @classmethod
     def __handle_attribute_error(cls):

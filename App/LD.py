@@ -7,8 +7,9 @@ Created on Thu Jul 15 04:53:51 2021
 from pandas import DataFrame
 import datetime
 import re
+from typing import List
 
-columns = ['Temperature', 'Internal Temperature']
+columns = ['Time', 'Temperature', 'Internal Temperature']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name():
@@ -34,15 +35,24 @@ def clean(raw_message_string: str):
     if(clean_message[0] == 'da'):
         for i in range(1, len(clean_message)):
             clean_message[i] = float(clean_message[i])
-    print(clean_message)
     return clean_message    
 
 def get_new_dataframe():
     return DataFrame(columns=columns)
 
-def append_point_to_frame(data_point, dataframe):
-    temp = data_point[0]
-    internalTemp = data_point[1]
-    dataframe = dataframe.append({'Temperature':temp, 'Internal Temperature':internalTemp}, ignore_index=True)
+def append_point_to_frame(data_point: List, dataframe: DataFrame):
+
+    time = data_point[0]
+    temp = data_point[1]
+    internalTemp = data_point[2]
+    dataframe = dataframe.append({'Time':time, 'Temperature':temp, 'Internal Temperature':internalTemp}, ignore_index=True)
     
     return dataframe
+
+def drop_old_data_from_frame(buffer: float, dataframe: DataFrame):
+    time_column = dataframe['Time']
+    latest_time_stamp = time_column.iloc[-1]
+    time_cutoff = latest_time_stamp - buffer
+
+    while(dataframe['Time'].iloc[0] < time_cutoff):
+        dataframe.drop(index = dataframe.index[0], inplace = True)
