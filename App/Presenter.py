@@ -42,7 +42,7 @@ class Presenter:
 
     def __start_ui_update_loop(self):
         self.ui_update_thread = UI.UpdateThread()
-        self.ui_update_thread.set_max_frequency(1)
+        self.ui_update_thread.set_max_frequency(20)
         self.ui_update_thread.update_signal.connect(self.on_ui_update)
         self.ui_update_thread.start()
 
@@ -54,8 +54,11 @@ class Presenter:
             plot_time[i] -= max_value
             plot_time[i] = plot_time[i] / 1000 #convert from milliseconds to seconds
 
-        print(plot_time)
         self.ui.run.plot1.update_vals(plot_time, temperature)
+
+        self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
+
+        self.ui.run.sequence_table_label.setText('Test Sequence - ' + str(round(self.model.time / 1000,1)))
 
 
     def tab_clicked(self, tab_index):

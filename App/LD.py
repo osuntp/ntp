@@ -9,7 +9,7 @@ import datetime
 import re
 from typing import List
 
-columns = ['Time', 'Temperature', 'Internal Temperature']
+columns = ['Time', 'Temperature', 'Pressure']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name():
@@ -23,14 +23,10 @@ def save_to_csv(dataframe: DataFrame):
 
 # TODO: Revisit, we'll want a different reg ex so that we can handle other types of messages from arduino (like ID and errors)
 def clean(raw_message_string: str):
-    raw_message = raw_message_string.split(sep = ', ')
 
-    clean_message = []
-    
-    for i in range(len(raw_message)):
-        # clean_message_value = re.sub("/[-+]?\d*\.?\d+/", "", raw_message[i])
-        clean_message_value = re.sub("\n", "", raw_message[i])
-        clean_message.append(clean_message_value)
+    split = raw_message_string.split('<')
+    clean_message_string = split[1].split('>')[0]
+    clean_message = clean_message_string.split(sep = ', ')
 
     if(clean_message[0] == 'da'):
         for i in range(1, len(clean_message)):
@@ -43,9 +39,10 @@ def get_new_dataframe():
 def append_point_to_frame(data_point: List, dataframe: DataFrame):
 
     time = data_point[0]
-    temp = data_point[1]
-    internalTemp = data_point[2]
-    dataframe = dataframe.append({'Time':time, 'Temperature':temp, 'Internal Temperature':internalTemp}, ignore_index=True)
+    temperature = data_point[1]
+    pressure = data_point[2]
+
+    dataframe = dataframe.append({'Time':time, 'Temperature':temperature, 'Pressure':pressure}, ignore_index=True)
     
     return dataframe
 

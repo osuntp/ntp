@@ -42,12 +42,22 @@ Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 
 float value = 0;
 unsigned long timeSinceStart = 0;
+boolean heaterIsOn = false;
+
+float temperature = 25;
+float pressure = 101325;
+
+const byte numChars = 32;
+char receivedChars[numChars];
+char prefix[numChars];
+char message[numChars];
+boolean newMessageIsAvailable = false;
 
 void setup() {
   Serial.begin(9600);
 
   while (!Serial) delay(1); // wait for Serial on Leonardo/Zero, etc
-  Serial.print("id, daq\n");
+  Serial.print("<id, daq>\n");
   //Serial.println("MAX31855 test");
   // wait for MAX chip to stabilize
   delay(500);
@@ -61,30 +71,75 @@ void setup() {
 
 void loop() {
 
-  if(Serial.available() > 0)
+  CheckSerialForMessage();
+
+  if(newMessageIsAvailable)
   {
-    String message = Serial.readStringUntil('\n');
-    if(message == "test")
-    {
-      value = 1;
-    }
+    HandleNewMessage();
   }
 
-  double temp = thermocouple.readCelsius();
-  double internalTemp = thermocouple.readInternal();
+  if(heaterIsOn)
+  {
+    temperature += random(0,3);
+  }
+  else
+  {
+    temperature -= random(0,3);
+  }
 
-  timeSinceStart = millis();
+  pressure += random(-500, 1000);
 
+  Serial.print("<");
   Serial.print("da");
   Serial.print(", ");
-  Serial.print(timeSinceStart);
+  Serial.print(millis());
   Serial.print(", ");
-  Serial.print(temp);
+  Serial.print(temperature);
   Serial.print(", ");
-  Serial.print(internalTemp);
-  Serial.print("\n");
+  Serial.print(pressure);
+  Serial.print(", ");
+  Serial.print(heaterIsOn);
+  Serial.println(">");
+  delay(10);
 
-  delay(1000);
+//  if(Serial.available() > 0)
+//  {
+////    String message = Serial.readStringUntil('\n');
+//
+//    char* message = "heater, on\n";
+//    
+//    char * strtokIndx;
+//    strtokIndx = strtok(message, ", ");
+//    strcpy(char prefix, index)
+
+
+
+//    if(message == "heaterOn")
+//    {
+//      tempDelta = 1;
+//    }
+//    else if(message == "heaterOff")
+//    {
+//      tempDelta = -1;
+//    }
+//  }
+
+//  temperature += tempDelta
+
+//
+//  double temp = thermocouple.readCelsius();
+//  double internalTemp = thermocouple.readInternal();
+//
+//  timeSinceStart = millis();
+//
+//  Serial.print("da");
+//  Serial.print(", ");
+//  Serial.print(timeSinceStart);
+//  Serial.print(", ");
+//  Serial.print(temp);
+//  Serial.print(", ");
+//  Serial.print(internalTemp);
+//  Serial.print("\n");
 
 //   double c = thermocouple.readCelsius();
 //   if (isnan(c)) {
@@ -96,4 +151,63 @@ void loop() {
 //   //Serial.print("F = ");
 //   //Serial.println(thermocouple.readFahrenheit());
 //   delay(1000);
+
+}
+
+void CheckSerialForMessage()
+{
+  static boolean recvInProgress = false;
+  static byte ndx = 0;
+  char startMarker = '<';
+  char endMarker = '>';
+  char rc;
+
+  while (Serial.available() > 0 && newMessageIsAvailable == false)
+  {
+    rc = Serial.read();
+
+    if (recvInProgress == true)
+    {
+       if(rc != endMarker) 
+       {
+          receivedChars[ndx] = rc;
+          ndx++;
+          if (ndx >= numChars)
+          {
+            ndx = numChars -1;
+          }
+       }
+       else
+       {
+          receivedChars[ndx] = '\0';
+          recvInProgress = false;
+          ndx = 0;
+          newMessageIsAvailable = true;
+       }
+    }
+    else if (rc == startMarker)
+    {
+      recvInProgress = true;
+    }
+  }
+}
+
+void HandleNewMessage()
+{
+  char * strtokIndx;
+
+  strtokIndx = strtok(receivedChars, ", ");
+  strcpy(prefix, strtokIndx);
+  
+  if(strcmp(prefix, "heater") == 0)
+  {
+    strtokIndx = strtok(NULL, ", ");
+    strcpy(message, strtokIndx);
+
+
+    heaterIsOn = (strcmp(message, "on") == 0);
+  }
+  
+
+  newMessageIsAvailable = false;
 }

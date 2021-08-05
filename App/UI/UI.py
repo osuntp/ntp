@@ -29,6 +29,11 @@ class UI:
         self.current_tab = self.tabs[1]
         self.set_current_tab(0)
 
+        self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
+        self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
+        self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
+
+
 
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
@@ -213,6 +218,7 @@ class Run:
         self.start_button = pyqt5.run_start_button
         self.loaded_trial_text = pyqt5.run_trialname
         self.sequence_table = pyqt5.run_test_sequence_table
+        self.sequence_table_label = pyqt5.run_test_sequence_label
 
         self.plot1 = Canvas(pyqt5.run_plot1, 'Time (s)', 'Temperature (C)')
 

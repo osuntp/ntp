@@ -1,15 +1,15 @@
 import threading
 import time
-import TestStandStates
 
 class TestStand:
 
     state_machine_stopped = False
 
-    def __init__(self):
-        self.idle_state = TestStandStates.IdleState(self)
+    demo_state = None
+    current_state = None
 
-        self.current_state = self.idle_state
+    def setup(self):
+        self.current_state = self.demo_state
         self.current_state.enter_state()
 
         self.tick_thread = threading.Thread(target = self.tick)
@@ -19,8 +19,9 @@ class TestStand:
         while(True):
             if(self.state_machine_stopped):
                 return
+
             self.current_state.tick()
-            time.sleep(0.5)
+            time.sleep(0.001)
 
     def switch_state(self, new_state):
         self.current_state.exit_state()
@@ -31,9 +32,3 @@ class TestStand:
 
     def turn_off_state_machine(self):
         self.state_machine_stopped = True
-
-if __name__ == "__main__":
-    instance = TestStand()
-
-    instance.turn_off_state_machine()
-    instance.tick_thread.join()

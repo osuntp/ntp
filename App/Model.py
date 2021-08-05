@@ -6,20 +6,28 @@ import time
 
 class Model:
 
-    hidden_data_buffer = 10000 # time in milliseconds (must be in ms since arduino is reporting ms)
-    shown_data_buffer = 5000 # time in milliseconds (must be in ms since arduino is reporting ms)
+    hidden_data_buffer = 15000 # time in milliseconds (must be in ms since arduino is reporting ms)
+    shown_data_buffer = 10000 # time in milliseconds (must be in ms since arduino is reporting ms)
+
+    heater_is_on = False
+
+    temperature = 0
+    time = 0
 
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
         self.temp_data: pandas.DataFrame = LD.get_new_dataframe()
-
-        self.start_time = time.time()
 
     def update(self, message: List):
         self.trial_data = LD.append_point_to_frame(message, self.trial_data)
         self.temp_data = LD.append_point_to_frame(message, self.temp_data)
 
         LD.drop_old_data_from_frame(self.hidden_data_buffer, self.temp_data)
+
+        self.temperature = message[1]
+
+        self.heater_is_on = (message[3] > 0.5)
+        self.time = message[0]
 
     def get_ui_data(self, name: str):
 

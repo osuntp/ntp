@@ -10,6 +10,12 @@ import time
 import threading
 import LD
 
+from enum import Enum
+
+class Arduino(Enum):
+    DAQ = 1
+    CONTROLLER = 2
+
 class SerialMonitor:
 
     daq_id = 'daq'
@@ -24,8 +30,11 @@ class SerialMonitor:
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
 
-    def write_to_controller(self, message: str):
-        self.daq_arduino.write(message.encode())
+    def write(self, arduino: Arduino, message: str):
+        if(arduino == Arduino.CONTROLLER):
+            self.controller_arduino.write(message.encode())
+        elif(arduino == Arduino.DAQ):
+            self.daq_arduino.write(message.encode())
 
     def disconnect_arduinos(self):
         if not self.daq_arduino is None:
@@ -39,14 +48,12 @@ class SerialMonitor:
     def read_from_daq(self):
         if(self.daq_arduino.in_waiting > 0):
             raw_message_line = self.daq_arduino.readline().decode('utf-8')
-
             clean_message = LD.clean(raw_message_line)
- 
             self.__handle_daq_message(clean_message)
 
     def __handle_daq_message(self, message: list):
-
         prefix = message[0]
+
         message.pop(0)
 
         if(prefix == 'da'):
@@ -115,12 +122,13 @@ class SerialMonitor:
 
         while(self.loop_is_running):
             self.read_from_daq()
-            time.sleep(0.1)
+            time.sleep(0.001)
 
         print('data collection loop exiting')
 
     def on_window_exit(self):
         self.loop_is_running = False
+        self.disconnect_arduinos()
 
 # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
     def __get_serial_ports(self):
@@ -153,34 +161,3 @@ class SerialMonitor:
                 pass
 
         return result
-
-
-
-loop_is_running = True
-
-def read_loop():
-    global monitor
-    while(loop_is_running):     
-        monitor.read_from_daq()
-
-        time.sleep(1)
-
-if __name__ == "__main__":
-    model = Model()
-
-    global monitor
-    monitor = SerialMonitor(model)
-    monitor.connect_arduinos()
-
-    thread = threading.Thread(target = read_loop)
-    thread.start()
-
-    time.sleep(3)
-    monitor.write_to_controller('test')
-    time.sleep(3)
-    monitor.write_to_controller('not test')
-    time.sleep(3)
-
-    loop_is_running = False
-
-    monitor.disconnect_arduinos()
