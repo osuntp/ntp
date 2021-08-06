@@ -122,7 +122,7 @@ class SerialMonitor:
 
         while(self.loop_is_running):
             self.read_from_daq()
-            time.sleep(0.001)
+            time.sleep(1)
 
         print('data collection loop exiting')
 

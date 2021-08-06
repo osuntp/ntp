@@ -45,8 +45,6 @@ class DemoState(AbstractState):
     def tick(self):
         temperature = self.model.temperature
 
-        print(temperature)
-
         if temperature is None:
             return
 

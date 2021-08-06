@@ -29,6 +29,8 @@ class Model:
         self.heater_is_on = (message[3] > 0.5)
         self.time = message[0]
 
+        print('model: update: The temperature is ' + str(self.temperature))
+
     def get_ui_data(self, name: str):
 
         data_column = [0]

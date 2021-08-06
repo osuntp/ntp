@@ -21,7 +21,7 @@ class TestStand:
                 return
 
             self.current_state.tick()
-            time.sleep(0.001)
+            time.sleep(1)
 
     def switch_state(self, new_state):
         self.current_state.exit_state()

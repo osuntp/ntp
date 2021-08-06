@@ -100,7 +100,7 @@ void loop() {
   Serial.print(", ");
   Serial.print(heaterIsOn);
   Serial.println(">");
-  delay(10);
+  delay(1000);
 
 //  if(Serial.available() > 0)
 //  {

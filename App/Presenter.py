@@ -42,7 +42,7 @@ class Presenter:
 
     def __start_ui_update_loop(self):
         self.ui_update_thread = UI.UpdateThread()
-        self.ui_update_thread.set_max_frequency(20)
+        self.ui_update_thread.set_max_frequency(1)
         self.ui_update_thread.update_signal.connect(self.on_ui_update)
         self.ui_update_thread.start()
 
