@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 
 # Our ignore files
-app.log
+App/logs/**
+Post/logs/**
+Post/processed/**
