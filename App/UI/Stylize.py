@@ -2,40 +2,40 @@
 from PyQt5 import QtWidgets
 class Stylize: 
     standard_tab = "\
-    QPushButton{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(0, 58, 85); color: rgb(255, 255, 255); border: 0px;}"
+    QPushButton{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(0, 58, 85); color: rgb(255, 255, 255); border: 2px solid black;}"
 
     current_tab =  "\
-    QPushButton{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 0px;}"
+    QPushButton{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(101, 159, 211); color: rgb(255, 255, 255); border: 2px solid black;}"
 
     abort_tab = "\
-    QPushButton{ background-color: rgb(170, 0, 0); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(249, 19, 19); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(95, 0, 0); color: rgb(255, 255, 255); border: 0px;} "
+    QPushButton{ background-color: rgb(170, 0, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(249, 19, 19); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(95, 0, 0); color: rgb(255, 255, 255); border: 2px solid black;} "
 
     standard_button = "\
-    QPushButton{ background-color: rgb(39, 59, 94); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(61, 93, 148); color: rgb(255, 255, 255); border: 0px;}"
+    QPushButton{ background-color: rgb(39, 59, 94); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(61, 93, 148); color: rgb(255, 255, 255); border: 2px solid black;}"
 
     start_button_inactive = "\
-    QPushButton{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 0px;}"
+    QPushButton{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;}"
 
     start_button_active = "\
-    QPushButton{ background-color: rgb(0, 130, 0); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:hover{ background-color: rgb(0, 170, 0); color: rgb(255, 255, 255); border: 0px;} \
-    QPushButton:pressed{ background-color: rgb(0, 50, 0); color: rgb(255, 255, 255); border: 0px;}"
+    QPushButton{ background-color: rgb(0, 130, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(0, 170, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(0, 50, 0); color: rgb(255, 255, 255); border: 2px solid black;}"
 
     side_bar_status_green = "\
-    QGraphicsView{background-color: rgb(0, 170, 0);}"
+    QWidget{background-color: rgb(0, 170, 0); border: 2px solid black}"
 
     side_bar_status_red = "\
-    QGraphicsView{background-color: rgb(249, 19, 19);}"
+    QWidget{background-color: rgb(249, 19, 19); border: 2px solid black}"
 
     @classmethod
     def abort(cls, button):

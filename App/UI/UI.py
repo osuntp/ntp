@@ -1,6 +1,8 @@
 
+from UI.QT5_Generated_UI import Ui_MainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
-from UI.QT5_Generated_UI import Ui_window
+from PyQt5.QtWidgets import QMainWindow
+# from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
 
 import matplotlib.pyplot as plt
@@ -10,11 +12,14 @@ import os
 import Config
 import time
 
+class Window(QMainWindow):
+    pass
+
 class UI:
     def __init__(self, window):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
-        self.pyqt5 = Ui_window()
+        self.pyqt5 = Ui_MainWindow()
         self.pyqt5.setupUi(window)
         # [END OF DO NOT EDIT]
 
@@ -33,12 +38,11 @@ class UI:
         self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
         self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
 
-
-
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.configuration = Configuration(self.pyqt5)
         self.run = Run(self.pyqt5)
+        
 
     def set_current_tab(self, tab_index):
         new_tab = self.tabs[tab_index]
@@ -60,7 +64,7 @@ class UI:
         Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
 
 class Diagnostics:
-    def __init__(self, pyqt5:Ui_window):
+    def __init__(self, pyqt5:Ui_MainWindow):
         self.plot1 = Canvas(pyqt5.diagnostics_plot1, 'Time (s)', 'Temperature (C)')
         self.plot2 = Canvas(pyqt5.diagnostics_plot2, 'Time (s)', 'Pressure (Pa)')
 
@@ -101,7 +105,7 @@ class Diagnostics:
         self.heater_set_point.setText(str(value))
 
 class Logs:
-    def __init__(self, pyqt5: Ui_window):
+    def __init__(self, pyqt5: Ui_MainWindow):
         self.python = pyqt5.logs_python_log
 
     def update_python_log(self):
@@ -117,7 +121,7 @@ class Logs:
             self.python.setHtml(data)
 
 class Configuration:
-    def __init__(self, pyqt5: Ui_window):
+    def __init__(self, pyqt5: Ui_MainWindow):
         self.trial_name_field = pyqt5.configuration_trialname_field
         self.description_field = pyqt5.configuration_description_field
 
@@ -213,7 +217,7 @@ class Configuration:
         self.add_row_to_sequence_table()
     
 class Run:
-    def __init__(self, pyqt5: Ui_window):
+    def __init__(self, pyqt5: Ui_MainWindow):
         self.load_button = pyqt5.run_load_configuration_button
         self.start_button = pyqt5.run_start_button
         self.loaded_trial_text = pyqt5.run_trialname

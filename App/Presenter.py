@@ -62,8 +62,6 @@ class Presenter:
 
 
     def tab_clicked(self, tab_index):
-        Log.debug('A tab was clicked: This is a new test of the logging system. This system will be implemented in all classes going forward')
-
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
             return
 
