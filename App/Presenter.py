@@ -25,9 +25,10 @@ class Presenter:
         self.ui.tabs[3].clicked.connect(lambda: self.tab_clicked(3))
         self.ui.tabs[4].clicked.connect(lambda: self.tab_clicked(4))
 
-        # Abort
+# Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
 
+# Configuration
         self.ui.configuration.blue_lines_plus_button.clicked.connect(self.configuration_blue_lines_plus_clicked)
         self.ui.configuration.blue_lines_minus_button.clicked.connect(self.configuration_blue_lines_minus_clicked)
 
@@ -36,8 +37,11 @@ class Presenter:
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
 
+
+# Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
 
+# Start UI Update Loop
         self.__start_ui_update_loop()
 
     def __start_ui_update_loop(self):
@@ -54,7 +58,8 @@ class Presenter:
             plot_time[i] -= max_value
             plot_time[i] = plot_time[i] / 1000 #convert from milliseconds to seconds
 
-        self.ui.run.plot1.update_vals(plot_time, temperature)
+        self.ui.run.plot0.update_vals(plot_time, temperature)
+        # self.ui.run.plot1.update_vals(0,0)
 
         self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
 

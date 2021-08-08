@@ -68,8 +68,8 @@ class Diagnostics:
         self.plot1 = pyqt5.diagnostics_plot1
         self.plot2 = pyqt5.diagnostics_plot2
 
-        self.plot1.set_labels('Time (s)', 'Temperature (C)')
-        self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
+        # self.plot1.set_labels('Time (s)', 'Temperature (C)')
+        # self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
 
 # TODO: Remove this call to update_vals
         self.plot1.update_vals(0, 0)
@@ -231,8 +231,14 @@ class Run:
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
-        self.plot1 = pyqt5.run_plot1
-        self.plot1.set_labels('Time (s)', 'Temperature (C)')
+        self.plot0 = pyqt5.run_plot0
+        self.plot0.set_axis_labels('Time (s)', 'Temperature (C)')
+
+        # self.plot1 = pyqt5.run_plot1
+        # self.plot1.setup(pyqt5.run_plot1_container, pyqt5.run_plot1_title, 'Live Data - Figure 2', True, 'Time (s)', 'Value')
+
+        # self.active_plots = [self.plot0, self.plot1]
+        self.inactive_plots = []
 
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, False)
