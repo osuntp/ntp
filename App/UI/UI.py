@@ -65,8 +65,15 @@ class UI:
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
-        self.plot1 = Canvas(pyqt5.diagnostics_plot1, 'Time (s)', 'Temperature (C)')
-        self.plot2 = Canvas(pyqt5.diagnostics_plot2, 'Time (s)', 'Pressure (Pa)')
+        self.plot1 = pyqt5.diagnostics_plot1
+        self.plot2 = pyqt5.diagnostics_plot2
+
+        self.plot1.set_labels('Time (s)', 'Temperature (C)')
+        self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
+
+# TODO: Remove this call to update_vals
+        self.plot1.update_vals(0, 0)
+        self.plot2.update_vals(0, 0)
 
         self.test_stand_status = pyqt5.diagnostics_state_value
         self.valve_voltage = pyqt5.diagnostics_r01_value
@@ -224,7 +231,8 @@ class Run:
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
-        self.plot1 = Canvas(pyqt5.run_plot1, 'Time (s)', 'Temperature (C)')
+        self.plot1 = pyqt5.run_plot1
+        self.plot1.set_labels('Time (s)', 'Temperature (C)')
 
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, False)
@@ -269,43 +277,46 @@ class Run:
             # self.sequence_table.item(i, 2).setText(str(config.sequence_temperature[i]))
             # self.sequence_table.item(i, 3).setText(str(config.sequence_mass_flow[i]))
             
-class Canvas(FigureCanvas):
+# class Canvas(FigureCanvas):
 
-    xscale_min = -10
-    xscale_max = 0
+#     xscale_min = -10
+#     xscale_max = 0
 
-    yscale_min = 0
-    yscale_max = 50
+#     yscale_min = 0
+#     yscale_max = 50
 
-    def __init__(self, parent, xlabel, ylabel):
-        self.fig, self.ax = plt.subplots(figsize=(5.67,2.76), dpi=100)
-        super().__init__(self.fig)
-        self.setParent(parent)
+#     def __init__(self, parent, xlabel, ylabel):
+#         self.figure = plt.figure()
 
-        self.xlabel = xlabel
-        self.ylabel = ylabel
+#         self.fig, self.ax = plt.subplots(figsize=(5.67,2.76), dpi=100)
 
-        self.__set_format()
+#         super().__init__(self.fig)
+#         self.setParent(parent)
 
-    def update_vals(self, x, y):
-        self.ax.cla()
+#         self.xlabel = xlabel
+#         self.ylabel = ylabel
+
+#         self.__set_format()
+
+#     def update_vals(self, x, y):
+#         self.ax.cla()
         
-        self.ax.plot(x,y)
+#         self.ax.plot(x,y)
 
-        self.__set_format()
+#         self.__set_format()
         
-        self.draw()
+#         self.draw()
 
-    def __set_format(self):
-        self.ax.set_xticks([-10, -8, -6, -4, -2, 0])
-        self.ax.set_yticks([0,5,10,15,20,25,30,35,40,45,50])
-        plt.subplots_adjust(bottom = 0.2)
-        self.ax.set_xlim(self.xscale_min, self.xscale_max)
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylim(self.yscale_min, self.yscale_max)
-        self.ax.set_ylabel(self.ylabel)
-        self.ax.margins(0)
-        self.ax.grid()
+#     def __set_format(self):
+#         self.ax.set_xticks([-10, -8, -6, -4, -2, 0])
+#         self.ax.set_yticks([0,5,10,15,20,25,30,35,40,45,50])
+#         plt.subplots_adjust(bottom = 0.2)
+#         self.ax.set_xlim(self.xscale_min, self.xscale_max)
+#         self.ax.set_xlabel(self.xlabel)
+#         self.ax.set_ylim(self.yscale_min, self.yscale_max)
+#         self.ax.set_ylabel(self.ylabel)
+#         self.ax.margins(0)
+#         self.ax.grid()
 
 class UpdateThread(QThread):
     update_signal = pyqtSignal()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1247</width>
-    <height>779</height>
+    <height>780</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,6 +15,12 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>780</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -501,7 +507,7 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QStackedWidget" name="stacked_widget">
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -556,7 +562,7 @@ color: rgb(255, 255, 255);</string>
             <item row="8" column="1">
              <widget class="QLabel" name="diagnostics_r05_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -601,7 +607,7 @@ border: 1px solid white;</string>
             <item row="3" column="0">
              <widget class="QLabel" name="label_7">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -637,7 +643,7 @@ border: 1px solid white;</string>
             <item row="9" column="1">
              <widget class="QLabel" name="diagnostics_r06_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -681,6 +687,12 @@ background-color: rgb(229, 231, 240);</string>
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="diagnostics_state_value">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="font">
                <font>
                 <pointsize>16</pointsize>
@@ -702,6 +714,12 @@ border: 1px solid white;</string>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>250</width>
@@ -730,7 +748,7 @@ border: 1px solid white;Ui_MainWindow</string>
             <item row="7" column="1">
              <widget class="QLabel" name="diagnostics_r04_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -762,7 +780,7 @@ background-color: rgb(229, 231, 240);</string>
             <item row="10" column="1">
              <widget class="QLabel" name="diagnostics_r07_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -810,7 +828,7 @@ border: 1px solid white;</string>
             <item row="8" column="0">
              <widget class="QLabel" name="label_15">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -842,7 +860,7 @@ border: 1px solid white;</string>
             <item row="7" column="0">
              <widget class="QLabel" name="label_14">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -874,7 +892,7 @@ background-color: rgb(229, 231, 240);</string>
             <item row="9" column="0">
              <widget class="QLabel" name="label_16">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -906,7 +924,7 @@ background-color: rgb(229, 231, 240);</string>
             <item row="4" column="0">
              <widget class="QLabel" name="label_9">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -938,7 +956,7 @@ border: 1px solid white;</string>
             <item row="4" column="1">
              <widget class="QLabel" name="diagnostics_r01_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -970,7 +988,7 @@ border: 1px solid white;</string>
             <item row="3" column="1">
              <widget class="QLabel" name="label_8">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1003,7 +1021,7 @@ border: 1px solid white;</string>
             <item row="6" column="0">
              <widget class="QLabel" name="label_13">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1035,7 +1053,7 @@ border: 1px solid white;</string>
             <item row="6" column="1">
              <widget class="QLabel" name="diagnostics_r03_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1067,7 +1085,7 @@ border: 1px solid white;</string>
             <item row="10" column="0">
              <widget class="QLabel" name="label_17">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1099,7 +1117,7 @@ border: 1px solid white;</string>
             <item row="5" column="1">
              <widget class="QLabel" name="diagnostics_r02_value">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1131,7 +1149,7 @@ background-color: rgb(229, 231, 240);</string>
             <item row="5" column="0">
              <widget class="QLabel" name="label_11">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1230,18 +1248,12 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QGraphicsView" name="diagnostics_plot1">
+             <widget class="MplWidget" name="diagnostics_plot1" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>565</width>
-                <height>276</height>
-               </size>
               </property>
              </widget>
             </item>
@@ -1295,18 +1307,12 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QGraphicsView" name="diagnostics_plot2">
+             <widget class="MplWidget" name="diagnostics_plot2" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>565</width>
-                <height>276</height>
-               </size>
               </property>
              </widget>
             </item>
@@ -2224,6 +2230,22 @@ border:2px solid black;</string>
                </widget>
               </item>
               <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>15</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
                <widget class="QPushButton" name="run_start_button">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2464,15 +2486,18 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QGraphicsView" name="run_plot1">
+             <widget class="MplWidget" name="run_plot1" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="styleSheet">
-               <string notr="true">border:0px;</string>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>280</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -2526,15 +2551,18 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QGraphicsView" name="run_plot2">
+             <widget class="MplWidget" name="run_plot2" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="styleSheet">
-               <string notr="true">border: 0px;</string>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>280</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -2549,6 +2577,14 @@ border: 1px solid white;</string>
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MplWidget</class>
+   <extends>QWidget</extends>
+   <header>MplWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
