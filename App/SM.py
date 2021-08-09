@@ -1,5 +1,3 @@
-
-import serial
 import sys
 import glob
 
@@ -17,7 +15,7 @@ class Arduino(Enum):
     CONTROLLER = 2
 
 class SerialMonitor:
-
+    connection_is_virtual = False
     daq_id = 'daq'
     controller_id = 'controller'
     arduinos_are_connected = False
@@ -36,6 +34,12 @@ class SerialMonitor:
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode())
 
+    def connect_virtual_daq(self):
+        from VirtualArduino import Serial
+        self.connection_is_virtual = True
+        self.daq_arduino = Serial()
+        self.start_data_collection_loop()
+
     def disconnect_arduinos(self):
         if not self.daq_arduino is None:
             self.daq_arduino.close()
@@ -47,7 +51,11 @@ class SerialMonitor:
 
     def read_from_daq(self):
         if(self.daq_arduino.in_waiting > 0):
-            raw_message_line = self.daq_arduino.readline().decode('utf-8')
+            if(self.connection_is_virtual):
+                raw_message_line = self.daq_arduino.readline()
+            else:
+                raw_message_line = self.daq_arduino.readline().decode('utf-8')
+
             clean_message = LD.clean(raw_message_line)
             self.__handle_daq_message(clean_message)
 
@@ -66,6 +74,8 @@ class SerialMonitor:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
     def connect_arduinos(self):
+        import serial
+
         ports = self.__get_serial_ports()
 
         for port in ports:
@@ -92,8 +102,6 @@ class SerialMonitor:
 
                         if(arduino_id == self.daq_id):
                             self.daq_arduino = connection
-                            self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
-                            self.data_collection_thread.start()
 
                         elif(arduino_id == self.controller_id):
                             self.controller_arduino = connection
@@ -116,13 +124,17 @@ class SerialMonitor:
         #     self.disconnect_arduinos()
         # else:
         #     self.arduinos_are_connected = True
+
+    def start_data_collection_loop(self):
+        self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
+        self.data_collection_thread.start()
     def data_collection_loop(self):
 
         self.loop_is_running = True
 
         while(self.loop_is_running):
             self.read_from_daq()
-            time.sleep(1)
+            time.sleep(0.5)
 
         print('data collection loop exiting')
 

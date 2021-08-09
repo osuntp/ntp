@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1247</width>
+    <width>1373</width>
     <height>780</height>
    </rect>
   </property>
@@ -54,7 +54,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>15</width>
+          <width>90</width>
           <height>20</height>
          </size>
         </property>
@@ -2484,13 +2484,16 @@ border: 1px solid white;</string>
                 <property name="text">
                  <string>Pressure (Pa)</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                 <property name="indent">
-                 <number>15</number>
+                 <number>0</number>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot0_14" native="true">
+               <widget class="MplWidget" name="run_plot2" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -2506,150 +2509,197 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <layout class="QGridLayout" name="gridLayout_7">
+               <layout class="QVBoxLayout" name="verticalLayout_15">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <property name="topMargin">
                  <number>15</number>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>0</number>
-                </property>
-                <property name="verticalSpacing">
-                 <number>5</number>
-                </property>
-                <item row="0" column="6">
-                 <widget class="QCheckBox" name="checkBox_73">
-                  <property name="text">
-                   <string>Tank</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_20">
+                  <property name="spacing">
+                   <number>15</number>
                   </property>
-                 </widget>
+                  <property name="leftMargin">
+                   <number>15</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_67">
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Show On Graph:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_97">
+                    <property name="text">
+                     <string>Inlet</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_98">
+                    <property name="text">
+                     <string>Midpoint</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_99">
+                    <property name="text">
+                     <string>Outlet</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_100">
+                    <property name="text">
+                     <string>Tank</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_49">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
-                <item row="0" column="5">
-                 <widget class="QCheckBox" name="checkBox_74">
-                  <property name="text">
-                   <string>Outlet</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_21">
+                  <property name="spacing">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QCheckBox" name="checkBox_75">
-                  <property name="text">
-                   <string>Inlet</string>
+                  <property name="leftMargin">
+                   <number>15</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QCheckBox" name="checkBox_76">
-                  <property name="text">
-                   <string>Midpoint</string>
+                  <property name="topMargin">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QLineEdit" name="lineEdit_11">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="bottomMargin">
+                   <number>0</number>
                   </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>40</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>40</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>10</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="label_54">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Data Buffer (Max 90):</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="4">
-                 <widget class="QPushButton" name="pushButton_11">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
+                  <item>
+                   <widget class="QLabel" name="label_68">
+                    <property name="minimumSize">
+                     <size>
+                      <width>135</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>135</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Data Buffer (Max 90):</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lineEdit_17">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>30</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(255, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_17">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(39, 59, 94);
 border:2px solid black;</string>
-                  </property>
-                  <property name="text">
-                   <string>Apply</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="10">
-                 <spacer name="horizontalSpacer_37">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_55">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Show On Graph:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <spacer name="horizontalSpacer_38">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                    </property>
+                    <property name="text">
+                     <string>Apply</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_50">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -2691,13 +2741,16 @@ border: 1px solid white;</string>
                 <property name="text">
                  <string>Temperature (C)</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                 <property name="indent">
-                 <number>15</number>
+                 <number>0</number>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot0" native="true">
+               <widget class="MplWidget" name="run_plot1" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -2713,156 +2766,197 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <layout class="QGridLayout" name="gridLayout_5">
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <property name="topMargin">
                  <number>15</number>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>0</number>
-                </property>
-                <property name="verticalSpacing">
-                 <number>5</number>
-                </property>
-                <item row="0" column="6">
-                 <widget class="QCheckBox" name="checkBox_6">
-                  <property name="text">
-                   <string>Heatsink</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <property name="spacing">
+                   <number>15</number>
                   </property>
-                 </widget>
+                  <property name="leftMargin">
+                   <number>15</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_56">
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Show On Graph:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_77">
+                    <property name="text">
+                     <string>Inlet</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_78">
+                    <property name="text">
+                     <string>Midpoint</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_79">
+                    <property name="text">
+                     <string>Outlet</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_80">
+                    <property name="text">
+                     <string>Heat Sink</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_39">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
-                <item row="0" column="5">
-                 <widget class="QCheckBox" name="checkBox">
-                  <property name="text">
-                   <string>Outlet</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <property name="spacing">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QCheckBox" name="checkBox_2">
-                  <property name="text">
-                   <string>Inlet</string>
+                  <property name="leftMargin">
+                   <number>15</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QCheckBox" name="checkBox_5">
-                  <property name="text">
-                   <string>Midpoint</string>
+                  <property name="topMargin">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QLineEdit" name="lineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="bottomMargin">
+                   <number>0</number>
                   </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>40</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>40</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>10</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="label_3">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Data Buffer (Max 90):   </string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="4">
-                 <widget class="QPushButton" name="pushButton">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
+                  <item>
+                   <widget class="QLabel" name="label_58">
+                    <property name="minimumSize">
+                     <size>
+                      <width>135</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>135</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Data Buffer (Max 90):</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lineEdit_12">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>30</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(255, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_12">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(39, 59, 94);
 border:2px solid black;</string>
-                  </property>
-                  <property name="text">
-                   <string>Apply</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="10">
-                 <spacer name="horizontalSpacer_10">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_18">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Show On Graph:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <spacer name="horizontalSpacer_9">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                    </property>
+                    <property name="text">
+                     <string>Apply</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_40">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -2902,15 +2996,18 @@ border:2px solid black;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Temperature (C)</string>
+                 <string>Mass Flow (kg/s)</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                 <property name="indent">
-                 <number>15</number>
+                 <number>0</number>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot0_13" native="true">
+               <widget class="MplWidget" name="run_plot3" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -2926,150 +3023,156 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <layout class="QGridLayout" name="gridLayout_6">
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <property name="topMargin">
                  <number>15</number>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>0</number>
-                </property>
-                <property name="verticalSpacing">
-                 <number>5</number>
-                </property>
-                <item row="0" column="6">
-                 <widget class="QCheckBox" name="checkBox_69">
-                  <property name="text">
-                   <string>Heatsink</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_24">
+                  <property name="spacing">
+                   <number>15</number>
                   </property>
-                 </widget>
+                  <property name="leftMargin">
+                   <number>15</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <spacer name="horizontalSpacer_53">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
-                <item row="0" column="5">
-                 <widget class="QCheckBox" name="checkBox_70">
-                  <property name="text">
-                   <string>Outlet</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_25">
+                  <property name="spacing">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QCheckBox" name="checkBox_71">
-                  <property name="text">
-                   <string>Inlet</string>
+                  <property name="leftMargin">
+                   <number>15</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QCheckBox" name="checkBox_72">
-                  <property name="text">
-                   <string>Midpoint</string>
+                  <property name="topMargin">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QLineEdit" name="lineEdit_10">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="bottomMargin">
+                   <number>0</number>
                   </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>40</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>40</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>10</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="label_52">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Data Buffer (Max 90):</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="4">
-                 <widget class="QPushButton" name="pushButton_10">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
+                  <item>
+                   <widget class="QLabel" name="label_72">
+                    <property name="minimumSize">
+                     <size>
+                      <width>135</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>135</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Data Buffer (Max 90):</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lineEdit_19">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>30</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(255, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_19">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(39, 59, 94);
 border:2px solid black;</string>
-                  </property>
-                  <property name="text">
-                   <string>Apply</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="10">
-                 <spacer name="horizontalSpacer_35">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_53">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Show On Graph:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <spacer name="horizontalSpacer_36">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                    </property>
+                    <property name="text">
+                     <string>Apply</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_54">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -3109,15 +3212,18 @@ border:2px solid black;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Temperature (C)</string>
+                 <string>Other</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                 <property name="indent">
-                 <number>15</number>
+                 <number>0</number>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot0_17" native="true">
+               <widget class="MplWidget" name="run_plot4" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -3133,150 +3239,190 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <layout class="QGridLayout" name="gridLayout_10">
+               <layout class="QVBoxLayout" name="verticalLayout_18">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <property name="topMargin">
                  <number>15</number>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>0</number>
-                </property>
-                <property name="verticalSpacing">
-                 <number>5</number>
-                </property>
-                <item row="0" column="6">
-                 <widget class="QCheckBox" name="checkBox_85">
-                  <property name="text">
-                   <string>Heatsink</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <property name="spacing">
+                   <number>15</number>
                   </property>
-                 </widget>
+                  <property name="leftMargin">
+                   <number>15</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_73">
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Show On Graph:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_109">
+                    <property name="text">
+                     <string>Valve Position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_110">
+                    <property name="text">
+                     <string>Heater Duty Cycle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_111">
+                    <property name="text">
+                     <string>OpenFOAM</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_55">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
-                <item row="0" column="5">
-                 <widget class="QCheckBox" name="checkBox_86">
-                  <property name="text">
-                   <string>Outlet</string>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_27">
+                  <property name="spacing">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QCheckBox" name="checkBox_87">
-                  <property name="text">
-                   <string>Inlet</string>
+                  <property name="leftMargin">
+                   <number>15</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QCheckBox" name="checkBox_88">
-                  <property name="text">
-                   <string>Midpoint</string>
+                  <property name="topMargin">
+                   <number>0</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QLineEdit" name="lineEdit_14">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="bottomMargin">
+                   <number>0</number>
                   </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>40</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>40</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>10</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="label_60">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Data Buffer (Max 90):</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="4">
-                 <widget class="QPushButton" name="pushButton_14">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
+                  <item>
+                   <widget class="QLabel" name="label_74">
+                    <property name="minimumSize">
+                     <size>
+                      <width>135</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>135</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Data Buffer (Max 90):</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lineEdit_20">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>30</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(255, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_20">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(39, 59, 94);
 border:2px solid black;</string>
-                  </property>
-                  <property name="text">
-                   <string>Apply</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="10">
-                 <spacer name="horizontalSpacer_43">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_61">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Show On Graph:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <spacer name="horizontalSpacer_44">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                    </property>
+                    <property name="text">
+                     <string>Apply</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_56">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>

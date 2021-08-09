@@ -15,6 +15,7 @@ from PyQt5 import QtWidgets
 from UI.UI import UI
 from UI.UI import Window
 from Presenter import Presenter
+from VirtualArduino import Serial
 import sys
 
 if __name__ == "__main__":
@@ -41,7 +42,9 @@ if __name__ == "__main__":
 
     # Setup
     Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
-    # app.aboutToQuit.connect(serial_monitor.on_window_exit)
+    serial_monitor.connect_virtual_daq()
+    app.aboutToQuit.connect(serial_monitor.on_window_exit)
+    app.aboutToQuit.connect(serial_monitor.daq_arduino.disconnect)
     # app.aboutToQuit.connect(test_stand.turn_off_state_machine)
     # serial_monitor.connect_arduinos()
     # test_stand.setup()

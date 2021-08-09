@@ -9,10 +9,7 @@ class Model:
     hidden_data_buffer = 15000 # time in milliseconds (must be in ms since arduino is reporting ms)
     shown_data_buffer = 10000 # time in milliseconds (must be in ms since arduino is reporting ms)
 
-    heater_is_on = False
-
-    temperature = 0
-    time = 0
+    latest_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
@@ -24,12 +21,10 @@ class Model:
 
         LD.drop_old_data_from_frame(self.hidden_data_buffer, self.temp_data)
 
-        self.temperature = message[1]
+        self.latest_values = message
 
-        self.heater_is_on = (message[3] > 0.5)
-        self.time = message[0]
-
-        print('model: update: The temperature is ' + str(self.temperature))
+        print('model: update: The temperature is ' + str(self.latest_values[4]))
+        print('model: update: The time is ' + str(self.latest_values[0]))
 
     def get_ui_data(self, name: str):
 

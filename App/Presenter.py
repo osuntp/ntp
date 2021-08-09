@@ -46,24 +46,31 @@ class Presenter:
 
     def __start_ui_update_loop(self):
         self.ui_update_thread = UI.UpdateThread()
-        self.ui_update_thread.set_max_frequency(1)
+        self.ui_update_thread.set_max_frequency(0.5)
         self.ui_update_thread.update_signal.connect(self.on_ui_update)
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-        temperature = self.model.get_ui_data('Temperature')
+        heat_sink_temperature = self.model.get_ui_data('Heat Sink Temperature')
+        tank_pressure = self.model.get_ui_data('Tank Pressure')
+        mass_flow = self.model.get_ui_data('Mass Flow')
+        valve_position = self.model.get_ui_data('Valve Position')
+
         plot_time = self.model.get_ui_data('Time')
         max_value = max(plot_time)
         for i in range(len(plot_time)):
             plot_time[i] -= max_value
             plot_time[i] = plot_time[i] / 1000 #convert from milliseconds to seconds
 
-        self.ui.run.plot0.update_vals(plot_time, temperature)
+        self.ui.run.plot1.update_vals(plot_time, heat_sink_temperature)
+        self.ui.run.plot2.update_vals(plot_time, tank_pressure)
+        self.ui.run.plot3.update_vals(plot_time, mass_flow)
+        self.ui.run.plot4.update_vals(plot_time, valve_position)
         # self.ui.run.plot1.update_vals(0,0)
 
-        self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
+        # self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
 
-        self.ui.run.sequence_table_label.setText('Test Sequence - ' + str(round(self.model.time / 1000,1)))
+        self.ui.run.sequence_table_label.setText('Test Sequence - ' + str(round(self.model.latest_values[0] / 1000,1)))
 
 
     def tab_clicked(self, tab_index):

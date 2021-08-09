@@ -9,7 +9,7 @@ import datetime
 import re
 from typing import List
 
-columns = ['Time', 'Temperature', 'Pressure']
+columns = ['Time', 'Inlet Temperature', 'Midpoint Temperature', 'Outlet Temperature', 'Heat Sink Temperature', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Tank Pressure', 'Mass Flow', 'Valve Position', 'Heater Duty Cycle']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name():
@@ -36,14 +36,23 @@ def clean(raw_message_string: str):
 def get_new_dataframe():
     return DataFrame(columns=columns)
 
-def append_point_to_frame(data_point: List, dataframe: DataFrame):
+def append_point_to_frame(message: list, dataframe: DataFrame):
 
-    time = data_point[0]
-    temperature = data_point[1]
-    pressure = data_point[2]
-
-    dataframe = dataframe.append({'Time':time, 'Temperature':temperature, 'Pressure':pressure}, ignore_index=True)
+    # time = data_point[0]
+    # inlet_temp = data_point[1]
+    # midpoint_temp = data_point[2]
+    # exit_temp = data_point[3]
+    # heat_sink_temp = data_point[4]
+    # inlet_pressure = data_point[5]
+    # midpoint_pressure = data_point[6]
+    # exit_pressure = data_point[7]
     
+    # pressure = data_point[2]
+    data_point = {}
+    for i in range(len(columns)):
+        data_point[columns[i]] = message[i]
+
+    dataframe = dataframe.append(data_point, ignore_index=True)
     return dataframe
 
 def drop_old_data_from_frame(buffer: float, dataframe: DataFrame):

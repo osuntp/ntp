@@ -16,7 +16,6 @@ class MplWidget(FigureCanvasQTAgg):
     xlabel = ''
     ylabel = ''
 
-
     def __init__(self, parent = None):
         self.fig = Figure()
         self.axes = self.fig.add_subplot(111)
@@ -25,6 +24,8 @@ class MplWidget(FigureCanvasQTAgg):
     def set_axis_labels(self, xlabel:str, ylabel:str):
         self.xlabel = xlabel
         self.ylabel = ylabel
+
+        self.__set_format()
 
     def update_vals(self, x, y):
         self.axes.cla()       
