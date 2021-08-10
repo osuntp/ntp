@@ -89,18 +89,18 @@ void loop() {
 
   pressure += random(-500, 1000);
 
-  Serial.print("<");
-  Serial.print("da");
-  Serial.print(", ");
-  Serial.print(millis());
-  Serial.print(", ");
-  Serial.print(temperature);
-  Serial.print(", ");
-  Serial.print(pressure);
-  Serial.print(", ");
-  Serial.print(heaterIsOn);
-  Serial.println(">");
-  delay(1000);
+//  Serial.print("<");
+//  Serial.print("da");
+//  Serial.print(", ");
+//  Serial.print(millis());
+//  Serial.print(", ");
+//  Serial.print(temperature);
+//  Serial.print(", ");
+//  Serial.print(pressure);
+//  Serial.print(", ");
+//  Serial.print(heaterIsOn);
+//  Serial.println(">");
+//  delay(1000);
 
 //  if(Serial.available() > 0)
 //  {
