@@ -11,36 +11,70 @@ class Model:
 
     latest_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+    time_between_plot_points = 0.1
+    time_of_last_plot_point = 0
+
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
-        self.temp_data: pandas.DataFrame = LD.get_new_dataframe()
+        self.ui_data: pandas.DataFrame = LD.get_new_dataframe()
 
     def update(self, message: List):
         self.trial_data = LD.append_point_to_frame(message, self.trial_data)
-        self.temp_data = LD.append_point_to_frame(message, self.temp_data)
 
-        LD.drop_old_data_from_frame(self.hidden_data_buffer, self.temp_data)
+        current_time = time.time()
+
+        if((current_time - self.time_of_last_plot_point) >= self.time_between_plot_points):
+            self.time_of_last_plot_point = current_time
+
+            self.ui_data = LD.append_point_to_frame(message, self.ui_data)
 
         self.latest_values = message
 
-        print('model: update: The temperature is ' + str(self.latest_values[4]))
-        print('model: update: The time is ' + str(self.latest_values[0]))
+        while((self.latest_values[0] - self.ui_data['Time'].iloc[0]) > self.hidden_data_buffer):
+            print('hit')
+            self.ui_data.iloc[0].pop()
 
-    def get_ui_data(self, name: str):
+        # print('model: update: The temperature is ' + str(self.latest_values[4]))
+        # print('model: update: The time is ' + str(self.latest_values[0]))
 
-        data_column = [0]
+    def get_ui_plot_data(self, name: str):
 
-        if not(self.temp_data.empty):
+        if(self.ui_data.empty):
+            return []
 
-            data_column = self.temp_data[name].tolist()
-            time_column = self.temp_data['Time'].tolist()
+        data_column = self.ui_data[name].tolist()
+        time_column = self.ui_data['Time'].tolist()
 
-            latest_time_stamp = time_column[-1]
-            time_cutoff = latest_time_stamp - self.shown_data_buffer  
+        arrays = [time_column, data_column]
+        max_length = 0
+        for array in arrays:
+            max_length = max(max_length, len(array))
 
-            while(time_column[0] < time_cutoff):
-                time_column.pop(0)
-                data_column.pop(0)
-                
-        return data_column
+        for array in arrays:
+            array += ['X'] * (max_length - len(array))
+
+
+
+        latest_time_stamp = self.latest_values[1]
+
+        time_cutoff = latest_time_stamp - self.shown_data_buffer  
+
+        if(name == 'Heat Sink Temperature'):
+            pass
+            # print(latest_time_stamp)
+            # print(str(time_column[0]) + ' and ' + str(time_cutoff))
+
+        while(time_column[0] < time_cutoff):
+            time_column.pop(0)
+            data_column.pop(0)
+
+        for i in range(len(data_column)):
+            time_column[i] = (time_column[i] - latest_time_stamp)/1000
+            
+            # print(time_column[i])
+
+        return time_column, data_column
+
+    def save_trial_data(self):
+        LD.save_to_csv(self.trial_data)
 

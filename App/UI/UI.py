@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QMainWindow
 # from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
 
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+# import matplotlib.pyplot as plt
+# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import QtWidgets
 import os
 import Config
@@ -65,15 +65,15 @@ class UI:
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
-        self.plot1 = pyqt5.diagnostics_plot1
-        self.plot2 = pyqt5.diagnostics_plot2
+        self.plot1 = pyqt5.diagnostics_plot1.getPlotItem()
+        self.plot2 = pyqt5.diagnostics_plot2.getPlotItem()
 
         # self.plot1.set_labels('Time (s)', 'Temperature (C)')
         # self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
 
 # TODO: Remove this call to update_vals
-        self.plot1.update_vals(0, 0)
-        self.plot2.update_vals(0, 0)
+        self.plot1.plot([0],[0])
+        self.plot2.plot([0],[0])
 
         self.test_stand_status = pyqt5.diagnostics_state_value
         self.valve_voltage = pyqt5.diagnostics_r01_value
@@ -231,17 +231,25 @@ class Run:
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
-        self.plot1 = pyqt5.run_plot1
-        self.plot1.set_axis_labels('Time (s)', 'Temperature (C)')
+        self.plot1 = pyqt5.run_plot1.getPlotItem().plot()
+        pyqt5.run_plot1.setXRange(-10, 0)
+        pyqt5.run_plot1.setYRange(0,50)
+        # self.plot1.set_axis_labels('Time (s)', 'Temperature (C)')
 
-        self.plot2 = pyqt5.run_plot2
-        self.plot2.set_axis_labels('Time (s)', 'Pressure (Pa)')
+        self.plot2 = pyqt5.run_plot2.getPlotItem().plot()
+        pyqt5.run_plot2.setXRange(-10, 0)
+        pyqt5.run_plot2.setYRange(0,50)
+        # self.plot2.set_axis_labels('Time (s)', 'Pressure (Pa)')
 
-        self.plot3 = pyqt5.run_plot3
-        self.plot3.set_axis_labels('Time (s)', 'Mass Flow (kg/s)')
+        self.plot3 = pyqt5.run_plot3.getPlotItem().plot()
+        pyqt5.run_plot3.setXRange(-10, 0)
+        pyqt5.run_plot3.setYRange(0,50)
+        # self.plot3.set_axis_labels('Time (s)', 'Mass Flow (kg/s)')
 
-        self.plot4 = pyqt5.run_plot4
-        self.plot4.set_axis_labels('Time (s)', 'Value')
+        self.plot4 = pyqt5.run_plot4.getPlotItem().plot()
+        pyqt5.run_plot4.setXRange(-10, 0)
+        pyqt5.run_plot4.setYRange(0,50)
+        # self.plot4.set_axis_labels('Time (s)', 'Value')
 
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, False)
@@ -301,6 +309,6 @@ class UpdateThread(QThread):
     def run(self):
         while (self.thread_is_running):
             self.update_signal.emit()
-            time.sleep(self.wait_time)
+            time.sleep(0.1)
         
         

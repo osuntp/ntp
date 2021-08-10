@@ -9,7 +9,7 @@ import datetime
 import re
 from typing import List
 
-columns = ['Time', 'Inlet Temperature', 'Midpoint Temperature', 'Outlet Temperature', 'Heat Sink Temperature', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Tank Pressure', 'Mass Flow', 'Valve Position', 'Heater Duty Cycle']
+columns = ['Index', 'Time', 'Inlet Temperature', 'Midpoint Temperature', 'Outlet Temperature', 'Heat Sink Temperature', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Tank Pressure', 'Mass Flow', 'Valve Position', 'Heater Duty Cycle']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name():

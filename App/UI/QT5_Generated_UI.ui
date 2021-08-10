@@ -510,7 +510,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1251,14 +1251,7 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="MplWidget" name="diagnostics_plot1" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
+             <widget class="PlotWidget" name="diagnostics_plot1"/>
             </item>
             <item>
              <spacer name="verticalSpacer_13">
@@ -1310,14 +1303,7 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="MplWidget" name="diagnostics_plot2" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
+             <widget class="PlotWidget" name="diagnostics_plot2"/>
             </item>
            </layout>
           </item>
@@ -2390,7 +2376,7 @@ border: 1px solid white;</string>
                </size>
               </property>
               <attribute name="horizontalHeaderVisible">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <attribute name="horizontalHeaderCascadingSectionResizes">
                <bool>false</bool>
@@ -2399,7 +2385,7 @@ border: 1px solid white;</string>
                <bool>true</bool>
               </attribute>
               <attribute name="verticalHeaderVisible">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <column>
                <property name="text">
@@ -2493,20 +2479,7 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot2" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </widget>
+               <widget class="PlotWidget" name="run_plot2"/>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -2750,20 +2723,7 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot1" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </widget>
+               <widget class="PlotWidget" name="run_plot1"/>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -3007,20 +2967,7 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot3" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </widget>
+               <widget class="PlotWidget" name="run_plot3"/>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -3223,20 +3170,7 @@ border: 1px solid white;</string>
                </widget>
               </item>
               <item>
-               <widget class="MplWidget" name="run_plot4" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </widget>
+               <widget class="PlotWidget" name="run_plot4"/>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -3441,10 +3375,9 @@ border:2px solid black;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MplWidget</class>
-   <extends>QWidget</extends>
-   <header>MplWidget.h</header>
-   <container>1</container>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
