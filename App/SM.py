@@ -1,13 +1,14 @@
 import sys
 import glob
 
+import serial
 from Model import Model
 from Log import Log
 import time
 
 import threading
 import LD
-
+from VirtualArduino import VirtualArduino
 from enum import Enum
 
 class Arduino(Enum):
@@ -15,15 +16,15 @@ class Arduino(Enum):
     CONTROLLER = 2
 
 class SerialMonitor:
-    connection_is_virtual = False
     daq_id = 'daq'
     controller_id = 'controller'
     arduinos_are_connected = False
     daq_arduino = None
     controller_arduino = None
     baudrate = 9600
+    daq_buffer = ""
 
-    model = None
+    model: Model = None
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
@@ -34,30 +35,35 @@ class SerialMonitor:
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode())
 
-    def connect_virtual_daq(self):
-        from VirtualArduino import Serial
-        self.connection_is_virtual = True
-        self.daq_arduino = Serial()
+    def connect_arduino(self, arduino: Arduino, port: str):
+        if(arduino == Arduino.CONTROLLER):
+            self.controller_arduino = serial.Serial(port=port, baudrate = self.baudrate)
+        elif(arduino == Arduino.DAQ):
+            self.daq_arduino = serial.Serial(port=port, baudrate = self.baudrate)
+
         self.start_data_collection_loop()
 
     def disconnect_arduinos(self):
-        if not self.daq_arduino is None:
+        if self.daq_arduino is not None:
             self.daq_arduino.close()
             self.daq_arduino = None
 
-        if not self.controller_arduino is None:
+        if self.controller_arduino is not None:
             self.controller_arduino.close()
             self.controller_arduino = None
 
     def read_from_daq(self):
-        if(self.daq_arduino.in_waiting > 0):
-            if(self.connection_is_virtual):
-                raw_message_line = self.daq_arduino.readline()
-            else:
-                raw_message_line = self.daq_arduino.readline().decode('utf-8')
 
-            clean_message = LD.clean(raw_message_line)
-            self.__handle_daq_message(clean_message)
+        in_waiting = self.daq_arduino.in_waiting
+
+        if(in_waiting > 0):
+
+            self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+
+            while '\n' in self.daq_buffer: #split data line by line and store it in var
+                raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
+                clean_message = LD.clean(raw_message_line)
+                self.__handle_daq_message(clean_message)
 
     def __handle_daq_message(self, message: list):
         prefix = message[0]
@@ -73,9 +79,7 @@ class SerialMonitor:
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
-    def connect_arduinos(self):
-        import serial
-
+    def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
 
         for port in ports:
@@ -128,13 +132,14 @@ class SerialMonitor:
     def start_data_collection_loop(self):
         self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
         self.data_collection_thread.start()
+
     def data_collection_loop(self):
 
         self.loop_is_running = True
 
         while(self.loop_is_running):
             self.read_from_daq()
-            time.sleep(0.5)
+            time.sleep(0.01)
 
         print('data collection loop exiting')
 
