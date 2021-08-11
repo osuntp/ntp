@@ -28,7 +28,7 @@ def clean(raw_message_string: str):
     clean_message_string = split[1].split('>')[0]
     clean_message = clean_message_string.split(sep = ', ')
 
-    if(clean_message[0] == 'da'):
+    if(clean_message[0] == 'stdout'):
         for i in range(1, len(clean_message)):
             clean_message[i] = float(clean_message[i])
     return clean_message    

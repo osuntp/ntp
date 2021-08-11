@@ -10,6 +10,7 @@ import time
 import threading
 import random
 import serial
+import LD
 
 
 # a Serial class emulator 
@@ -42,16 +43,38 @@ class VirtualArduino:
 
 
     def data_loop(self):
-
-        self.loop_is_running = True
-        
-        self.serial.write('<id, da>\n'.encode('utf-8'))
-
         data_point_index = 0
 
-        while(self.loop_is_running):
 
-            new_data_line = "<da, "
+
+        waiting_for_start_message = True
+        buffer = ''
+
+        while(waiting_for_start_message):
+            in_waiting = self.serial.in_waiting
+
+            if(in_waiting > 0):
+                # Add everything from serial to daq_buffer
+                buffer += self.serial.read(in_waiting).decode('utf-8')
+
+                while '\n' in buffer: #split data line by line and store it in var
+                    raw_message_line, buffer = buffer.split('\n', 1)
+                    clean_message = LD.clean(raw_message_line)
+                    
+                    print('Virtual Arduino: data_loop: a message was received, it was ' + clean_message[0])
+                    if(clean_message[0] == 'DAQ START'):
+                        
+                        waiting_for_start_message = False
+            else:
+                self.serial.write('<DAQ>\n'.encode('utf-8'))
+
+            time.sleep(0.1)
+
+
+
+        self.loop_is_running = True
+        while(self.loop_is_running):
+            new_data_line = "<stdout, "
             new_data_line += str(data_point_index)
             new_data_line += ", "
             new_data_line += str(self.time_passed_in_ms())
@@ -71,6 +94,10 @@ class VirtualArduino:
 
     def disconnect_from_serial(self):
         self.loop_is_running = False
+        
+        if(self.serial is not None):
+            self.serial.close()
+            self.serial = None
 
     def time_passed_in_ms(self):
         return (time.time() - self.start_time)*1000

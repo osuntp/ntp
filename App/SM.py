@@ -8,7 +8,6 @@ import time
 
 import threading
 import LD
-from VirtualArduino import VirtualArduino
 from enum import Enum
 
 class Arduino(Enum):
@@ -35,12 +34,26 @@ class SerialMonitor:
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode())
 
-    def connect_arduino(self, arduino: Arduino, port: str):
-        if(arduino == Arduino.CONTROLLER):
-            self.controller_arduino = serial.Serial(port=port, baudrate = self.baudrate)
-        elif(arduino == Arduino.DAQ):
-            self.daq_arduino = serial.Serial(port=port, baudrate = self.baudrate)
+    def connect_arduinos(self, daq_port: str, controller_port:str):
+        self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate)
+        # self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate)
 
+
+        waiting_for_ID_message = True
+        while(waiting_for_ID_message):
+            in_waiting = self.daq_arduino.in_waiting
+            
+            if(in_waiting > 0):
+                self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+                while '\n' in self.daq_buffer: #split data line by line and store it in var
+                    raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
+                    clean_message = LD.clean(raw_message_line)
+                    if(clean_message[0] == "DAQ"):
+                        self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
+                        self.daq_buffer = ''
+                        waiting_for_ID_message = False
+
+            time.sleep(0.01)
         self.start_data_collection_loop()
 
     def disconnect_arduinos(self):
@@ -58,6 +71,7 @@ class SerialMonitor:
 
         if(in_waiting > 0):
 
+            # Add everything from serial to daq_buffer
             self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
 
             while '\n' in self.daq_buffer: #split data line by line and store it in var
@@ -70,12 +84,12 @@ class SerialMonitor:
 
         message.pop(0)
 
-        if(prefix == 'da'):
+        if(prefix == 'stdout'):
             self.model.update(message)
-        elif(prefix == 'er'):
+        elif(prefix == 'stderr'):
             print('Arduino Error: ' + message[0])
-        elif(prefix == 'id'):
-            print('Arduino Debug: Unexpected ID message from ' + message[0] + '. Ignoring this message.')
+        elif(prefix == 'DAQ'):
+            print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
@@ -138,7 +152,9 @@ class SerialMonitor:
         self.loop_is_running = True
 
         while(self.loop_is_running):
+
             self.read_from_daq()
+
             time.sleep(0.01)
 
         print('data collection loop exiting')

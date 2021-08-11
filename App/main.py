@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # Setup
     Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
-    serial_monitor.connect_arduino(Arduino.DAQ, port='COM4')
+    # serial_monitor.connect_arduino(Arduino.DAQ, port='COM4')
     virtual_arduino.connect_to_serial(port='COM5')
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
     app.aboutToQuit.connect(virtual_arduino.disconnect_from_serial)

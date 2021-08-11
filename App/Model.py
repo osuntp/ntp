@@ -40,20 +40,19 @@ class Model:
     def get_ui_plot_data(self, name: str):
 
         if(self.ui_data.empty):
-            return []
+            return [], []
 
         data_column = self.ui_data[name].tolist()
         time_column = self.ui_data['Time'].tolist()
 
-        arrays = [time_column, data_column]
-        max_length = 0
-        for array in arrays:
-            max_length = max(max_length, len(array))
+        len_data = len(data_column)
+        len_time = len(time_column)
 
-        for array in arrays:
-            array += ['X'] * (max_length - len(array))
-
-
+        if(len_data != len_time):
+            if len(data_column) < len(len_time):
+               len_time = len_time[: len(data_column)]
+            elif len(data_column) > len(len_time):
+                data_column = data_column[: len(len_time)]
 
         latest_time_stamp = self.latest_values[1]
 
@@ -69,7 +68,8 @@ class Model:
             data_column.pop(0)
 
         for i in range(len(data_column)):
-            time_column[i] = (time_column[i] - latest_time_stamp)/1000
+            time_column[i] = float(round((time_column[i] - latest_time_stamp)/1000, 2))
+            data_column[i] = float(data_column[i])
             
             # print(time_column[i])
 
