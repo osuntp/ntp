@@ -24,20 +24,21 @@ class UI:
         # [END OF DO NOT EDIT]
 
         self.tabs_widget = self.pyqt5.stacked_widget
-        self.tabs = [self.pyqt5.diagnostics_tab, self.pyqt5.logs_tab, self.pyqt5.manual_control_tab, self.pyqt5.configuration_tab, self.pyqt5.run_tab]
-        self.current_tab = self.pyqt5.diagnostics_tab
+        self.tabs = [self.pyqt5.diagnostics_tab, self.pyqt5.logs_tab, self.pyqt5.manual_control_tab, self.pyqt5.configuration_tab, self.pyqt5.run_tab, self.pyqt5.setup_tab]
+        self.current_tab = self.pyqt5.setup_tab
         self.abort_tab = self.pyqt5.abort_tab
 
         Stylize.all_tabs(self.tabs)
         Stylize.abort(self.abort_tab)
 
         self.current_tab = self.tabs[1]
-        self.set_current_tab(0)
+        self.set_current_tab(5)
 
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
         self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
         self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
 
+        self.setup = Setup(self.pyqt5)
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.configuration = Configuration(self.pyqt5)
@@ -294,6 +295,23 @@ class Run:
             # self.sequence_table.item(i, 2).setText(str(config.sequence_temperature[i]))
             # self.sequence_table.item(i, 3).setText(str(config.sequence_mass_flow[i]))
 
+class Setup:
+    def __init__(self, pyqt5: Ui_MainWindow):
+        self.daq_status_label = pyqt5.setup_daq_status_label
+        self.controller_status_label = pyqt5.setup_controller_status_label
+
+        self.daq_port_field = pyqt5.setup_daq_port_field
+        self.controller_port_field = pyqt5.setup_controller_port_field
+
+        self.auto_connect_button = pyqt5.setup_autoconnect_button
+        self.manual_connect_button = pyqt5.setup_manualconnect_button
+
+        self.setting_ui_frequency_field = pyqt5.setup_ui_frequency_field
+        self.apply_settings_button = pyqt5.setup_apply_settings_button
+
+        Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
+
+
 
 class UpdateThread(QThread):
     update_signal = pyqtSignal()
@@ -309,6 +327,6 @@ class UpdateThread(QThread):
     def run(self):
         while (self.thread_is_running):
             self.update_signal.emit()
-            time.sleep(0.1)
+            time.sleep(0.05)
         
         

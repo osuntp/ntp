@@ -24,6 +24,10 @@ class Presenter:
         self.ui.tabs[2].clicked.connect(lambda: self.tab_clicked(2))
         self.ui.tabs[3].clicked.connect(lambda: self.tab_clicked(3))
         self.ui.tabs[4].clicked.connect(lambda: self.tab_clicked(4))
+        self.ui.tabs[5].clicked.connect(lambda: self.tab_clicked(5))
+
+# Setup
+        self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
 
 # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
@@ -53,18 +57,51 @@ class Presenter:
 
     def on_ui_update(self):
         self.number += 1
+
         x, y = self.model.get_ui_plot_data('Heat Sink Temperature')
         self.ui.run.plot1.setData(x,y)
-
         x, y = self.model.get_ui_plot_data('Tank Pressure')
         self.ui.run.plot2.setData(x,y)
-
         x, y = self.model.get_ui_plot_data('Mass Flow')
         self.ui.run.plot3.setData(x,y)
-
         x, y = self.model.get_ui_plot_data('Valve Position')
         self.ui.run.plot4.setData(x,y)
 
+
+        # try:
+        #     x, y = self.model.get_ui_plot_data('Heat Sink Temperature')
+        #     self.ui.run.plot1.setData(x,y)
+        # except TypeError:
+        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
+        #     print('plot1 error:')
+        #     print(x)
+        #     print(y)
+
+        # try:
+        #     x, y = self.model.get_ui_plot_data('Tank Pressure')
+        #     self.ui.run.plot2.setData(x,y)
+        # except TypeError:
+        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
+        #     print('plot2 error:')
+        #     print(x)
+        #     print(y)
+        # try:
+        #     x, y = self.model.get_ui_plot_data('Mass Flow')
+        #     self.ui.run.plot3.setData(x,y)
+        # except TypeError:
+        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
+        #     print('plot3 error:')
+        #     print(x)
+        #     print(y)
+
+        # try:
+        #     x, y = self.model.get_ui_plot_data('Valve Position')
+        #     self.ui.run.plot4.setData(x,y)
+        # except TypeError:
+        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
+        #     print('plot4 error:')
+        #     print(x)
+        #     print(y)
         # self.ui.run.plot1.update_vals(0,0)
 
         # self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
@@ -82,6 +119,15 @@ class Presenter:
     def abort_clicked(self):
         pass
         # self.serial_monitor.stop_collection_loop()
+
+# SETUP PAGE LOGIC
+
+    def setup_manual_connect_clicked(self):
+        print('presenter: setup_manual_connect_clicked: hit')   
+        daq_port = self.ui.setup.daq_port_field.text()
+        controller_port = self.ui.setup.controller_port_field.text()
+
+        self.serial_monitor.connect_arduinos(daq_port, controller_port)
 
 
 # CONFIGURATION PAGE LOGIC

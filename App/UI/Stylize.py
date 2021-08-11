@@ -1,4 +1,5 @@
 
+from typing import List
 from PyQt5 import QtWidgets
 class Stylize: 
     standard_tab = "\
@@ -47,7 +48,7 @@ class Stylize:
             tab.setStyleSheet(cls.standard_tab)
 
     @classmethod
-    def button(cls, buttons):
+    def button(cls, buttons: list):
         for button in buttons:
             button.setStyleSheet(cls.standard_button)
 
