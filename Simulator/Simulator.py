@@ -1,7 +1,8 @@
 import sys
 import glob
 import serial
-from serial.serialutil import SerialException, Timeout
+from serial.serialutil import SerialException
+import random
 
 
 def serial_ports():
@@ -35,40 +36,85 @@ def serial_ports():
 if __name__ == '__main__':
     print(serial_ports())
 
-class DAQ:
-    def __init__(self, port, baudrate=9600, timeout=1):
+class Simulator:
+    def __init__(self, port, baudrate, timeout):
         self.port = port
         self.baudrate = baudrate
         self.timeout = 1
-        self.app_connected = False
-
+        self.ser_connected = False
+        self.ser = None
+    
     def connect(self):
         try:
             ser = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout)
             print('Connected to serial port.')
             self.ser = ser
-            self.write(b'<DAQ START>\n')
+            self.ser_connected = True
             return ser
         except SerialException:
             print('Serial port already in use.')
         return None
-
-    def wait_for_app(self):
-        while not self.app_connected:
-            message = self.readln()
-            if message == '<DAQ START>\n':
-                self.app_connected = True
-        return True
-
-    def send_data(self):
-        pass
-
+    
     def write(self, message):
         self.ser.write(message)
         print('Message sent')
 
     def readln(self):
         return self.ser.readline()
+
+    def connect_to_app(self, ID):
+        while not self.app_connected:
+            if ID == 'DAQ':
+                key = b'<DAQ START>\n'
+                response = b'<DAQ>\n'
+            else:
+                key = b'<Controller START>\n'
+                response = b'<Controller>\n'
+            message = self.readln()
+            print('line read')
+            if message == key:
+                self.app_connected = True
+                self.write(response)
+                print('Connected to app.')
+        return True
+
+    def disconnect_from_app(self, ID):
+        if self.app_connected:
+            if ID == 'DAQ':
+                key = b'<DAQ STOP>\n'
+                response = b'<DAQ>\n'
+            else:
+                key = b'<Controller STOP>\n'
+                response = b'<Controller>\n'
+            message = self.readln()
+            if message == key:
+                self.app_connected = False
+                self.write(response)
+                print('Stopped data')
+                return self.app_connected
+
+class DAQ(Simulator):
+    def __init__(self, port, baudrate=9600, timeout=1):
+        self.app_connected = False
+        Simulator.__init__(self, port, baudrate, timeout)
+
+    def send_data(self):
+        mass_flow = random.random()
+        heater_current = random.random()
+        heater_tc = random.random()
+        heater_tc_it = random.random()
+        inlet_tc = random.random()
+        inlet_tc_it = random.random()
+        midpoint_tc = random.random()
+        midpoint_tc_it = random.random()
+        outlet_tc = random.random()
+        outlet_tc_it = random.random()
+        tank_press = random.random()
+        inlet_press = random.random()
+        midpoint_press = random.random()
+        outlet_press = random.random()
+        message = f'<stdout, {mass_flow}, {heater_current}, {heater_tc}, {heater_tc_it}, {inlet_tc}, {inlet_tc_it}, {midpoint_tc}, {midpoint_tc_it}, {outlet_tc}, {outlet_tc_it}, {tank_press}, {inlet_press}, {midpoint_press}, {outlet_press}>\n'.encode('utf-8')
+        self.write(message)
             
 class Controller():
     pass
