@@ -38,7 +38,7 @@ class SerialMonitor:
         self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate)
         # self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate)
 
-
+        self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
         waiting_for_ID_message = True
         while(waiting_for_ID_message):
             in_waiting = self.daq_arduino.in_waiting
@@ -50,25 +50,32 @@ class SerialMonitor:
                     clean_message = LD.clean(raw_message_line)
                     if(clean_message[0] == "DAQ"):
                         self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
-                        self.daq_buffer = ''
                         waiting_for_ID_message = False
 
             time.sleep(0.01)
         self.start_data_collection_loop()
 
-    def disconnect_arduinos(self):
-        if self.daq_arduino is not None:
-            self.daq_arduino.close()
-            self.daq_arduino = None
 
-        if self.controller_arduino is not None:
-            self.controller_arduino.close()
-            self.controller_arduino = None
+
+    def start_data_collection_loop(self):
+        self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
+        self.data_collection_thread.start()
+
+    def data_collection_loop(self):
+
+        self.loop_is_running = True
+
+        while(self.loop_is_running):
+
+            self.read_from_daq()
+
+            time.sleep(0.01)
+
+        print('data collection loop exiting')
 
     def read_from_daq(self):
-
         in_waiting = self.daq_arduino.in_waiting
-
+        print('in waiting is' + str(in_waiting))
         if(in_waiting > 0):
 
             # Add everything from serial to daq_buffer
@@ -76,6 +83,7 @@ class SerialMonitor:
 
             while '\n' in self.daq_buffer: #split data line by line and store it in var
                 raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
+
                 clean_message = LD.clean(raw_message_line)
                 self.__handle_daq_message(clean_message)
 
@@ -92,6 +100,15 @@ class SerialMonitor:
             print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
+
+    def disconnect_arduinos(self):
+        if self.daq_arduino is not None:
+            self.daq_arduino.close()
+            self.daq_arduino = None
+
+        if self.controller_arduino is not None:
+            self.controller_arduino.close()
+            self.controller_arduino = None
 
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
@@ -143,21 +160,7 @@ class SerialMonitor:
         # else:
         #     self.arduinos_are_connected = True
 
-    def start_data_collection_loop(self):
-        self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
-        self.data_collection_thread.start()
 
-    def data_collection_loop(self):
-
-        self.loop_is_running = True
-
-        while(self.loop_is_running):
-
-            self.read_from_daq()
-
-            time.sleep(0.01)
-
-        print('data collection loop exiting')
 
     def on_window_exit(self):
         self.loop_is_running = False

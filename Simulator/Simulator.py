@@ -80,18 +80,20 @@ class Simulator:
 
     def disconnect_from_app(self, ID):
         if self.app_connected:
-            if ID == 'DAQ':
-                key = b'<DAQ STOP>\n'
-                response = b'<DAQ>\n'
-            else:
-                key = b'<Controller STOP>\n'
-                response = b'<Controller>\n'
-            message = self.readln()
-            if message == key:
-                self.app_connected = False
-                self.write(response)
-                print('Stopped data')
-                return self.app_connected
+
+            if(self.ser.in_waiting > 0):
+                if ID == 'DAQ':
+                    key = b'<DAQ STOP>\n'
+                    response = b'<DAQ>\n'
+                else:
+                    key = b'<Controller STOP>\n'
+                    response = b'<Controller>\n'
+                message = self.readln()
+                if message == key:
+                    self.app_connected = False
+                    self.write(response)
+                    print('Stopped data')
+                    return self.app_connected
 
 class DAQ(Simulator):
     def __init__(self, port, baudrate=9600, timeout=1):

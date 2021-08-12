@@ -6,8 +6,7 @@ Created on Fri Jul  9 10:48:57 2021
 """
 
 # from Experiment import Experiment
-from SM import Arduino
-from VirtualArduino import VirtualArduino
+
 from StateMachine.TestStandStates import DemoState
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
@@ -28,7 +27,6 @@ if __name__ == "__main__":
     presenter = Presenter()
     model = Model()
     serial_monitor = SerialMonitor()
-    virtual_arduino = VirtualArduino()
     # test_stand = TestStand()
     # demo_state = DemoState()
 
@@ -45,9 +43,9 @@ if __name__ == "__main__":
     # Setup
     Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
     # serial_monitor.connect_arduino(Arduino.DAQ, port='COM4')
-    virtual_arduino.connect_to_serial(port='COM5')
+    # virtual_arduino.connect_to_serial(port='COM5')
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
-    app.aboutToQuit.connect(virtual_arduino.disconnect_from_serial)
+    # app.aboutToQuit.connect(virtual_arduino.disconnect_from_serial)
     # app.aboutToQuit.connect(model.save_trial_data)
     # app.aboutToQuit.connect(test_stand.turn_off_state_machine)
     # serial_monitor.connect_arduinos()
