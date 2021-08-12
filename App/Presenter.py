@@ -71,7 +71,7 @@ class Presenter:
         self.ui.run.plot4.setData(x,y)
 
         if(self.model.trial_is_running):
-            self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_pause_time + time.time() - self.model.trial_start_time, 1)))
+            self.ui.run.start_button.setText('Running Trial - ' + str(round(time.time() - self.model.trial_start_time, 1)))
 
 
     def tab_clicked(self, tab_index):
