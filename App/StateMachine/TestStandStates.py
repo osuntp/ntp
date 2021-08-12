@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 import StateMachine.TestStand
 import time
+from Log import Log
 
 
 # All state classes derive from this abstract base class
@@ -44,6 +45,7 @@ class DemoAutoState(AbstractState):
     last_time_stamp = 0
 
     def enter_state(self):
+        Log.info('Test Stand has entered the Auto State.')
         self.model.trial_is_running = True
         self.model.trial_is_paused = False
         self.last_time_stamp = time.time()
@@ -60,7 +62,7 @@ class DemoAutoState(AbstractState):
 class DemoIdleState(AbstractState):
 
     def enter_state(self):
-
+        Log.info('Test Stand has entered the Idle State.')
         self.model.trial_is_running = False
         self.model.trial_is_paused = True
 
@@ -73,6 +75,7 @@ class DemoIdleState(AbstractState):
 class DemoStandbyState(AbstractState):
 
     def enter_state(self):
+        Log.info('Test Stand has entered the Standby State')
         self.model.trial_time = 0
         self.model.trial_is_running = False
         self.model.trial_is_paused = False
