@@ -7,7 +7,7 @@ Created on Fri Jul  9 10:48:57 2021
 
 # from Experiment import Experiment
 
-from StateMachine.TestStandStates import DemoState
+from StateMachine import TestStandStates
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
 from Model import Model
@@ -27,29 +27,39 @@ if __name__ == "__main__":
     presenter = Presenter()
     model = Model()
     serial_monitor = SerialMonitor()
-    # test_stand = TestStand()
-    # demo_state = DemoState()
+    test_stand = TestStand()
+    standby_state = TestStandStates.DemoStandbyState()
+    idle_state = TestStandStates.DemoIdleState()
+    auto_state = TestStandStates.DemoAutoState()
+
 
     # Assign Dependencies
+    standby_state.model = model
+    standby_state.serial_monitor = serial_monitor
+
+    idle_state.model = model
+    idle_state.serial_monitor = serial_monitor
+
+    auto_state.model = model
+    auto_state.serial_monitor = serial_monitor    
+
     presenter.ui = ui
     presenter.model = model
+    presenter.test_stand = test_stand
     presenter.serial_monitor = serial_monitor
+    presenter.test_stand_standby_state = standby_state
+    presenter.test_stand_idle_state = idle_state
+    presenter.test_stand_auto_state = auto_state
     serial_monitor.model = model
-    # test_stand.demo_state = demo_state
-    # demo_state.serial_monitor = serial_monitor
-    # demo_state.model = model
+
     Log.ui = ui
 
     # Setup
     Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
-    # serial_monitor.connect_arduino(Arduino.DAQ, port='COM4')
-    # virtual_arduino.connect_to_serial(port='COM5')
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
-    # app.aboutToQuit.connect(virtual_arduino.disconnect_from_serial)
     # app.aboutToQuit.connect(model.save_trial_data)
-    # app.aboutToQuit.connect(test_stand.turn_off_state_machine)
-    # serial_monitor.connect_arduinos()
-    # test_stand.setup()
+    app.aboutToQuit.connect(test_stand.turn_off_state_machine)
+    test_stand.setup(standby_state)
     presenter.setup()
 
     window.show()

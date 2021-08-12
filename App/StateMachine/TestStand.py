@@ -8,8 +8,8 @@ class TestStand:
     demo_state = None
     current_state = None
 
-    def setup(self):
-        self.current_state = self.demo_state
+    def setup(self, initial_state):
+        self.current_state = initial_state
         self.current_state.enter_state()
 
         self.tick_thread = threading.Thread(target = self.tick)
@@ -21,7 +21,7 @@ class TestStand:
                 return
 
             self.current_state.tick()
-            time.sleep(1)
+            time.sleep(0.1)
 
     def switch_state(self, new_state):
         self.current_state.exit_state()

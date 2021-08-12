@@ -3,9 +3,14 @@ import SM
 from abc import ABC, abstractmethod
 
 import StateMachine.TestStand
+import time
+
 
 # All state classes derive from this abstract base class
 class AbstractState(ABC):
+
+    model: Model.Model = None
+    serial_monitor: SM.SerialMonitor = None
 
     @abstractmethod
     def enter_state(self):
@@ -30,38 +35,51 @@ class IdleState(AbstractState):
     def exit_state(self):
         print('exit idle state')
 
-class DemoState(AbstractState):
+class DemoAutoState(AbstractState):
 
     temperature_target: float = 30
     deadzone: float = 10
-    model: Model.Model = None
-    serial_monitor: SM.SerialMonitor = None
 
-    heater_is_on = False
+
+    last_time_stamp = 0
 
     def enter_state(self):
-        pass
+        self.model.trial_is_running = True
+        self.model.trial_is_paused = False
+        self.last_time_stamp = time.time()
 
     def tick(self):
-        temperature = self.model.temperature
-
-        if temperature is None:
-            return
-
-        # Is it too cold, then turn on the heater
-        if(not self.model.heater_is_on and temperature < (self.temperature_target - self.deadzone)):
-            self.serial_monitor.write(SM.Arduino.DAQ, "<heater, on>")
-
-            self.heater_is_on = True
-
-        # Is it too hot, then turn off the heater
-        elif(self.model.heater_is_on and temperature > (self.temperature_target + self.deadzone)):
-            self.serial_monitor.write(SM.Arduino.DAQ, "<heater, off>")
-
-            self.heater_is_on = False
+        time_stamp = time.time()
+        delta_time = time_stamp - self.last_time_stamp
+        self.model.trial_time = self.model.trial_time + delta_time
+        self.last_time_stamp = time_stamp
 
     def exit_state(self):
         pass
 
+class DemoIdleState(AbstractState):
 
+    def enter_state(self):
+
+        self.model.trial_is_running = False
+        self.model.trial_is_paused = True
+
+    def tick(self):
+        pass
+
+    def exit_state(self):
+        pass
+
+class DemoStandbyState(AbstractState):
+
+    def enter_state(self):
+        self.model.trial_time = 0
+        self.model.trial_is_running = False
+        self.model.trial_is_paused = False
+
+    def tick(self):
+        pass
+
+    def exit_state(self):
+        pass
 
