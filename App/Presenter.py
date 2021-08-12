@@ -7,6 +7,7 @@ from Log import Log
 import threading
 import Config
 import time
+from UI.Stylize import Stylize
 
 class Presenter:
 
@@ -26,13 +27,13 @@ class Presenter:
         self.ui.tabs[4].clicked.connect(lambda: self.tab_clicked(4))
         self.ui.tabs[5].clicked.connect(lambda: self.tab_clicked(5))
 
-# Setup
+        # Setup
         self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
 
-# Abort
+        # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
 
-# Configuration
+        # Configuration
         self.ui.configuration.blue_lines_plus_button.clicked.connect(self.configuration_blue_lines_plus_clicked)
         self.ui.configuration.blue_lines_minus_button.clicked.connect(self.configuration_blue_lines_minus_clicked)
 
@@ -42,10 +43,12 @@ class Presenter:
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
 
 
-# Run
+        # Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
+        self.ui.run.pause_button.clicked.connect(self.run_paused_clicked)
+        self.ui.run.start_button.clicked.connect(self.run_start_clicked)
 
-# Start UI Update Loop
+        # Start UI Update Loop
         self.__start_ui_update_loop()
 
     def __start_ui_update_loop(self):
@@ -58,55 +61,17 @@ class Presenter:
     def on_ui_update(self):
         self.number += 1
 
-        x, y = self.model.get_ui_plot_data('Heat Sink Temperature')
+        x, y = self.model.get_run_plot_data('Heater TC')
         self.ui.run.plot1.setData(x,y)
-        x, y = self.model.get_ui_plot_data('Tank Pressure')
+        x, y = self.model.get_run_plot_data('Tank Pressure')
         self.ui.run.plot2.setData(x,y)
-        x, y = self.model.get_ui_plot_data('Mass Flow')
+        x, y = self.model.get_run_plot_data('Mass Flow')
         self.ui.run.plot3.setData(x,y)
-        x, y = self.model.get_ui_plot_data('Valve Position')
+        x, y = self.model.get_run_plot_data('Outlet Pressure')
         self.ui.run.plot4.setData(x,y)
 
-
-        # try:
-        #     x, y = self.model.get_ui_plot_data('Heat Sink Temperature')
-        #     self.ui.run.plot1.setData(x,y)
-        # except TypeError:
-        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
-        #     print('plot1 error:')
-        #     print(x)
-        #     print(y)
-
-        # try:
-        #     x, y = self.model.get_ui_plot_data('Tank Pressure')
-        #     self.ui.run.plot2.setData(x,y)
-        # except TypeError:
-        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
-        #     print('plot2 error:')
-        #     print(x)
-        #     print(y)
-        # try:
-        #     x, y = self.model.get_ui_plot_data('Mass Flow')
-        #     self.ui.run.plot3.setData(x,y)
-        # except TypeError:
-        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
-        #     print('plot3 error:')
-        #     print(x)
-        #     print(y)
-
-        # try:
-        #     x, y = self.model.get_ui_plot_data('Valve Position')
-        #     self.ui.run.plot4.setData(x,y)
-        # except TypeError:
-        #     print('len of x: ' + str(len(x)) + 'and len of y: ' + str(len(y)))
-        #     print('plot4 error:')
-        #     print(x)
-        #     print(y)
-        # self.ui.run.plot1.update_vals(0,0)
-
-        # self.ui.set_heater_status_light_is_lit(self.model.heater_is_on)
-
-        self.ui.run.sequence_table_label.setText('Test Sequence - ' + str(round(self.model.latest_values[1] / 1000,1)))
+        if(self.model.trial_is_running):
+            self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_pause_time + time.time() - self.model.trial_start_time, 1)))
 
 
     def tab_clicked(self, tab_index):
@@ -117,8 +82,7 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        pass
-        # self.serial_monitor.stop_collection_loop()
+        self.model.stop
 
 # SETUP PAGE LOGIC
 
@@ -170,6 +134,25 @@ class Presenter:
             Config.create_file(file_name, trial_name, description, blue_lines, test_sequence)
 
 # RUN PAGE LOGIC
+    def run_start_clicked(self):
+
+        if(self.model.trial_is_paused):
+            self.model.resume_trial()
+            Stylize.set_button_active(self.ui.run.start_button, False)
+            Stylize.set_button_active(self.ui.run.pause_button, True) 
+        else:
+            if(not self.model.trial_is_running):
+                self.model.start_trial()
+                Stylize.set_button_active(self.ui.run.start_button, False)
+                Stylize.set_button_active(self.ui.run.pause_button, True)  
+
+        
+    def run_paused_clicked(self):
+        if(self.model.trial_is_running and not self.model.trial_is_paused):
+            self.model.pause_trial()
+            Stylize.set_button_active(self.ui.run.start_button, True)
+            Stylize.set_button_active(self.ui.run.pause_button, False)
+
     def run_load_clicked(self):
         file_name = Config.select_file()
         

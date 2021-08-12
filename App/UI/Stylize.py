@@ -22,7 +22,7 @@ class Stylize:
     QPushButton:hover{ background-color: rgb(80, 122, 196); color: rgb(255, 255, 255); border: 2px solid black;} \
     QPushButton:pressed{ background-color: rgb(61, 93, 148); color: rgb(255, 255, 255); border: 2px solid black;}"
 
-    start_button_inactive = "\
+    button_inactive = "\
     QPushButton{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;} \
     QPushButton:hover{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;} \
     QPushButton:pressed{ background-color: rgb(65, 65, 65); color: rgb(139, 139, 139); border: 2px solid black;}"
@@ -53,11 +53,19 @@ class Stylize:
             button.setStyleSheet(cls.standard_button)
 
     @classmethod
-    def set_start_button_active(cls,button, isActive):
-        if(isActive):
+    def set_button_active(cls, button, is_active):
+        if(is_active):
+            button.setStyleSheet(cls.standard_button)
+        else:
+            button.setStyleSheet(cls.button_inactive)
+
+
+    @classmethod
+    def set_start_button_active(cls,button, is_active):
+        if(is_active):
             button.setStyleSheet(cls.start_button_active)
         else:
-            button.setStyleSheet(cls.start_button_inactive)
+            button.setStyleSheet(cls.button_inactive)
 
     @classmethod
     def set_current_tab(cls, new_tab, prev_tab):

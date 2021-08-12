@@ -228,32 +228,33 @@ class Run:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.load_button = pyqt5.run_load_configuration_button
         self.start_button = pyqt5.run_start_button
+        self.pause_button = pyqt5.run_pause_button
         self.loaded_trial_text = pyqt5.run_trialname
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
         self.plot1 = pyqt5.run_plot1.getPlotItem().plot()
         pyqt5.run_plot1.setXRange(-10, 0)
-        pyqt5.run_plot1.setYRange(0,50)
+        pyqt5.run_plot1.setYRange(0,1)
         # self.plot1.set_axis_labels('Time (s)', 'Temperature (C)')
 
         self.plot2 = pyqt5.run_plot2.getPlotItem().plot()
         pyqt5.run_plot2.setXRange(-10, 0)
-        pyqt5.run_plot2.setYRange(0,50)
+        pyqt5.run_plot2.setYRange(0,1)
         # self.plot2.set_axis_labels('Time (s)', 'Pressure (Pa)')
 
         self.plot3 = pyqt5.run_plot3.getPlotItem().plot()
         pyqt5.run_plot3.setXRange(-10, 0)
-        pyqt5.run_plot3.setYRange(0,50)
+        pyqt5.run_plot3.setYRange(0,1)
         # self.plot3.set_axis_labels('Time (s)', 'Mass Flow (kg/s)')
 
         self.plot4 = pyqt5.run_plot4.getPlotItem().plot()
         pyqt5.run_plot4.setXRange(-10, 0)
-        pyqt5.run_plot4.setYRange(0,50)
+        pyqt5.run_plot4.setYRange(0,1)
         # self.plot4.set_axis_labels('Time (s)', 'Value')
 
         Stylize.button([self.load_button])
-        Stylize.set_start_button_active(self.start_button, False)
+        Stylize.set_start_button_active(self.start_button, True)
 
     def set_start_button_active(self, isActive: bool):
         Stylize.set_start_button_active(self.start_button, isActive)
@@ -310,6 +311,7 @@ class Setup:
         self.apply_settings_button = pyqt5.setup_apply_settings_button
 
         Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
+        Stylize.set_button_active(self.auto_connect_button, False)
 
 
 
