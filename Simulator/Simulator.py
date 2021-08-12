@@ -5,7 +5,6 @@ from serial.serialutil import SerialException
 import random
 import re
 
-
 def serial_ports():
     """ Lists serial port names
 
@@ -46,15 +45,11 @@ class Simulator:
         self.ser = None
     
     def connect(self):
-        try:
-            ser = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout)
-            print('Connected to serial port.')
-            self.ser = ser
-            self.ser_connected = True
-            return ser
-        except SerialException:
-            print('Serial port already in use.')
-        return None
+        ser = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout)
+        print('Connected to serial port.')
+        self.ser = ser
+        self.ser_connected = True
+        return ser
     
     def write(self, message):
         self.ser.write(message)
