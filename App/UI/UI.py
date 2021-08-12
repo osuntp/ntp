@@ -116,11 +116,9 @@ class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.python = pyqt5.logs_python_log
 
-    def update_python_log(self):
-        path = os.getcwd()
-        path = path + "\\app.log"
+    def update_python_log(self, file_path: str):
 
-        with open(path, 'r') as file:
+        with open(file_path, 'r') as file:
             data_list = file.readlines()
             data = ""
 
@@ -234,8 +232,10 @@ class Run:
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
         self.plot1 = pyqt5.run_plot1.getPlotItem().plot()
+        # pyqt5.run_plot1.auto
         pyqt5.run_plot1.setXRange(-10, 0)
-        pyqt5.run_plot1.setYRange(0,1)
+        # pyqt5.run_plot1.setYRange(0,1)
+        pyqt5.run_plot1.setBackground
         # self.plot1.set_axis_labels('Time (s)', 'Temperature (C)')
 
         self.plot2 = pyqt5.run_plot2.getPlotItem().plot()

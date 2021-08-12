@@ -11,6 +11,7 @@ from StateMachine import TestStandStates
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
 from Model import Model
+import datetime
 from Log import Log
 from PyQt5 import QtWidgets
 from UI.UI import UI
@@ -19,6 +20,11 @@ from Presenter import Presenter
 import sys
 
 if __name__ == "__main__":
+
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H%M%S")
+    log_file_path = 'Logs/app_' + str(current_time) + '.log'
+    Log.create(name = 'NTP_Log', file_path=log_file_path, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
 
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
@@ -32,8 +38,8 @@ if __name__ == "__main__":
     idle_state = TestStandStates.DemoIdleState()
     auto_state = TestStandStates.DemoAutoState()
 
-
     # Assign Dependencies
+    Log.ui = ui
     standby_state.model = model
     standby_state.serial_monitor = serial_monitor
 
@@ -52,10 +58,9 @@ if __name__ == "__main__":
     presenter.test_stand_auto_state = auto_state
     serial_monitor.model = model
 
-    Log.ui = ui
+
 
     # Setup
-    Log.create(name = 'NTP_Log', file_path='app.log', file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
     # app.aboutToQuit.connect(model.save_trial_data)
     app.aboutToQuit.connect(test_stand.turn_off_state_machine)

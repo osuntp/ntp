@@ -1,23 +1,14 @@
 import logging
-import UI.UI
+from UI.UI import UI
 
 class Log:
-
-    default_name = 'NTP_log'
-    default_file_path = 'app.log'
-    default_file_format = '%(asctime)s : %(process)d : %(levelname)s : %(message)s'
-
     ui: UI = None
+    file_path = None
 
     @classmethod
-    def create(cls, name: str=None, file_path: str=None, file_format: str=None):
+    def create(cls, name: str='NTP_log', file_path: str='app.log', file_format: str='%(asctime)s : %(process)d : %(levelname)s : %(message)s'):
 
-        if name is None:
-            name = cls.default_name
-        if file_path is None:
-            file_path = cls.default_file_path
-        if file_format is None:
-            file_format = cls.default_file_format
+        cls.file_path = file_path
 
         # Create separate logger from ROOT Logger
         cls.logger = logging.getLogger(name)
@@ -77,8 +68,10 @@ class Log:
 
     @classmethod
     def __update_log_ui(cls):
-        cls.ui.logs.update_python_log()
+        if(cls.ui is None):
+            return
 
+        cls.ui.logs.update_python_log(cls.file_path)
     @classmethod
     def __handle_attribute_error(cls):
         cls.create()
