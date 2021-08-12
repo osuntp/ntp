@@ -3,6 +3,7 @@ import glob
 import serial
 from serial.serialutil import SerialException
 import random
+import re
 
 
 def serial_ports():
@@ -119,4 +120,29 @@ class DAQ(Simulator):
         self.write(message)
             
 class Controller():
-    pass
+    def __init__(self, port, baudrate=9600, timeout=1):
+        self.app_connected = False
+        Simulator.__init__(self, port, baudrate, timeout)
+
+    def receive_command(self):
+        if self.app_connected:
+            if(self.ser.in_waiting > 0):
+                message = self.readln()
+                parts = re.findall('[<\s](.*?)[,>]',message)
+                if len(parts) == '3':
+                    if parts[0] == 'stdin':
+                        if parts[1] == 'valve':
+                            try:
+                                float(parts[2])
+                                self.write(f'<stdout, valve, {parts[2]}'.encode('utf-8'))
+                            except ValueError:
+                                self.write(f'<stderr, valve position not recognized: {parts[2]}'.encode('utf-8'))
+                        elif parts[1] == 'heater':
+                            if parts[2] == '1':
+                                self.write(b'<stdout, heater, 1>\n')
+                            elif parts[2] == '0':
+                                self.write(b'<stdout, heater, 0>\n')
+                            else:
+                                self.write(f'<stderr, heater value not recognized: {parts[2]}'.encode('utf-8'))
+                        else:
+                            self.write(b'<stderr, command not recognized>\n')
