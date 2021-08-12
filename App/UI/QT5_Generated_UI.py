@@ -1761,7 +1761,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(4)
+        self.stacked_widget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1877,7 +1877,7 @@ class Ui_MainWindow(object):
         self.label_27.setText(_translate("MainWindow", "DAQ Port:"))
         self.setup_daq_port_field.setText(_translate("MainWindow", "COM4"))
         self.label_28.setText(_translate("MainWindow", "Controller Port:"))
-        self.setup_controller_port_field.setText(_translate("MainWindow", "COM4"))
+        self.setup_controller_port_field.setText(_translate("MainWindow", "COM6"))
         self.setup_manualconnect_button.setText(_translate("MainWindow", "Connect"))
         self.label_24.setText(_translate("MainWindow", "Settings"))
         self.label_30.setText(_translate("MainWindow", "UI Update Frequency:"))

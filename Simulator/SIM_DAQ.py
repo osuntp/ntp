@@ -10,6 +10,6 @@ if __name__ == "__main__":
         while D.app_connected:
             D.send_data()
             D.disconnect_from_app(ID='DAQ')
-            time.sleep(0.1)
+            time.sleep(0.01)
     except KeyboardInterrupt:
         D.ser.close()

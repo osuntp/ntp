@@ -255,6 +255,7 @@ class Run:
 
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, True)
+        Stylize.set_pause_button_active(self.pause_button, False)
 
     def set_start_button_active(self, isActive: bool):
         Stylize.set_start_button_active(self.start_button, isActive)

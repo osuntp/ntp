@@ -615,7 +615,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -4019,7 +4019,7 @@ border:2px solid black;</string>
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>COM4</string>
+                 <string>COM6</string>
                 </property>
                </widget>
               </item>

@@ -1,3 +1,5 @@
+from StateMachine import TestStand
+from StateMachine import TestStandStates
 import Model
 import SM
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
@@ -14,6 +16,11 @@ class Presenter:
     ui: UI.UI = None
     model: Model.Model = None
     serial_monitor: SM.SerialMonitor = None
+    test_stand: TestStand.TestStand = None
+    test_stand_standby_state: TestStandStates.DemoStandbyState
+    test_stand_idle_state: TestStandStates.DemoIdleState
+    test_stand_auto_state: TestStandStates.DemoAutoState
+
     def __init__(self):
         pass
     
@@ -71,7 +78,17 @@ class Presenter:
         self.ui.run.plot4.setData(x,y)
 
         if(self.model.trial_is_running):
-            self.ui.run.start_button.setText('Running Trial - ' + str(round(time.time() - self.model.trial_start_time, 1)))
+            self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_time, 1)))
+
+        if(self.model.daq_is_connected):
+            self.ui.setup.daq_status_label.setText('Connected')
+        else:
+            self.ui.setup.daq_status_label.setText('Not Connected')
+
+        if(self.model.controller_is_connected):
+            self.ui.setup.controller_status_label.setText('Connected')
+        else:
+            self.ui.setup.controller_status_label.setText('Not Connected')
 
 
     def tab_clicked(self, tab_index):
@@ -82,7 +99,8 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        self.model.stop
+        # self.model.stop
+        pass
 
 # SETUP PAGE LOGIC
 
@@ -137,21 +155,22 @@ class Presenter:
     def run_start_clicked(self):
 
         if(self.model.trial_is_paused):
-            self.model.resume_trial()
-            Stylize.set_button_active(self.ui.run.start_button, False)
-            Stylize.set_button_active(self.ui.run.pause_button, True) 
+            self.test_stand.switch_state(self.test_stand_auto_state)
+            Stylize.set_start_button_active(self.ui.run.start_button, False)
+            Stylize.set_pause_button_active(self.ui.run.pause_button, True) 
         else:
             if(not self.model.trial_is_running):
-                self.model.start_trial()
-                Stylize.set_button_active(self.ui.run.start_button, False)
-                Stylize.set_button_active(self.ui.run.pause_button, True)  
+                self.test_stand.switch_state(self.test_stand_auto_state)
+                Stylize.set_start_button_active(self.ui.run.start_button, False)
+                Stylize.set_pause_button_active(self.ui.run.pause_button, True)  
 
         
     def run_paused_clicked(self):
         if(self.model.trial_is_running and not self.model.trial_is_paused):
-            self.model.pause_trial()
-            Stylize.set_button_active(self.ui.run.start_button, True)
-            Stylize.set_button_active(self.ui.run.pause_button, False)
+            self.test_stand.switch_state(self.test_stand_idle_state)
+            Stylize.set_start_button_active(self.ui.run.start_button, True)
+            Stylize.set_pause_button_active(self.ui.run.pause_button, False)
+            self.ui.run.start_button.setText('Resume Trial at ' + str(round(self.model.trial_time,1)))
 
     def run_load_clicked(self):
         file_name = Config.select_file()

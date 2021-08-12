@@ -49,8 +49,8 @@ class SerialMonitor:
                     raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
                     clean_message = LD.clean(raw_message_line)
                     if(clean_message[0] == "DAQ"):
-                        self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
                         waiting_for_ID_message = False
+                        self.model.daq_is_connected = True
 
             time.sleep(0.01)
         self.start_data_collection_loop()

@@ -14,33 +14,20 @@ class Model:
     time_between_plot_points = 0.1
     time_of_last_plot_point = 0
 
+    trial_time = 0
     trial_is_running = False
     trial_is_paused = False
-    trial_start_time = 0
-    time_since_trial_started = 0
+    daq_is_connected = False
+    controller_is_connected = False
 
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
         self.ui_diagnostics_data: pandas.DataFrame = LD.get_new_dataframe()
 
-    def start_trial(self):
-        self.trial_is_running = True
-        self.trial_start_time = time.time()  
-
-    def pause_trial(self):
-        self.trial_is_running = False
-        self.trial_is_paused = True
-        self.trial_pause_time = time.time() - self.trial_start_time
-
-    def resume_trial(self):
-        self.trial_is_running = True
-        self.trial_is_paused = False  
-
     def update(self, message: List):
         current_time = time.time()
         message.insert(0, current_time)
-
 
         # Add data point to diagnostics dataframe
         self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
