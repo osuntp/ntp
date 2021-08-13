@@ -1,21 +1,30 @@
 import logging
 from UI.UI import UI
+import os
 
 class Log:
     ui: UI = None
     file_path = None
 
     @classmethod
-    def create(cls, name: str='NTP_log', file_path: str='app.log', file_format: str='%(asctime)s : %(process)d : %(levelname)s : %(message)s'):
+    def create(cls, log_name: str='NTP_log', file_name: str='app.log', file_format: str='%(asctime)s : %(process)d : %(levelname)s : %(message)s'):
 
-        cls.file_path = file_path
+        folder_name = 'Logs/'
+
+        isdir = os.path.isdir(folder_name)
+
+        if not (isdir):
+            os.mkdir('Logs/')
+
+        
+        cls.file_path = folder_name + file_name
 
         # Create separate logger from ROOT Logger
-        cls.logger = logging.getLogger(name)
+        cls.logger = logging.getLogger(log_name)
         cls.logger.setLevel(logging.DEBUG)
         
         # Specify custom handler
-        handler = logging.FileHandler(file_path)
+        handler = logging.FileHandler(cls.file_path)
         handler.setLevel(logging.DEBUG)
 
         # Specify custom formatter

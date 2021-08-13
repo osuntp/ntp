@@ -23,8 +23,8 @@ if __name__ == "__main__":
 
     now = datetime.datetime.now()
     current_time = now.strftime("%H%M%S")
-    log_file_path = 'Logs/app_' + str(current_time) + '.log'
-    Log.create(name = 'NTP_Log', file_path=log_file_path, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
+    log_file_name = 'app_' + str(current_time) + '.log'
+    Log.create(log_name = 'NTP_Log', file_name=log_file_name, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
 
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
@@ -57,8 +57,6 @@ if __name__ == "__main__":
     presenter.test_stand_idle_state = idle_state
     presenter.test_stand_auto_state = auto_state
     serial_monitor.model = model
-
-
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
