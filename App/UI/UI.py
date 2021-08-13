@@ -144,28 +144,39 @@ class Configuration:
         self.save_button = pyqt5.configuration_save_button
 
         buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button]
-        Stylize.button(buttons)
-
+        
         self.clear_all()
         self.add_row_to_blue_lines_table()
+
+        Stylize.button(buttons)
+        Stylize.table(self.blue_lines_table)
+        Stylize.table(self.sequence_table)
 
     def add_row_to_blue_lines_table(self):
         table = self.blue_lines_table
         row_count = table.rowCount()
-        column_count = table.columnCount()
-        combo_box_options = ['Min', 'Max']    
+
+        table.insertRow(row_count)
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('')
+        table.setVerticalHeaderItem(table.rowCount(), item)
+
+        combo_box_options = ['Mass Flow', 'Heater Current', 'Heater TC', 'Inlet TC', 'Midpoint TC', 'Outlet TC', 'Tank Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
         combo = QtWidgets.QComboBox()
-
-        # if((row_count % 2) == 0):
-
-        #     combo.setStyleSheet('border: 0px; background-color: rgb(206, 211, 230);')
-        # else:
-        #     combo.setStyleSheet('border: 0px; background-color: rgb(229, 231, 240);')
 
         for option in combo_box_options:
             combo.addItem(option)
 
-        table.insertRow(row_count)
+        table.setCellWidget(row_count, 1, combo)
+
+
+        combo_box_options = ['Min', 'Max']    
+        combo = QtWidgets.QComboBox()
+
+        for option in combo_box_options:
+            combo.addItem(option)
+
+
         table.setCellWidget(row_count, 2, combo)
 
         Stylize.table(table)
@@ -256,6 +267,7 @@ class Run:
         Stylize.button([self.load_button])
         Stylize.set_start_button_active(self.start_button, True)
         Stylize.set_pause_button_active(self.pause_button, False)
+        Stylize.table(self.sequence_table)
 
     def set_start_button_active(self, isActive: bool):
         Stylize.set_start_button_active(self.start_button, isActive)
@@ -284,18 +296,6 @@ class Run:
             item = QtWidgets.QTableWidgetItem()
             item.setText(str(config.sequence_power[i]))
             table.setItem(i, 1, item)
-            
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_temperature[i]))
-            table.setItem(i, 2, item)
-
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_mass_flow[i]))
-            table.setItem(i, 3, item)
-            # self.sequence_table.item(i, 0).setText(str(config.sequence_time_step[i]))
-            # self.sequence_table.item(i, 1).setText(str(config.sequence_power[i]))
-            # self.sequence_table.item(i, 2).setText(str(config.sequence_temperature[i]))
-            # self.sequence_table.item(i, 3).setText(str(config.sequence_mass_flow[i]))
 
 class Setup:
     def __init__(self, pyqt5: Ui_MainWindow):

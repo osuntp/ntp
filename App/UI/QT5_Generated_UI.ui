@@ -1470,7 +1470,13 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QTextBrowser" name="logs_python_log"/>
+             <widget class="QTextBrowser" name="logs_python_log">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(0, 0, 0);
+border: 1px solid white;
+background-color: rgb(229, 231, 240);</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -1513,7 +1519,13 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QTextBrowser" name="logs_daq_log"/>
+             <widget class="QTextBrowser" name="logs_daq_log">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(0, 0, 0);
+border: 1px solid white;
+background-color: rgb(229, 231, 240);</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -1556,7 +1568,13 @@ border: 1px solid white;</string>
              </widget>
             </item>
             <item>
-             <widget class="QTextBrowser" name="logs_controller_log"/>
+             <widget class="QTextBrowser" name="logs_controller_log">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(0, 0, 0);
+border: 1px solid white;
+background-color: rgb(229, 231, 240);</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -1678,6 +1696,9 @@ border: 1px solid white;</string>
                     <height>38</height>
                    </size>
                   </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -1744,6 +1765,12 @@ border: 1px solid white;</string>
                   <width>0</width>
                   <height>250</height>
                  </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 255, 255);</string>
+                </property>
+                <property name="plainText">
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1820,6 +1847,9 @@ border: 1px solid white;</string>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 255, 255);</string>
+                </property>
                 <column>
                  <property name="text">
                   <string>Timestep (s)</string>
@@ -1827,12 +1857,17 @@ border: 1px solid white;</string>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Temperature (C)</string>
+                  <string>Sensor</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
                   <string>Limit Type</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Value</string>
                  </property>
                 </column>
                </widget>
@@ -2006,6 +2041,9 @@ border: 1px solid white;</string>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 255, 255);</string>
+                </property>
                 <column>
                  <property name="text">
                   <string>Timestep (s)</string>
@@ -2014,16 +2052,6 @@ border: 1px solid white;</string>
                 <column>
                  <property name="text">
                   <string>Power (W)</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Temperature (C)</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Mass Flow (kg/s)</string>
                  </property>
                 </column>
                </widget>
@@ -2527,7 +2555,7 @@ border: 1px solid white;</string>
                </size>
               </property>
               <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
+               <bool>true</bool>
               </attribute>
               <attribute name="horizontalHeaderCascadingSectionResizes">
                <bool>false</bool>

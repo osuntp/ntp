@@ -12,13 +12,12 @@ class Config:
     description: str
 
     blue_lines_time_step: List[float]
-    blue_lines_temperature: List[float]
+    blue_lines_sensor_type: List[str]
     blue_lines_limit_type: List[str]
+    blue_lines_value: List[float]
 
     sequence_time_step: List[float]
     sequence_power: List[float]
-    sequence_temperature: List[float]
-    sequence_mass_flow: List[float]
 
 class ValidationThread(QThread):
 
@@ -68,46 +67,42 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
 
 # Blue Lines Data
     time_step = ''
-    temperature = ''
+    sensor_type = ''
+    value = ''
     limit_type = ''
+
     for i in range(blue_lines.rowCount()):
 
         time_step += (str(blue_lines.item(i,0).text()))
-        temperature += (str(blue_lines.item(i, 1).text()))
+        sensor_type += (str(blue_lines.cellWidget(i,1).currentText()))
         limit_type += blue_lines.cellWidget(i, 2).currentText()
+        value += (str(blue_lines.item(i, 3).text()))
 
         if(i < (blue_lines.rowCount() - 1)):
             time_step += ', '
-            temperature += ', '
+            value += ', '
             limit_type +=', '
 
     
     config.set('blue_lines', 'time_step', time_step)
-    config.set('blue_lines', 'temperature', temperature)
+    config.set('blue_lines', 'sensor_type', sensor_type)
     config.set('blue_lines', 'limit_type', limit_type)
+    config.set('blue_lines', 'value', value)
 
 # Test Sequence Data
     time_step = ''
     power = ''
-    temperature = ''
-    mass_flow = ''
 
     for i in range(test_sequence.rowCount()):
         time_step += (str(test_sequence.item(i,0).text()))
         power += (str(test_sequence.item(i, 1).text()))
-        temperature += (str(test_sequence.item(i, 2).text()))
-        mass_flow += (str(test_sequence.item(i, 3).text()))
 
         if(i < (test_sequence.rowCount() - 1)):
             time_step += ', '
             power += ', '
-            temperature += ', '
-            mass_flow += ', '
 
     config.set('test_sequence', 'time_step', time_step)
     config.set('test_sequence', 'power', power)
-    config.set('test_sequence', 'temperature', temperature)
-    config.set('test_sequence', 'mass_flow', mass_flow)
     
     with open(file_name, 'w') as f:
         config.write(f)
@@ -146,23 +141,20 @@ def open_file(file_name: str):
     description = parser.get('main','description')
 
     blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
-    blue_lines_temperature = parser.get('blue_lines', 'temperature').split(sep = ', ')
+    blue_lines_sensor_type = parser.get('blue_lines', 'sensor_type').split(sep = ', ')
+    blue_lines_value = parser.get('blue_lines', 'value').split(sep = ', ')
     blue_lines_limit_type = parser.get('blue_lines', 'limit_type').split(sep=', ')
 
     blue_lines_time_step = [float(x) for x in blue_lines_time_step]
-    blue_lines_temperature = [float(x) for x in blue_lines_temperature]
+    blue_lines_value = [float(x) for x in blue_lines_value]
 
     sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
     sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
-    sequence_temperature = parser.get('test_sequence', 'temperature').split(sep = ', ')
-    sequence_mass_flow = parser.get('test_sequence', 'mass_flow').split(sep = ', ')
 
     sequence_time_step = [float(x) for x in sequence_time_step]
     sequence_power = [float(x) for x in sequence_power]
-    sequence_temperature = [float(x) for x in sequence_temperature]
-    sequence_mass_flow = [float(x) for x in sequence_mass_flow]
 
-    return Config(trial_name, description, blue_lines_time_step, blue_lines_temperature, blue_lines_limit_type, sequence_time_step, sequence_power, sequence_temperature, sequence_mass_flow)
+    return Config(trial_name, description, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power)
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
@@ -171,7 +163,7 @@ def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     # Iterate over all rows in QTableWidget
     for i in range(table.rowCount()):
 
-        # Determine if column 0 and 1 are numbers by trying to cast to float, if ValueError then there are illegal characters
+        # Determine if column 0 and 3 are numbers by trying to cast to float, if ValueError then there are illegal characters
         try:
             # Timestep logic
             previous_time_step = current_time_step
@@ -181,11 +173,12 @@ def blue_lines_is_valid(table: QtWidgets.QTableWidget):
 
             current_time_step = float(table.item(i,0).text())
            
-            if((i > 0.5) and (current_time_step <= previous_time_step)):
-                return 'The time steps in the blue lines table are out of order.'
+            # TODO: Determine if we want to check for order of timesteps or not.
+            # if((i > 0.5) and (current_time_step <= previous_time_step)):
+            #     return 'The time steps in the blue lines table are out of order.'
             
             # Other
-            float(table.item(i,1).text())
+            float(table.item(i,3).text())
 
         except ValueError:
             return 'Invalid characters detected in test sequence table.'
@@ -213,7 +206,6 @@ def test_sequence_is_valid(table: QtWidgets.QTableWidget):
             
             # Other
             float(table.item(i,1).text())
-            float(table.item(i,2).text())
             
         except ValueError:
             return 'Invalid characters detected in test sequence table.'
