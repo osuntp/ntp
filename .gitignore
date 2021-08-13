@@ -134,3 +134,4 @@ Post/logs/**
 Post/processed/**
 App/UI/pyuic5.exe
 .vscode/c_cpp_properties.json
+*.ini
