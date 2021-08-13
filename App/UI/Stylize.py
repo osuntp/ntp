@@ -48,6 +48,10 @@ class Stylize:
     side_bar_status_red = "\
     QWidget{background-color: rgb(249, 19, 19); border: 2px solid black}"
 
+    table_style = "\
+    QHeaderView::section { background-color: rgb(235, 235, 235); }\
+    QTableWidget { background-color: rgb(255, 255, 255); }"
+
     @classmethod
     def abort(cls, button):
         button.setStyleSheet(cls.abort_tab)
@@ -98,5 +102,5 @@ class Stylize:
 
     @classmethod
     def table(cls, table: QtWidgets.QTableWidget):
-        pass
+        table.setStyleSheet(cls.table_style)
 
