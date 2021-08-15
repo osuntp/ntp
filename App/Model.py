@@ -1,3 +1,4 @@
+from Config import Config
 import pandas
 import LD
 from Log import Log
@@ -6,8 +7,8 @@ import time
 
 class Model:
 
-    hidden_data_buffer = 15000 # time in milliseconds (must be in ms since arduino is reporting ms)
-    shown_data_buffer = 10000 # time in milliseconds (must be in ms since arduino is reporting ms)
+    hidden_data_buffer = 15 # time in milliseconds (must be in ms since arduino is reporting ms)
+    shown_data_buffer = 10 # time in milliseconds (must be in ms since arduino is reporting ms)
 
     latest_values = [0]
 
@@ -20,6 +21,12 @@ class Model:
     daq_is_connected = False
     controller_is_connected = False
 
+    valve_position = 0
+    heater_status = 0
+    openFOAM_progress = 0
+
+    loaded_config: Config = None
+
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
@@ -28,6 +35,9 @@ class Model:
     def update(self, message: List):
         current_time = time.time()
         message.insert(0, current_time)
+        message.append(self.valve_position)
+        message.append(self.heater_status)
+        message.append(self.openFOAM_progress)
 
         # Add data point to diagnostics dataframe
         self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
@@ -52,7 +62,7 @@ class Model:
 
     def get_run_plot_data(self, name: str):
         if(self.ui_run_data.empty):
-            return [], []
+            return [0], [0]
 
         data_column = self.ui_run_data[name].tolist()
         time_column = self.ui_run_data['Time'].tolist()
@@ -73,6 +83,9 @@ class Model:
         while(time_column[0] < time_cutoff):
             time_column.pop(0)
             data_column.pop(0)
+
+            if(len(time_column) == 0):
+                return [0], [0]
 
         for i in range(len(data_column)):
             time_column[i] = float(round((time_column[i] - latest_time_stamp), 2))
@@ -112,6 +125,10 @@ class Model:
             data_column[i] = float(data_column[i])
             
             # print(time_column[i])
+
+        if(len(time_column == 0)):
+            time_column = [0]
+            data_column = [0]
 
         return time_column, data_column
 

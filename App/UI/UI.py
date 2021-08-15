@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import QMainWindow
 # from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
 
-# import matplotlib.pyplot as plt
-# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import pyqtgraph
 from PyQt5 import QtWidgets
 import os
 import Config
@@ -242,30 +241,136 @@ class Run:
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
-        self.plot1 = pyqt5.run_plot1.getPlotItem().plot()
-        # pyqt5.run_plot1.auto
+        # Checkboxes - Plot1
+        self.plot1_inlet_check = pyqt5.run_plot1_inlet_check
+        self.plot1_midpoint_check = pyqt5.run_plot1_midpoint_check
+        self.plot1_outlet_check = pyqt5.run_plot1_outlet_check
+        self.plot1_heat_sink_check = pyqt5.run_plot1_heat_sink_check
+
+        self.plot1_heat_sink_check.setChecked(True)
+
+        # Checkboxes - Plot2
+        self.plot2_inlet_check = pyqt5.run_plot2_inlet_check
+        self.plot2_midpoint_check = pyqt5.run_plot2_midpoint_check
+        self.plot2_outlet_check = pyqt5.run_plot2_outlet_check
+        self.plot2_tank_check = pyqt5.run_plot2_tank_check
+
+        self.plot2_tank_check.setChecked(True)
+
+        # Checkboxes - Plot3
+            # None
+
+        # Checkboxes - Plot4
+        self.plot4_valve_position_check = pyqt5.run_plot4_valve_position_check
+        self.plot4_heater_duty_check = pyqt5.run_plot4_heater_duty_check
+        self.plot4_openfoam_check = pyqt5.run_plot4_openfoam_check
+
+        self.plot4_valve_position_check.setChecked(True)
+
+        # Plot Settings
+        line_width = 2
+        margin_left = 10
+        margin_top = 0
+        margin_right = 130
+        margin_bottom = 10
+        background_color = (255,255,255)
+
+        # Actual Plot - Plot1
         pyqt5.run_plot1.setXRange(-10, 0)
-        # pyqt5.run_plot1.setYRange(0,1)
-        pyqt5.run_plot1.setBackground
-        # self.plot1.set_axis_labels('Time (s)', 'Temperature (C)')
+        pyqt5.run_plot1.setBackground(background_color)
 
-        self.plot2 = pyqt5.run_plot2.getPlotItem().plot()
+        plot_item = pyqt5.run_plot1.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Temperature (C)')
+        plot_item.showGrid(x=True, y=True)
+
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-17,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot1_inlet = plot_item.plot(name = 'Inlet')
+        self.plot1_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot1_outlet = plot_item.plot(name = 'Outlet')
+        self.plot1_heat_sink = plot_item.plot(name = 'Heat Sink')
+
+        self.plot1_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot1_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot1_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot1_heat_sink.setPen(pyqtgraph.mkPen(color='c', width = line_width))
+
+
+        # Actual Plot - Plot 2
         pyqt5.run_plot2.setXRange(-10, 0)
-        pyqt5.run_plot2.setYRange(0,1)
-        # self.plot2.set_axis_labels('Time (s)', 'Pressure (Pa)')
+        pyqt5.run_plot2.setBackground(background_color)
 
-        self.plot3 = pyqt5.run_plot3.getPlotItem().plot()
+        plot_item = pyqt5.run_plot2.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Pressure (Pa)')
+        plot_item.showGrid(x=True, y=True)
+
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-19,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot2_inlet = plot_item.plot(name = 'Inlet')
+        self.plot2_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot2_outlet = plot_item.plot(name = 'Outlet')
+        self.plot2_tank = plot_item.plot(name = 'Tank')
+
+        self.plot2_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot2_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot2_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot2_tank.setPen(pyqtgraph.mkPen(color='c', width = line_width))
+
+
+        # Actual Plot - Plot 3
         pyqt5.run_plot3.setXRange(-10, 0)
-        pyqt5.run_plot3.setYRange(0,1)
-        # self.plot3.set_axis_labels('Time (s)', 'Mass Flow (kg/s)')
+        pyqt5.run_plot3.setBackground(background_color)
 
-        self.plot4 = pyqt5.run_plot4.getPlotItem().plot()
+        plot_item = pyqt5.run_plot3.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Mass Flow (kg/s)')
+        plot_item.showGrid(x=True, y=True)
+
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-12,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot3_mass_flow = plot_item.plot(name = 'Mass Flow')
+
+        self.plot3_mass_flow.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+
+        # Actual Plot - Plot 4
         pyqt5.run_plot4.setXRange(-10, 0)
-        pyqt5.run_plot4.setYRange(0,1)
-        # self.plot4.set_axis_labels('Time (s)', 'Value')
+        pyqt5.run_plot4.setBackground(background_color)
+
+        plot_item = pyqt5.run_plot4.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Value')
+        plot_item.showGrid(x=True, y=True)
+
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((0,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot4_valve_position = plot_item.plot(name = 'Valve Pos')
+        self.plot4_heater_duty = plot_item.plot(name = 'Heater Duty')
+        self.plot4_openFOAM = plot_item.plot(name = 'OpenFOAM')
+
+        self.plot4_valve_position.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot4_heater_duty.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot4_openFOAM.setPen(pyqtgraph.mkPen(color='g', width = line_width))
 
         Stylize.button([self.load_button])
-        Stylize.set_start_button_active(self.start_button, True)
+        Stylize.set_button_active(self.start_button, False)
         Stylize.set_pause_button_active(self.pause_button, False)
         Stylize.table(self.sequence_table)
 

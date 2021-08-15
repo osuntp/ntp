@@ -2647,7 +2647,7 @@ border: 1px solid white;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Pressure (Pa)</string>
+                 <string>Pressures (Pa)</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2699,28 +2699,28 @@ border: 1px solid white;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_97">
+                   <widget class="QCheckBox" name="run_plot2_inlet_check">
                     <property name="text">
                      <string>Inlet</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_98">
+                   <widget class="QCheckBox" name="run_plot2_midpoint_check">
                     <property name="text">
                      <string>Midpoint</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_99">
+                   <widget class="QCheckBox" name="run_plot2_outlet_check">
                     <property name="text">
                      <string>Outlet</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_100">
+                   <widget class="QCheckBox" name="run_plot2_tank_check">
                     <property name="text">
                      <string>Tank</string>
                     </property>
@@ -2891,7 +2891,7 @@ border:2px solid black;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Temperature (C)</string>
+                 <string>Temperatures (C)</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2943,28 +2943,28 @@ border: 1px solid white;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_77">
+                   <widget class="QCheckBox" name="run_plot1_inlet_check">
                     <property name="text">
                      <string>Inlet</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_78">
+                   <widget class="QCheckBox" name="run_plot1_midpoint_check">
                     <property name="text">
                      <string>Midpoint</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_79">
+                   <widget class="QCheckBox" name="run_plot1_outlet_check">
                     <property name="text">
                      <string>Outlet</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_80">
+                   <widget class="QCheckBox" name="run_plot1_heat_sink_check">
                     <property name="text">
                      <string>Heat Sink</string>
                     </property>
@@ -3390,21 +3390,21 @@ border: 1px solid white;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_109">
+                   <widget class="QCheckBox" name="run_plot4_valve_position_check">
                     <property name="text">
                      <string>Valve Position</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_110">
+                   <widget class="QCheckBox" name="run_plot4_heater_duty_check">
                     <property name="text">
                      <string>Heater Duty Cycle</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_111">
+                   <widget class="QCheckBox" name="run_plot4_openfoam_check">
                     <property name="text">
                      <string>OpenFOAM</string>
                     </property>

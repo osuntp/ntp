@@ -103,4 +103,3 @@ class Stylize:
     @classmethod
     def table(cls, table: QtWidgets.QTableWidget):
         table.setStyleSheet(cls.table_style)
-

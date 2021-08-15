@@ -68,14 +68,81 @@ class Presenter:
     def on_ui_update(self):
         self.number += 1
 
-        x, y = self.model.get_run_plot_data('Heater TC')
-        self.ui.run.plot1.setData(x,y)
-        x, y = self.model.get_run_plot_data('Tank Pressure')
-        self.ui.run.plot2.setData(x,y)
+
+        # Update Plot1
+        if(self.ui.run.plot1_inlet_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Inlet TC')
+            self.ui.run.plot1_inlet.setData(x,y)
+        else:
+            self.ui.run.plot1_inlet.setData([0],[0])
+
+        if(self.ui.run.plot1_midpoint_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Midpoint TC')
+            self.ui.run.plot1_midpoint.setData(x,y)
+        else:
+            self.ui.run.plot1_midpoint.setData([0],[0])
+
+        if(self.ui.run.plot1_outlet_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Outlet TC')
+            self.ui.run.plot1_outlet.setData(x,y)
+        else:
+            self.ui.run.plot1_outlet.setData([0],[0])
+
+        if(self.ui.run.plot1_heat_sink_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Heater TC')
+            self.ui.run.plot1_heat_sink.setData(x,y)
+        else:
+            self.ui.run.plot1_heat_sink.setData([0],[0])
+
+        # Update Plot2
+        if(self.ui.run.plot2_inlet_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Inlet Pressure')
+            self.ui.run.plot2_inlet.setData(x,y)
+        else:
+            self.ui.run.plot2_inlet.setData([0],[0])
+
+        if(self.ui.run.plot2_midpoint_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Midpoint Pressure')
+            self.ui.run.plot2_midpoint.setData(x,y)
+        else:
+            self.ui.run.plot2_midpoint.setData([0],[0])
+
+        if(self.ui.run.plot2_outlet_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Outlet Pressure')
+            self.ui.run.plot2_outlet.setData(x,y)
+        else:
+            self.ui.run.plot2_outlet.setData([0],[0])
+
+        if(self.ui.run.plot2_tank_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Tank Pressure')
+            self.ui.run.plot2_tank.setData(x,y)
+        else:
+            self.ui.run.plot2_tank.setData([0],[0])
+
+        # Update Plot3
         x, y = self.model.get_run_plot_data('Mass Flow')
-        self.ui.run.plot3.setData(x,y)
-        x, y = self.model.get_run_plot_data('Outlet Pressure')
-        self.ui.run.plot4.setData(x,y)
+        self.ui.run.plot3_mass_flow.setData(x,y)
+
+        # Update Plot4
+        if(self.ui.run.plot4_valve_position_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Valve Position')
+            self.ui.run.plot4_valve_position.setData(x,y)
+        else:
+            self.ui.run.plot4_valve_position.setData([0],[0])
+
+        if(self.ui.run.plot4_heater_duty_check.isChecked()):
+            x, y = self.model.get_run_plot_data('Heater Status')
+            self.ui.run.plot4_heater_duty.setData(x,y)
+        else:
+            self.ui.run.plot4_heater_duty.setData([0],[0])
+
+        if(self.ui.run.plot4_openfoam_check.isChecked()):
+            x, y = self.model.get_run_plot_data('OpenFOAM Progress')
+            self.ui.run.plot4_openFOAM.setData(x,y)
+        else:
+            self.ui.run.plot4_openFOAM.setData([0],[0])
+
+
 
         if(self.model.trial_is_running):
             self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_time, 1)))
@@ -179,7 +246,7 @@ class Presenter:
             return
 
         config: Config.Config = Config.open_file(file_name)
-        
+        self.model.loaded_config = config
         self.ui.run.set_loaded_trial_text(config.trial_name)
         self.ui.run.set_start_button_active(True)
         self.ui.run.set_sequence_table(config)
