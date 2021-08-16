@@ -114,7 +114,7 @@ class DAQ(Simulator):
         message = f'<stdout, {mass_flow}, {heater_current}, {heater_tc}, {heater_tc_it}, {inlet_tc}, {inlet_tc_it}, {midpoint_tc}, {midpoint_tc_it}, {outlet_tc}, {outlet_tc_it}, {tank_press}, {inlet_press}, {midpoint_press}, {outlet_press}>\n'.encode('utf-8')
         self.write(message)
             
-class Controller():
+class Controller(Simulator):
     def __init__(self, port, baudrate=9600, timeout=1):
         self.app_connected = False
         Simulator.__init__(self, port, baudrate, timeout)
