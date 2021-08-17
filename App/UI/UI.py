@@ -213,20 +213,24 @@ class Configuration:
         self.clear_sequence_table()
 
         self.status.setText('')
+        self.trial_name_field.setText('')
+        self.description_field.setPlainText('')
 
     def clear_blue_line_table(self):
         table = self.blue_lines_table
 
         while(table.rowCount() > 0.5):
+            
             table.removeRow(table.rowCount() - 1)
 
         # Result will be 1 empty row
-        self.add_row_to_blue_lines_table
+        self.add_row_to_blue_lines_table()
 
     def clear_sequence_table(self):
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
+            
             table.removeRow(table.rowCount() - 1)
 
         # Result will be 1 empty row
