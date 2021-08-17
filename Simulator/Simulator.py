@@ -66,12 +66,15 @@ class Simulator:
             else:
                 key = b'<Controller START>\n'
                 response = b'<Controller>\n'
-            message = self.readln()
-            print('line read')
-            if message == key:
-                self.app_connected = True
-                self.write(response)
-                print('Connected to app.')
+            
+            if(self.ser.in_waiting > 0):
+
+                message = self.readln()
+                print('line read')
+                if message == key:
+                    self.app_connected = True
+                    self.write(response)
+                    print('Connected to app.')
         return True
 
     def disconnect_from_app(self, ID):
@@ -85,6 +88,8 @@ class Simulator:
                     key = b'<Controller STOP>\n'
                     response = b'<Controller>\n'
                 message = self.readln()
+                print(message)
+                print(key)
                 if message == key:
                     self.app_connected = False
                     self.write(response)
@@ -122,9 +127,14 @@ class Controller(Simulator):
     def receive_command(self):
         if self.app_connected:
             if(self.ser.in_waiting > 0):
-                message = self.readln()
+                message = self.readln().decode('utf-8')
                 parts = re.findall('[<\s](.*?)[,>]',message)
-                if len(parts) == '3':
+                
+                if(parts[0] == 'Controller STOP'):
+                    self.app_connected = False
+                    self.write(b'<Controller>\n')
+
+                if len(parts) == 3:
                     if parts[0] == 'stdin':
                         if parts[1] == 'valve':
                             try:
@@ -141,3 +151,6 @@ class Controller(Simulator):
                                 self.write(f'<stderr, heater value not recognized: {parts[2]}'.encode('utf-8'))
                         else:
                             self.write(b'<stderr, command not recognized>\n')
+                
+
+                
