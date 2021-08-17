@@ -2,6 +2,7 @@ import sys
 import glob
 
 import serial
+from serial.serialutil import SerialException
 from Model import Model
 from Log import Log
 import time
@@ -17,11 +18,11 @@ class Arduino(Enum):
 class SerialMonitor:
     daq_id = 'daq'
     controller_id = 'controller'
-    arduinos_are_connected = False
     daq_arduino = None
     controller_arduino = None
     baudrate = 9600
-    daq_buffer = ""
+    daq_buffer = ''
+    controller_buffer = ''
 
     model: Model = None
 
@@ -30,42 +31,95 @@ class SerialMonitor:
 
     def write(self, arduino: Arduino, message: str):
         if(arduino == Arduino.CONTROLLER):
-            self.controller_arduino.write(message.encode())
+            self.controller_arduino.write(message.encode('utf-8'))
         elif(arduino == Arduino.DAQ):
-            self.daq_arduino.write(message.encode())
+            self.daq_arduino.write(message.encode('utf-8'))
 
     def connect_arduinos(self, daq_port: str, controller_port:str):
-        self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate)
-        # self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate)
+        # CONNECT DAQ
 
-        self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
-        waiting_for_ID_message = True
-        while(waiting_for_ID_message):
-            in_waiting = self.daq_arduino.in_waiting
-            
-            if(in_waiting > 0):
-                self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
-                while '\n' in self.daq_buffer: #split data line by line and store it in var
-                    raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
-                    clean_message = LD.clean(raw_message_line)
-                    if(clean_message[0] == "DAQ"):
-                        waiting_for_ID_message = False
-                        self.model.daq_is_connected = True
+        try:
+            if(self.daq_arduino is None):
+                self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate, write_timeout = 0)
+                self.daq_arduino.write
 
-            time.sleep(0.01)
-        self.start_data_collection_loop()
+                self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
+                
+                waiting_for_response = True
 
+                time_out = time.time() + 3
 
+                while(waiting_for_response):
 
-    def start_data_collection_loop(self):
-        self.data_collection_thread = threading.Thread(target = self.data_collection_loop)
+                    in_waiting = self.daq_arduino.in_waiting
+                    
+                    if(in_waiting > 0):
+                        self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+
+                        while '\n' in self.daq_buffer: #split data line by line and store it in var
+                            raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
+                            clean_message = LD.clean(raw_message_line)
+
+                            if(clean_message[0] == 'DAQ'):
+                                self.model.daq_status_text = 'Connected'
+                                waiting_for_response = False
+                                self.model.daq_is_connected = True
+                                self.start_daq_monitor_loop()
+
+                    if(time.time() > time_out):
+                        self.model.daq_status_text = 'Connection Timed Out'
+                        self.daq_arduino.close()
+                        self.daq_arduino = None
+                        waiting_for_response = False
+
+                    time.sleep(0.1)
+        except SerialException:
+            self.model.daq_status_text = 'Invalid Port'
+
+        # CONNECT CONTROLLER
+        try:
+
+            if(self.controller_arduino is None):
+                self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate, write_timeout = 0)
+
+                self.controller_arduino.write('<Controller START>\n'.encode('utf-8'))
+                
+                time_out = time.time() + 3
+                waiting_for_response = True
+
+                while(waiting_for_response):
+                    in_waiting = self.controller_arduino.in_waiting
+
+                    if(in_waiting > 0):
+                        self.controller_buffer += self.controller_arduino.read(in_waiting).decode('utf-8')
+
+                        while '\n' in self.controller_buffer:
+                            raw_message_line, self.controller_buffer = self.controller_buffer.split('\n',1)
+                            clean_message = LD.clean(raw_message_line)
+
+                            if(clean_message[0] == 'Controller'):
+                                self.model.controller_status_text = 'Connected'
+                                waiting_for_response = False
+                                self.model.controller_is_connected = True
+                    time.sleep(0.1)
+
+                    if(time.time() > time_out):
+                        self.model.controller_status_text = 'Connection Timed Out'
+                        self.controller_arduino.close()
+                        self.controller_arduino = None
+                        waiting_for_response = False
+        except SerialException:
+            self.model.controller_status_text = 'Invalid Port'
+
+    def start_daq_monitor_loop(self):
+        self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)
         self.data_collection_thread.start()
 
-    def data_collection_loop(self):
+    def daq_monitor_loop(self):
 
-        self.loop_is_running = True
+        self.daq_monitor_loop_is_running = True
 
-        while(self.loop_is_running):
+        while(self.daq_monitor_loop_is_running):
 
             self.read_from_daq()
 
@@ -74,6 +128,9 @@ class SerialMonitor:
         print('data collection loop exiting')
 
     def read_from_daq(self):
+        if(self.daq_arduino is None):
+            return
+
         in_waiting = self.daq_arduino.in_waiting
         print('in waiting is' + str(in_waiting))
         if(in_waiting > 0):
@@ -102,13 +159,47 @@ class SerialMonitor:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
     def disconnect_arduinos(self):
-        if self.daq_arduino is not None:
+        if(self.daq_arduino is not None):
+            self.write(Arduino.DAQ, '<DAQ STOP>\n')
+
+            waiting_for_response = True
+            while(waiting_for_response):
+                in_waiting = self.daq_arduino.in_waiting
+
+                if(in_waiting > 0):
+                    self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+
+                    while '\n' in self.daq_buffer:
+                        raw_message_line, self.daq_buffer = self.daq_buffer.split('\n',1)
+                        clean_message = LD.clean(raw_message_line)
+                        if(clean_message[0] == 'DAQ'):
+                            waiting_for_response = False
+                            self.model.daq_is_connected = False
+                time.sleep(0.01)
             self.daq_arduino.close()
             self.daq_arduino = None
 
-        if self.controller_arduino is not None:
+        if(self.controller_arduino is not None):
+            self.write(Arduino.CONTROLLER, '<Controller STOP>\n')
+
+            waiting_for_response = True
+            while(waiting_for_response):
+                in_waiting = self.controller_arduino.in_waiting
+
+                if(in_waiting > 0):
+                    self.controller_buffer += self.controller_arduino.read(in_waiting).decode('utf-8')
+
+                    while '\n' in self.controller_buffer:
+                        raw_message_line, self.controller_buffer = self.controller_buffer.split('\n',1)
+                        clean_message = LD.clean(raw_message_line)
+                        if(clean_message[0] == 'Controller'):
+                            waiting_for_response = False
+                            self.model.controller_is_connected = True
+
             self.controller_arduino.close()
             self.controller_arduino = None
+
+        self.daq_monitor_loop_is_running = False
 
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()

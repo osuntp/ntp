@@ -2,17 +2,16 @@ from StateMachine import TestStand
 from StateMachine import TestStandStates
 import Model
 import SM
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5 import QtWidgets
 from UI import UI
 from Log import Log
 import threading
 import Config
-import time
 from UI.Stylize import Stylize
 
 class Presenter:
 
+    app: QtWidgets.QApplication = None
     ui: UI.UI = None
     model: Model.Model = None
     serial_monitor: SM.SerialMonitor = None
@@ -48,6 +47,7 @@ class Presenter:
         self.ui.configuration.sequence_minus_button.clicked.connect(self.configuration_sequence_minus_clicked)
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
+        self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
 
 
         # Run
@@ -60,14 +60,14 @@ class Presenter:
 
     def __start_ui_update_loop(self):
         self.ui_update_thread = UI.UpdateThread()
-        self.number = 0
         self.ui_update_thread.set_max_frequency(0.5)
         self.ui_update_thread.update_signal.connect(self.on_ui_update)
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-        self.number += 1
 
+        self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
+        self.ui.setup.controller_status_label.setText(self.model.controller_status_text)
 
         # Update Plot1
         if(self.ui.run.plot1_inlet_check.isChecked()):
@@ -142,20 +142,8 @@ class Presenter:
         else:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
-
-
         if(self.model.trial_is_running):
             self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_time, 1)))
-
-        if(self.model.daq_is_connected):
-            self.ui.setup.daq_status_label.setText('Connected')
-        else:
-            self.ui.setup.daq_status_label.setText('Not Connected')
-
-        if(self.model.controller_is_connected):
-            self.ui.setup.controller_status_label.setText('Connected')
-        else:
-            self.ui.setup.controller_status_label.setText('Not Connected')
 
 
     def tab_clicked(self, tab_index):
@@ -171,12 +159,17 @@ class Presenter:
 
 # SETUP PAGE LOGIC
 
-    def setup_manual_connect_clicked(self):
-        print('presenter: setup_manual_connect_clicked: hit')   
+    def setup_manual_connect_clicked(self): 
         daq_port = self.ui.setup.daq_port_field.text()
         controller_port = self.ui.setup.controller_port_field.text()
-
+        self.ui.setup.controller_status_label.setText('Attempting to Connect...')
+        self.ui.setup.daq_status_label.setText('Attempting to Connect...')
+        Stylize.set_button_active(self.ui.setup.manual_connect_button, False)
+        self.ui.setup.manual_connect_button.setDisabled(True)
+        self.app.processEvents()
         self.serial_monitor.connect_arduinos(daq_port, controller_port)
+        Stylize.set_button_active(self.ui.setup.manual_connect_button, True)
+        self.ui.setup.manual_connect_button.setDisabled(False)
 
 
 # CONFIGURATION PAGE LOGIC
@@ -191,7 +184,7 @@ class Presenter:
         self.ui.configuration.remove_row_from_sequence_table()
 
     def configuration_clear_clicked(self):
-        pass
+        self.ui.configuration.clear_all()
 
     def configuration_save_clicked(self):
         self.config_validation_thread = Config.ValidationThread(self.ui)

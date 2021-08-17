@@ -56,6 +56,7 @@ if __name__ == "__main__":
     presenter.test_stand_standby_state = standby_state
     presenter.test_stand_idle_state = idle_state
     presenter.test_stand_auto_state = auto_state
+    presenter.app = app
     serial_monitor.model = model
 
     # Setup

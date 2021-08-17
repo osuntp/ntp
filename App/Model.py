@@ -7,6 +7,9 @@ import time
 
 class Model:
 
+    daq_status_text = 'Not Connected'
+    controller_status_text = 'Not Connected'
+
     hidden_data_buffer = 15 # time in milliseconds (must be in ms since arduino is reporting ms)
     shown_data_buffer = 10 # time in milliseconds (must be in ms since arduino is reporting ms)
 
@@ -42,6 +45,7 @@ class Model:
         # Add data point to diagnostics dataframe
         self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
         while((self.latest_values[0] - self.ui_diagnostics_data['Time'].iloc[0]) > self.hidden_data_buffer):
+            
             self.ui_diagnostics_data = self.ui_diagnostics_data.iloc[1: , :]
 
         if(self.trial_is_running):
@@ -57,6 +61,7 @@ class Model:
 
                 while((self.latest_values[0] - self.ui_run_data['Time'].iloc[0]) > self.hidden_data_buffer):
                     self.ui_run_data = self.ui_run_data.iloc[1: , :]
+                    
 
         self.latest_values = message        
 
@@ -81,6 +86,7 @@ class Model:
         time_cutoff = latest_time_stamp - self.shown_data_buffer  
 
         while(time_column[0] < time_cutoff):
+            
             time_column.pop(0)
             data_column.pop(0)
 
