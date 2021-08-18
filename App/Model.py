@@ -18,6 +18,7 @@ class Model:
     time_between_plot_points = 0.1
     time_of_last_plot_point = 0
 
+    last_trial_time_stamp = 0
     trial_time = 0
     trial_is_running = False
     trial_is_paused = False
