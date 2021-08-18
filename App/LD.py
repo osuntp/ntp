@@ -6,19 +6,25 @@ Created on Thu Jul 15 04:53:51 2021
 """
 from pandas import DataFrame
 import datetime
-import re
 from typing import List
 
 columns = ['Time', 'Mass Flow', 'Heater Current', 'Heater TC', 'Heater TC IT', 'Inlet TC', 'Inlet TC IT', 'Midpoint TC', 'Midpoint TC IT', 'Outlet TC', 'Outlet TC IT', 'Tank Pressure', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Valve Position', 'Heater Status', 'OpenFOAM Progress']
 
 # TODO: Settle on how we want CSV file names to be generated
-def __new_save_file_name():
+def __new_save_file_name(trial_name: str, is_aborted_trial: bool):
     now = datetime.datetime.now()
     current_time = now.strftime("%H%M%S")
-    return 'ExperimentData_' + current_time + '.csv'
+    
+    if(is_aborted_trial):
+        prefix = 'ABORTED_'
+    else:
+        prefix = ''
 
-def save_to_csv(dataframe: DataFrame):
-    CSV_file_name = __new_save_file_name()
+    return prefix + 'trial_data_' + trial_name + '_' + current_time + '.csv'
+
+def save_to_csv(dataframe: DataFrame, trial_name: str, is_aborted_trial: bool):
+    CSV_file_name = __new_save_file_name(trial_name, is_aborted_trial)
+
     dataframe.to_csv(CSV_file_name)
 
 # TODO: Revisit, we'll want a different reg ex so that we can handle other types of messages from arduino (like ID and errors)

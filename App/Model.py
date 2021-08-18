@@ -141,8 +141,8 @@ class Model:
 
         return time_column, data_column
 
-    def save_trial_data(self):
-        LD.save_to_csv(self.trial_data)
+    def save_trial_data(self, is_aborted_trial: bool):
+        LD.save_to_csv(self.trial_data, self.loaded_config.trial_name, is_aborted_trial)
 
         
 
