@@ -132,7 +132,6 @@ class SerialMonitor:
             return
 
         in_waiting = self.daq_arduino.in_waiting
-        print('in waiting is' + str(in_waiting))
         if(in_waiting > 0):
 
             # Add everything from serial to daq_buffer

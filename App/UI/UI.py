@@ -1,4 +1,5 @@
 
+from PyQt5.QtGui import QFont
 from UI.QT5_Generated_UI import Ui_MainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
@@ -110,6 +111,23 @@ class Diagnostics:
 
     def set_heater_set_point(self, value: float):
         self.heater_set_point.setText(str(value))
+
+class Setup:
+    def __init__(self, pyqt5: Ui_MainWindow):
+        self.daq_status_label = pyqt5.setup_daq_status_label
+        self.controller_status_label = pyqt5.setup_controller_status_label
+
+        self.daq_port_field = pyqt5.setup_daq_port_field
+        self.controller_port_field = pyqt5.setup_controller_port_field
+
+        self.auto_connect_button = pyqt5.setup_autoconnect_button
+        self.manual_connect_button = pyqt5.setup_manualconnect_button
+
+        self.setting_ui_frequency_field = pyqt5.setup_ui_frequency_field
+        self.apply_settings_button = pyqt5.setup_apply_settings_button
+
+        Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
+        Stylize.set_button_active(self.auto_connect_button, False)
 
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):
@@ -406,22 +424,25 @@ class Run:
             item.setText(str(config.sequence_power[i]))
             table.setItem(i, 1, item)
 
-class Setup:
-    def __init__(self, pyqt5: Ui_MainWindow):
-        self.daq_status_label = pyqt5.setup_daq_status_label
-        self.controller_status_label = pyqt5.setup_controller_status_label
+    def set_sequence_table_row_bold(self, row_int):
+        table = self.sequence_table
 
-        self.daq_port_field = pyqt5.setup_daq_port_field
-        self.controller_port_field = pyqt5.setup_controller_port_field
+        bold_font = QFont()
+        bold_font.setBold(True)
 
-        self.auto_connect_button = pyqt5.setup_autoconnect_button
-        self.manual_connect_button = pyqt5.setup_manualconnect_button
+        normal_font = QFont()
 
-        self.setting_ui_frequency_field = pyqt5.setup_ui_frequency_field
-        self.apply_settings_button = pyqt5.setup_apply_settings_button
+        row_count = table.rowCount()
+        column_count = table.columnCount()
+        
+        for i in range(row_count):
+            for j in range(column_count):
+                if(i == row_int):
+                    table.item(i,j).setFont(bold_font)
+                else:
+                    table.item(i,j).setFont(normal_font)
 
-        Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
-        Stylize.set_button_active(self.auto_connect_button, False)
+
 
 
 

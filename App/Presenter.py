@@ -142,8 +142,22 @@ class Presenter:
         else:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
+
+        # If Trial is running
         if(self.model.trial_is_running):
             self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_time, 1)))
+
+            next_index = self.model.current_trial_time_stamp_index + 1
+            
+            print(next_index)
+            print(len(self.model.loaded_config.blue_lines_time_step) - 1)
+            if next_index < (len(self.model.loaded_config.blue_lines_time_step) - 1):
+                if(self.model.trial_time > self.model.loaded_config.blue_lines_time_step[next_index]):
+                    self.model.current_trial_time_stamp_index = next_index
+                    self.ui.run.set_sequence_table_row_bold(next_index)
+
+
+
 
 
     def tab_clicked(self, tab_index):

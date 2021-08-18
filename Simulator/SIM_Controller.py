@@ -2,7 +2,7 @@ from Simulator import Controller
 import time
 
 if __name__ == "__main__":
-    C = Controller(port='COM5',baudrate=9600)
+    C = Controller(port='COM7',baudrate=9600)
     try:
 
         C.connect()

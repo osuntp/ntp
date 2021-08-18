@@ -30,6 +30,8 @@ class Model:
 
     loaded_config: Config = None
 
+    current_trial_time_stamp_index = 0
+
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
