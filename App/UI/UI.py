@@ -64,6 +64,14 @@ class UI:
     def set_heater_status_light_is_lit(self, isLit: bool):
         Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
 
+    def set_abort_tab_clickable(self, is_active):
+        if(is_active):
+            Stylize.abort(self.abort_tab)
+        else:
+            Stylize.set_button_active(self.abort_tab, False)
+
+        self.abort_tab.setEnabled(is_active)
+
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
         self.plot1 = pyqt5.diagnostics_plot1.getPlotItem()
@@ -393,11 +401,10 @@ class Run:
 
         Stylize.button([self.load_button])
         Stylize.set_button_active(self.start_button, False)
+        self.start_button.setEnabled(False)
         Stylize.set_pause_button_active(self.pause_button, False)
+        self.pause_button.setEnabled(False)
         Stylize.table(self.sequence_table)
-
-    def set_start_button_active(self, isActive: bool):
-        Stylize.set_start_button_active(self.start_button, isActive)
 
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
@@ -442,9 +449,13 @@ class Run:
                 else:
                     table.item(i,j).setFont(normal_font)
 
+    def set_start_button_clickable(self, is_clickable):
+        Stylize.set_start_button_active(self.start_button, is_clickable)
+        self.start_button.setEnabled(is_clickable)
 
-
-
+    def set_pause_button_clickable(self, is_clickable):
+        Stylize.set_pause_button_active(self.pause_button, is_clickable)
+        self.pause_button.setEnabled(is_clickable)
 
 class UpdateThread(QThread):
     update_signal = pyqtSignal()

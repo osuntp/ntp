@@ -162,23 +162,29 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        
-        Stylize.set_start_button_active(self.ui.run.start_button, False)
-        Stylize.set_pause_button_active(self.ui.run.pause_button, False)
+        if(self.model.trial_is_paused or self.model.trial_is_running):
 
-        self.test_stand.switch_state(self.test_stand_standby_state)
-        self.ui.run.start_button.setText('Aborting.')
-        self.app.processEvents()
-        time.sleep(0.5)
-        self.ui.run.start_button.setText('Aborting. .')
-        self.app.processEvents()
-        time.sleep(0.5)
-        self.ui.run.start_button.setText('Aborting. . .')
-        self.app.processEvents()
-        time.sleep(0.5)
-        Stylize.set_start_button_active(self.ui.run.start_button, True)
-        self.ui.run.start_button.setText('Start')
-        self.ui.run.set_sequence_table_row_bold(-1)
+            Log.info('ABORTING CURRENT TRIAL')
+            Log.info('Saving ')
+            self.ui.run.set_start_button_clickable(False)
+            self.ui.run.set_pause_button_clickable(False)
+            self.ui.set_abort_tab_clickable(False)
+
+            self.test_stand.switch_state(self.test_stand_standby_state)
+            self.ui.run.start_button.setText('Aborting.')
+            self.app.processEvents()
+            time.sleep(0.5)
+            self.ui.run.start_button.setText('Aborting. .')
+            self.app.processEvents()
+            time.sleep(0.5)
+            self.ui.run.start_button.setText('Aborting. . .')
+            self.app.processEvents()
+            time.sleep(0.5)
+            self.ui.run.set_start_button_clickable(True)
+            self.ui.set_abort_tab_clickable(True)
+            self.ui.run.start_button.setText('Start')
+            self.ui.run.set_sequence_table_row_bold(-1)
+            self.model.save_trial_data(True)
 
 # SETUP PAGE LOGIC
 
@@ -224,7 +230,7 @@ class Presenter:
         if(validation_was_successful):
             file_name = Config.get_save_file_name_from_user()
 
-            if(file_name == ""):
+            if(file_name == ''):
                 return
 
             trial_name = self.ui.configuration.trial_name_field.text()
@@ -236,24 +242,19 @@ class Presenter:
 
 # RUN PAGE LOGIC
     def run_start_clicked(self):
-        if(self.model.trial_is_paused):
-            self.test_stand.switch_state(self.test_stand_auto_state)
-            Stylize.set_start_button_active(self.ui.run.start_button, False)
-            Stylize.set_pause_button_active(self.ui.run.pause_button, True) 
-        else:
-            if(not self.model.trial_is_running):
-                self.test_stand.switch_state(self.test_stand_auto_state)
-                self.ui.run.set_sequence_table_row_bold(0)
-                Stylize.set_start_button_active(self.ui.run.start_button, False)
-                Stylize.set_pause_button_active(self.ui.run.pause_button, True)  
+        if not(self.model.trial_is_paused):
+            self.ui.run.set_sequence_table_row_bold(0)
 
-        
+        self.test_stand.switch_state(self.test_stand_auto_state)
+        self.ui.run.set_start_button_clickable(False)
+        self.ui.run.set_pause_button_clickable(True)
+
     def run_paused_clicked(self):
-        if(self.model.trial_is_running and not self.model.trial_is_paused):
-            self.test_stand.switch_state(self.test_stand_idle_state)
-            Stylize.set_start_button_active(self.ui.run.start_button, True)
-            Stylize.set_pause_button_active(self.ui.run.pause_button, False)
-            self.ui.run.start_button.setText('Resume Trial at ' + str(round(self.model.trial_time,1)))
+        print('pause button clicked')
+        self.test_stand.switch_state(self.test_stand_idle_state)
+        self.ui.run.set_start_button_clickable(True)
+        self.ui.run.set_pause_button_clickable(False)
+        self.ui.run.start_button.setText('Resume Trial at ' + str(round(self.model.trial_time,1)))
 
     def run_load_clicked(self):
         file_name = Config.select_file()
@@ -264,5 +265,5 @@ class Presenter:
         config: Config.Config = Config.open_file(file_name)
         self.model.loaded_config = config
         self.ui.run.set_loaded_trial_text(config.trial_name)
-        self.ui.run.set_start_button_active(True)
+        self.ui.run.set_start_button_clickable(True)
         self.ui.run.set_sequence_table(config)
