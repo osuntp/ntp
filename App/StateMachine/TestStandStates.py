@@ -41,20 +41,17 @@ class DemoAutoState(AbstractState):
     temperature_target: float = 30
     deadzone: float = 10
 
-
-    last_time_stamp = 0
-
     def enter_state(self):
         Log.info('Test Stand has entered the Auto State.')
         self.model.trial_is_running = True
         self.model.trial_is_paused = False
-        self.last_time_stamp = time.time()
+        self.model.last_trial_time_stamp = time.time()
 
     def tick(self):
         time_stamp = time.time()
-        delta_time = time_stamp - self.last_time_stamp
+        delta_time = time_stamp - self.model.last_trial_time_stamp
         self.model.trial_time = self.model.trial_time + delta_time
-        self.last_time_stamp = time_stamp
+        self.model.last_trial_time_stamp = time_stamp
 
     def exit_state(self):
         pass
@@ -77,8 +74,10 @@ class DemoStandbyState(AbstractState):
     def enter_state(self):
         Log.info('Test Stand has entered the Standby State')
         self.model.trial_time = 0
+        self.model.current_trial_time_stamp_index = 0
         self.model.trial_is_running = False
         self.model.trial_is_paused = False
+        
 
     def tick(self):
         pass
