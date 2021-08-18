@@ -5,7 +5,7 @@ import SM
 from PyQt5 import QtWidgets
 from UI import UI
 from Log import Log
-import threading
+import time
 import Config
 from UI.Stylize import Stylize
 
@@ -149,16 +149,10 @@ class Presenter:
 
             next_index = self.model.current_trial_time_stamp_index + 1
             
-            print(next_index)
-            print(len(self.model.loaded_config.blue_lines_time_step) - 1)
-            if next_index < (len(self.model.loaded_config.blue_lines_time_step) - 1):
-                if(self.model.trial_time > self.model.loaded_config.blue_lines_time_step[next_index]):
+            if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
+                if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
                     self.model.current_trial_time_stamp_index = next_index
                     self.ui.run.set_sequence_table_row_bold(next_index)
-
-
-
-
 
     def tab_clicked(self, tab_index):
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
@@ -168,8 +162,23 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        # self.model.stop
-        pass
+        
+        Stylize.set_start_button_active(self.ui.run.start_button, False)
+        Stylize.set_pause_button_active(self.ui.run.pause_button, False)
+
+        self.test_stand.switch_state(self.test_stand_standby_state)
+        self.ui.run.start_button.setText('Aborting.')
+        self.app.processEvents()
+        time.sleep(0.5)
+        self.ui.run.start_button.setText('Aborting. .')
+        self.app.processEvents()
+        time.sleep(0.5)
+        self.ui.run.start_button.setText('Aborting. . .')
+        self.app.processEvents()
+        time.sleep(0.5)
+        Stylize.set_start_button_active(self.ui.run.start_button, True)
+        self.ui.run.start_button.setText('Start')
+        self.ui.run.set_sequence_table_row_bold(-1)
 
 # SETUP PAGE LOGIC
 
@@ -227,7 +236,6 @@ class Presenter:
 
 # RUN PAGE LOGIC
     def run_start_clicked(self):
-
         if(self.model.trial_is_paused):
             self.test_stand.switch_state(self.test_stand_auto_state)
             Stylize.set_start_button_active(self.ui.run.start_button, False)
@@ -235,6 +243,7 @@ class Presenter:
         else:
             if(not self.model.trial_is_running):
                 self.test_stand.switch_state(self.test_stand_auto_state)
+                self.ui.run.set_sequence_table_row_bold(0)
                 Stylize.set_start_button_active(self.ui.run.start_button, False)
                 Stylize.set_pause_button_active(self.ui.run.pause_button, True)  
 

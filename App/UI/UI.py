@@ -434,7 +434,7 @@ class Run:
 
         row_count = table.rowCount()
         column_count = table.columnCount()
-        
+
         for i in range(row_count):
             for j in range(column_count):
                 if(i == row_int):

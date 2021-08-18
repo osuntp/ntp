@@ -154,6 +154,8 @@ def open_file(file_name: str):
     sequence_time_step = [float(x) for x in sequence_time_step]
     sequence_power = [float(x) for x in sequence_power]
 
+    print('Sequence time step length is ' + str(len(sequence_time_step)))
+
     return Config(trial_name, description, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power)
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
