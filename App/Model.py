@@ -10,8 +10,7 @@ class Model:
     daq_status_text = 'Not Connected'
     controller_status_text = 'Not Connected'
 
-    hidden_data_buffer = 15 # time in milliseconds (must be in ms since arduino is reporting ms)
-    shown_data_buffer = 10 # time in milliseconds (must be in ms since arduino is reporting ms)
+    hidden_data_buffer = 90 # time in seconds
 
     latest_values = [0]
 
@@ -32,6 +31,12 @@ class Model:
     loaded_config: Config = None
 
     current_trial_time_stamp_index = 0
+
+    # plot1_buffer = 10
+    # plot2_buffer = 10
+    # plot3_buffer = 10
+    # plot4_buffer = 10
+
 
     def __init__(self):
         self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
@@ -86,21 +91,19 @@ class Model:
 
         latest_time_stamp = self.latest_values[0]
 
-        time_cutoff = latest_time_stamp - self.shown_data_buffer  
+        # time_cutoff = latest_time_stamp - shown_data_buffer 
 
-        while(time_column[0] < time_cutoff):
+        # while(time_column[0] <= time_cutoff):
             
-            time_column.pop(0)
-            data_column.pop(0)
+        #     time_column.pop(0)
+        #     data_column.pop(0)
 
-            if(len(time_column) == 0):
-                return [0], [0]
+        #     if(len(time_column) == 0):
+        #         return [0], [0]
 
         for i in range(len(data_column)):
             time_column[i] = float(round((time_column[i] - latest_time_stamp), 2))
             data_column[i] = float(data_column[i])
-            
-            # print(time_column[i])
 
         return time_column, data_column
 
