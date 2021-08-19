@@ -244,13 +244,16 @@ class Presenter:
     def run_start_clicked(self):
         if not(self.model.trial_is_paused):
             self.ui.run.set_sequence_table_row_bold(0)
-
+            Log.info('Trial has started.')
+        else:
+            Log.info('Trial has resumed.')
+        
         self.test_stand.switch_state(self.test_stand_auto_state)
         self.ui.run.set_start_button_clickable(False)
         self.ui.run.set_pause_button_clickable(True)
 
     def run_paused_clicked(self):
-        print('pause button clicked')
+        Log.info('Trial has paused.')
         self.test_stand.switch_state(self.test_stand_idle_state)
         self.ui.run.set_start_button_clickable(True)
         self.ui.run.set_pause_button_clickable(False)
@@ -262,6 +265,7 @@ class Presenter:
         if(file_name == ''):
             return
 
+        Log.info('Trial configuration has been loaded.')
         config: Config.Config = Config.open_file(file_name)
         self.model.loaded_config = config
         self.ui.run.set_loaded_trial_text(config.trial_name)
