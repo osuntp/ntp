@@ -6,6 +6,7 @@ Created on Thu Jul 15 04:53:51 2021
 """
 from pandas import DataFrame
 import datetime
+import os
 from typing import List
 
 columns = ['Time', 'Mass Flow', 'Heater Current', 'Heater TC', 'Heater TC IT', 'Inlet TC', 'Inlet TC IT', 'Midpoint TC', 'Midpoint TC IT', 'Outlet TC', 'Outlet TC IT', 'Tank Pressure', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Valve Position', 'Heater Status', 'OpenFOAM Progress']
@@ -23,9 +24,17 @@ def __new_save_file_name(trial_name: str, is_aborted_trial: bool):
     return prefix + 'trial_data_' + trial_name + '_' + current_time + '.csv'
 
 def save_to_csv(dataframe: DataFrame, trial_name: str, is_aborted_trial: bool):
+
+    folder_name = 'Saved_Data/'
+
+    isdir = os.path.isdir(folder_name)
+
+    if not (isdir):
+        os.mkdir(folder_name)
+
     CSV_file_name = __new_save_file_name(trial_name, is_aborted_trial)
 
-    dataframe.to_csv(CSV_file_name)
+    dataframe.to_csv(folder_name + CSV_file_name)
 
 # TODO: Revisit, we'll want a different reg ex so that we can handle other types of messages from arduino (like ID and errors)
 def clean(raw_message_string: str):
