@@ -14,7 +14,7 @@ class Log:
         isdir = os.path.isdir(folder_name)
 
         if not (isdir):
-            os.mkdir('Logs/')
+            os.mkdir(folder_name)
 
         
         cls.file_path = folder_name + file_name

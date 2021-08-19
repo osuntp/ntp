@@ -47,7 +47,7 @@ class SerialMonitor:
                 
                 waiting_for_response = True
 
-                time_out = time.time() + 3
+                time_out = time.time() + 2
 
                 while(waiting_for_response):
 
@@ -84,7 +84,7 @@ class SerialMonitor:
 
                 self.controller_arduino.write('<Controller START>\n'.encode('utf-8'))
                 
-                time_out = time.time() + 3
+                time_out = time.time() + 2
                 waiting_for_response = True
 
                 while(waiting_for_response):
@@ -160,21 +160,22 @@ class SerialMonitor:
     def disconnect_arduinos(self):
         if(self.daq_arduino is not None):
             self.write(Arduino.DAQ, '<DAQ STOP>\n')
-
             waiting_for_response = True
             while(waiting_for_response):
                 in_waiting = self.daq_arduino.in_waiting
 
                 if(in_waiting > 0):
                     self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
-
+                    
                     while '\n' in self.daq_buffer:
                         raw_message_line, self.daq_buffer = self.daq_buffer.split('\n',1)
                         clean_message = LD.clean(raw_message_line)
+                        
                         if(clean_message[0] == 'DAQ'):
                             waiting_for_response = False
                             self.model.daq_is_connected = False
                 time.sleep(0.01)
+
             self.daq_arduino.close()
             self.daq_arduino = None
 
@@ -197,8 +198,6 @@ class SerialMonitor:
 
             self.controller_arduino.close()
             self.controller_arduino = None
-
-        self.daq_monitor_loop_is_running = False
 
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
@@ -253,7 +252,9 @@ class SerialMonitor:
 
 
     def on_window_exit(self):
-        self.loop_is_running = False
+        if(self.daq_monitor_loop_is_running):
+            self.daq_monitor_loop_is_running = False
+            self.data_collection_thread.join()
         self.disconnect_arduinos()
 
 # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
