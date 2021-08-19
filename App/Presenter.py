@@ -55,6 +55,17 @@ class Presenter:
         self.ui.run.pause_button.clicked.connect(self.run_paused_clicked)
         self.ui.run.start_button.clicked.connect(self.run_start_clicked)
 
+        self.ui.run.plot1_apply_buffer_button.clicked.connect(lambda: self.run_plot_apply_buffer_clicked(1))
+        self.ui.run.plot2_apply_buffer_button.clicked.connect(lambda: self.run_plot_apply_buffer_clicked(2))
+        self.ui.run.plot3_apply_buffer_button.clicked.connect(lambda: self.run_plot_apply_buffer_clicked(3))
+        self.ui.run.plot4_apply_buffer_button.clicked.connect(lambda: self.run_plot_apply_buffer_clicked(4))
+
+        self.ui.run.plot1_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(1))
+        self.ui.run.plot2_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(2))
+        self.ui.run.plot3_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(3))
+        self.ui.run.plot4_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(4))
+
+
         # Start UI Update Loop
         self.__start_ui_update_loop()
 
@@ -71,13 +82,13 @@ class Presenter:
 
         # Update Plot1
         if(self.ui.run.plot1_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet TC')
+            x, y = self.model.get_run_plot_data('Inlet TC', self.model.plot1_buffer)
             self.ui.run.plot1_inlet.setData(x,y)
         else:
             self.ui.run.plot1_inlet.setData([0],[0])
 
         if(self.ui.run.plot1_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint TC')
+            x, y = self.model.get_run_plot_data('Midpoint TC', self.model.plot1_buffer)
             self.ui.run.plot1_midpoint.setData(x,y)
         else:
             self.ui.run.plot1_midpoint.setData([0],[0])
@@ -186,6 +197,8 @@ class Presenter:
             self.ui.run.set_sequence_table_row_bold(-1)
             self.model.save_trial_data(True)
 
+    
+
 # SETUP PAGE LOGIC
 
     def setup_manual_connect_clicked(self): 
@@ -271,3 +284,52 @@ class Presenter:
         self.ui.run.set_loaded_trial_text(config.trial_name)
         self.ui.run.set_start_button_clickable(True)
         self.ui.run.set_sequence_table(config)
+    
+    def run_plot_apply_buffer_clicked(self, plot_index):
+        try:
+            max_value = 90
+            min_value = 1
+
+            if(plot_index == 1):
+                value = float(self.ui.run.plot1_buffer_field.text())
+
+                if(value > max_value):
+                    self.ui.run.plot1_buffer_field.setText(str(max_value))
+                    value = max_value
+                elif(value < min_value):
+                    self.ui.run.plot1_buffer_field.setText(str(min_value))
+                    value = min_value
+                
+                self.ui.run.plot1.setXRange(-1 * value, 0)
+            elif(plot_index == 2):
+                value = float(self.ui.run.plot2_buffer_field.text())
+                if(value > max_value):
+                    self.ui.run.plot2_buffer_field.setText(str(max_value))
+                    value = max_value
+                elif(value < min_value):
+                    self.ui.run.plot2_buffer_field.setText(str(min_value))
+                    value = min_value
+                
+                self.ui.run.plot2.setXRange(-1 * value, 0)
+            elif(plot_index == 3):
+                value = float(self.ui.run.plot3_buffer_field.text())
+                if(value > max_value):
+                    self.ui.run.plot3_buffer_field.setText(str(min_value))
+                    value = max_value
+                elif(value < min_value):
+                    self.ui.run.plot3_buffer_field.setText(str(min_value))
+                    value = min_value
+                
+                self.ui.run.plot3.setXRange(-1 * value, 0)
+            elif(plot_index == 4):
+                value = float(self.ui.run.plot4_buffer_field.text())
+                if(value > max_value):
+                    self.ui.run.plot4_buffer_field.setText(str(min_value))
+                    value = max_value
+                elif(value < min_value):
+                    self.ui.run.plot4_buffer_field.setText(str(min_value))
+                    value = min_value
+
+                self.ui.run.plot4.setXRange(-1 * value, 0)
+        except ValueError:
+            return

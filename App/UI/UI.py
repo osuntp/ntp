@@ -271,6 +271,16 @@ class Run:
         self.sequence_table = pyqt5.run_test_sequence_table
         self.sequence_table_label = pyqt5.run_test_sequence_label
 
+        self.plot1_apply_buffer_button = pyqt5.run_plot1_apply_buffer_button
+        self.plot2_apply_buffer_button = pyqt5.run_plot2_apply_buffer_button
+        self.plot3_apply_buffer_button = pyqt5.run_plot3_apply_buffer_button
+        self.plot4_apply_buffer_button = pyqt5.run_plot4_apply_buffer_button
+
+        self.plot1_buffer_field = pyqt5.run_plot1_buffer_field
+        self.plot2_buffer_field = pyqt5.run_plot2_buffer_field
+        self.plot3_buffer_field = pyqt5.run_plot3_buffer_field
+        self.plot4_buffer_field = pyqt5.run_plot4_buffer_field
+
         # Checkboxes - Plot1
         self.plot1_inlet_check = pyqt5.run_plot1_inlet_check
         self.plot1_midpoint_check = pyqt5.run_plot1_midpoint_check
@@ -306,6 +316,7 @@ class Run:
         background_color = (255,255,255)
 
         # Actual Plot - Plot1
+        self.plot1 = pyqt5.run_plot1
         pyqt5.run_plot1.setXRange(-10, 0)
         pyqt5.run_plot1.setBackground(background_color)
 
@@ -332,6 +343,7 @@ class Run:
 
 
         # Actual Plot - Plot 2
+        self.plot2 = pyqt5.run_plot2
         pyqt5.run_plot2.setXRange(-10, 0)
         pyqt5.run_plot2.setBackground(background_color)
 
@@ -358,6 +370,7 @@ class Run:
 
 
         # Actual Plot - Plot 3
+        self.plot3 = pyqt5.run_plot3
         pyqt5.run_plot3.setXRange(-10, 0)
         pyqt5.run_plot3.setBackground(background_color)
 
@@ -377,6 +390,7 @@ class Run:
         self.plot3_mass_flow.setPen(pyqtgraph.mkPen(color='b', width = line_width))
 
         # Actual Plot - Plot 4
+        self.plot4 = pyqt5.run_plot4
         pyqt5.run_plot4.setXRange(-10, 0)
         pyqt5.run_plot4.setBackground(background_color)
 
