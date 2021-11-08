@@ -9,6 +9,7 @@ class Model:
 
     daq_status_text = 'Not Connected'
     controller_status_text = 'Not Connected'
+    trial_button_text = 'Start'
 
     hidden_data_buffer = 90 # time in seconds
 
@@ -21,6 +22,8 @@ class Model:
     trial_time = 0
     trial_is_running = False
     trial_is_paused = False
+    trial_is_complete = True
+
     daq_is_connected = False
     controller_is_connected = False
 
@@ -32,14 +35,14 @@ class Model:
 
     current_trial_time_stamp_index = 0
 
-    # plot1_buffer = 10
-    # plot2_buffer = 10
-    # plot3_buffer = 10
-    # plot4_buffer = 10
+    plot1_buffer = 10
+    plot2_buffer = 10
+    plot3_buffer = 10
+    plot4_buffer = 10
 
 
     def __init__(self):
-        self.trial_data: pandas.DataFrame = LD.get_new_dataframe()
+        self.reset_dataframe()
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
         self.ui_diagnostics_data: pandas.DataFrame = LD.get_new_dataframe()
 
@@ -68,8 +71,7 @@ class Model:
                 self.ui_run_data = LD.append_point_to_frame(message, self.ui_run_data)
 
                 while((self.latest_values[0] - self.ui_run_data['Time'].iloc[0]) > self.hidden_data_buffer):
-                    self.ui_run_data = self.ui_run_data.iloc[1: , :]
-                    
+                    self.ui_run_data = self.ui_run_data.iloc[1: , :]                  
 
         self.latest_values = message        
 
@@ -147,6 +149,5 @@ class Model:
     def save_trial_data(self, is_aborted_trial: bool):
         LD.save_to_csv(self.trial_data, self.loaded_config.trial_name, is_aborted_trial)
 
-        
-
-
+    def reset_dataframe(self):
+        self.trial_data = LD.get_new_dataframe()

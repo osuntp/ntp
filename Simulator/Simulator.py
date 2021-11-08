@@ -71,6 +71,7 @@ class Simulator:
 
                 message = self.readln()
                 print('line read')
+                print(message)
                 if message == key:
                     self.app_connected = True
                     self.write(response)

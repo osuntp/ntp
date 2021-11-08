@@ -82,13 +82,13 @@ class Presenter:
 
         # Update Plot1
         if(self.ui.run.plot1_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet TC', self.model.plot1_buffer)
+            x, y = self.model.get_run_plot_data('Inlet TC')
             self.ui.run.plot1_inlet.setData(x,y)
         else:
             self.ui.run.plot1_inlet.setData([0],[0])
 
         if(self.ui.run.plot1_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint TC', self.model.plot1_buffer)
+            x, y = self.model.get_run_plot_data('Midpoint TC')
             self.ui.run.plot1_midpoint.setData(x,y)
         else:
             self.ui.run.plot1_midpoint.setData([0],[0])
@@ -153,17 +153,18 @@ class Presenter:
         else:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
+        self.ui.run.start_button.setText(self.model.trial_button_text)
 
         # If Trial is running
         if(self.model.trial_is_running):
-            self.ui.run.start_button.setText('Running Trial - ' + str(round(self.model.trial_time, 1)))
-
             next_index = self.model.current_trial_time_stamp_index + 1
             
             if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
                 if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
                     self.model.current_trial_time_stamp_index = next_index
-                    self.ui.run.set_sequence_table_row_bold(next_index)
+                    self.ui.run.set_sequence_table_row_bold(next_index+1)
+        elif(self.model.trial_is_complete):
+            self.ui.run.set_pause_button_clickable(False)
 
     def tab_clicked(self, tab_index):
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
@@ -182,25 +183,26 @@ class Presenter:
             self.ui.set_abort_tab_clickable(False)
 
             self.test_stand.switch_state(self.test_stand_standby_state)
-            self.ui.run.start_button.setText('Aborting.')
+            self.model.trial_button_text = 'Aborting. '
+            self.ui.run.start_button.setText('Aborting. ')
             self.app.processEvents()
             time.sleep(0.5)
+            self.model.trial_button_text = 'Aborting. .'
             self.ui.run.start_button.setText('Aborting. .')
             self.app.processEvents()
-            time.sleep(0.5)
+            time.sleep(0.5)            
+            self.model.trial_button_text = 'Aborting. . .'
             self.ui.run.start_button.setText('Aborting. . .')
             self.app.processEvents()
             time.sleep(0.5)
+            
             self.ui.run.set_start_button_clickable(True)
             self.ui.set_abort_tab_clickable(True)
-            self.ui.run.start_button.setText('Start')
+            self.model.trial_button_text = 'Start Trial'
             self.ui.run.set_sequence_table_row_bold(-1)
             self.model.save_trial_data(True)
 
-    
-
 # SETUP PAGE LOGIC
-
     def setup_manual_connect_clicked(self): 
         daq_port = self.ui.setup.daq_port_field.text()
         controller_port = self.ui.setup.controller_port_field.text()
@@ -250,13 +252,49 @@ class Presenter:
             description = self.ui.configuration.description_field.toPlainText()
             blue_lines = self.ui.configuration.blue_lines_table
             test_sequence = self.ui.configuration.sequence_table
+            trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
             
-            Config.create_file(file_name, trial_name, description, blue_lines, test_sequence)
+            Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
 
 # RUN PAGE LOGIC
+    # def run_trial_ended(self):
+    #     if self.model.trial_is_running:
+    #         self.ui.run.set_start_button_clickable(False)
+    #         self.ui.run.set_pause_button_clickable(False)
+    #         self.ui.set_abort_tab_clickable(False)
+
+    #         self.model.trial_button_text = 'Trial Ended.'
+    #         self.ui.run.start_button.setText('Trial Ended.')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)
+    #         self.model.trial_button_text = 'Trial Ended. .'
+    #         self.ui.run.start_button.setText('Trial Ended. .')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)            
+    #         self.model.trial_button_text = 'Trial Ended. . .'
+    #         self.ui.run.start_button.setText('Trial Ended. . .')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)
+
+    #         self.model.trial_button_text = 'Saving Data.'
+    #         self.ui.run.start_button.setText('Saving Data.')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)
+    #         self.model.trial_button_text = 'Saving Data. .'
+    #         self.ui.run.start_button.setText('Saving Data. .')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)            
+    #         self.model.trial_button_text = 'Saving Data. . .'
+    #         self.ui.run.start_button.setText('Saving Data. . .')
+    #         self.app.processEvents()
+    #         time.sleep(0.5)
+
+    #         self.model.trial_button_text = 'Start Trial'
+    #         self.ui.run.set_start_button_clickable(True)
+
     def run_start_clicked(self):
         if not(self.model.trial_is_paused):
-            self.ui.run.set_sequence_table_row_bold(0)
+            self.ui.run.set_sequence_table_row_bold(1)
             Log.info('Trial has started.')
         else:
             Log.info('Trial has resumed.')
@@ -270,7 +308,6 @@ class Presenter:
         self.test_stand.switch_state(self.test_stand_idle_state)
         self.ui.run.set_start_button_clickable(True)
         self.ui.run.set_pause_button_clickable(False)
-        self.ui.run.start_button.setText('Resume Trial at ' + str(round(self.model.trial_time,1)))
 
     def run_load_clicked(self):
         file_name = Config.select_file()

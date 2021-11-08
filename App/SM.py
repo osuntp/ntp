@@ -41,7 +41,6 @@ class SerialMonitor:
         try:
             if(self.daq_arduino is None):
                 self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate, write_timeout = 0)
-                self.daq_arduino.write
 
                 self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
                 
