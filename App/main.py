@@ -40,6 +40,9 @@ if __name__ == "__main__":
 
     # Assign Dependencies
     Log.ui = ui
+
+    test_stand.serial_monitor = serial_monitor
+
     standby_state.model = model
     standby_state.serial_monitor = serial_monitor
     standby_state.ui = ui
