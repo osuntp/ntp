@@ -36,13 +36,11 @@ class SerialMonitor:
             self.daq_arduino.write(message.encode('utf-8'))
 
     def connect_arduinos(self, daq_port: str, controller_port:str):
+        
         # CONNECT DAQ
-
         try:
             if(self.daq_arduino is None):
                 self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate, write_timeout = 0)
-
-                self.daq_arduino.write('<DAQ START>\n'.encode('utf-8'))
                 
                 waiting_for_response = True
 
@@ -81,8 +79,6 @@ class SerialMonitor:
             if(self.controller_arduino is None):
                 self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate, write_timeout = 0)
 
-                self.controller_arduino.write('<Controller START>\n'.encode('utf-8'))
-                
                 time_out = time.time() + 2
                 waiting_for_response = True
 
@@ -96,7 +92,7 @@ class SerialMonitor:
                             raw_message_line, self.controller_buffer = self.controller_buffer.split('\n',1)
                             clean_message = LD.clean(raw_message_line)
 
-                            if(clean_message[0] == 'Controller'):
+                            if(clean_message[0] == 'TSC'):
                                 self.model.controller_status_text = 'Connected'
                                 waiting_for_response = False
                                 self.model.controller_is_connected = True
@@ -149,10 +145,13 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
+        elif(prefix == 'stdinfo'):
+            Log.info(message[0])
         elif(prefix == 'stderr'):
             print('Arduino Error: ' + message[0])
         elif(prefix == 'DAQ'):
             print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
+        
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
