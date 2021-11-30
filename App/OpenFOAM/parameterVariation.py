@@ -13,3 +13,6 @@ if __name__ == "__main__":
         velBC = ParsedParameterFile(path.join(case.name,"0", "U"))
         velBC["boundaryField"]["movingWall"]["value"].setUniform(Vector(u,0,0))
         velBC.writeFile()
+
+        print("Meshing Case")
+        
