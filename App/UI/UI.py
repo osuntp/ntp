@@ -126,7 +126,9 @@ class Setup:
         self.controller_status_label = pyqt5.setup_controller_status_label
 
         self.daq_port_field = pyqt5.setup_daq_port_field
+        self.daq_port_field.setText('COM8')
         self.controller_port_field = pyqt5.setup_controller_port_field
+        self.controller_port_field.setText('COM6')
 
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button
@@ -155,6 +157,7 @@ class Configuration:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.trial_name_field = pyqt5.configuration_trialname_field
         self.description_field = pyqt5.configuration_description_field
+        self.trial_end_timestep_field = pyqt5.configuration_trial_end_timestep_field
 
         self.blue_lines_table = pyqt5.configuration_blue_lines_table
         self.blue_lines_plus_button = pyqt5.configuration_blue_lines_plus
@@ -171,7 +174,6 @@ class Configuration:
         buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button]
         
         self.clear_all()
-        self.add_row_to_blue_lines_table()
 
         Stylize.button(buttons)
         Stylize.table(self.blue_lines_table)
@@ -424,11 +426,27 @@ class Run:
         self.loaded_trial_text.setText(text)
 
     def set_sequence_table(self, config: Config.Config):
-
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
             table.removeRow(table.rowCount() - 1)
+
+
+        table.insertRow(table.rowCount())
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('')
+        table.setVerticalHeaderItem(table.rowCount()-1, item)
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('Timestep (s)')
+        item.setTextAlignment(4)
+        table.setItem(table.rowCount()-1, 0, item)
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('Heater Power (W)')
+        item.setTextAlignment(4)
+        table.setItem(table.rowCount()-1, 1, item)
 
         for i in range(len(config.sequence_time_step)):
             table.insertRow(table.rowCount())
@@ -439,11 +457,25 @@ class Run:
 
             item = QtWidgets.QTableWidgetItem()
             item.setText(str(config.sequence_time_step[i]))
-            table.setItem(i, 0, item)
+            table.setItem(table.rowCount()-1, 0, item)
 
             item = QtWidgets.QTableWidgetItem()
             item.setText(str(config.sequence_power[i]))
-            table.setItem(i, 1, item)
+            table.setItem(table.rowCount()-1, 1, item)
+
+        table.insertRow(table.rowCount())
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('')
+        table.setVerticalHeaderItem(table.rowCount()-1, item)
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText(str(config.trial_end_timestep))
+        table.setItem(table.rowCount()-1, 0, item)
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setText('End Trial')
+        table.setItem(table.rowCount()-1, 1, item)
 
     def set_sequence_table_row_bold(self, row_int):
         table = self.sequence_table
@@ -486,5 +518,3 @@ class UpdateThread(QThread):
         while (self.thread_is_running):
             self.update_signal.emit()
             time.sleep(0.05)
-        
-        

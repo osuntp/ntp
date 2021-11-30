@@ -2,7 +2,7 @@ from Simulator import DAQ
 import time
 
 if __name__ == "__main__":
-    D = DAQ(port='COM5',baudrate=9600)
+    D = DAQ(port='COM9',baudrate=9600)
     try:
 
         D.connect()
@@ -10,6 +10,6 @@ if __name__ == "__main__":
         while D.app_connected:
             D.send_data()
             D.disconnect_from_app(ID='DAQ')
-            time.sleep(1)
+            time.sleep(0.1)
     except KeyboardInterrupt:
         D.ser.close()

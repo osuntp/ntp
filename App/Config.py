@@ -10,6 +10,7 @@ import os
 class Config:
     trial_name: str
     description: str
+    trial_end_timestep: str
 
     blue_lines_time_step: List[float]
     blue_lines_sensor_type: List[str]
@@ -55,7 +56,7 @@ class ValidationThread(QThread):
             self.validation_message.emit(message)
             self.validation_is_complete.emit(False)
 
-def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, test_sequence: QtWidgets.QTableWidget):
+def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, test_sequence: QtWidgets.QTableWidget, trial_end_timestep: str):
     config = ConfigParser()
 
     config.add_section('main')
@@ -64,6 +65,7 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
 
     config.set('main','trial_name', trial_name)
     config.set('main', 'description', description)
+    config.set('main', 'trial_end_timestep', trial_end_timestep)
 
 # Blue Lines Data
     time_step = ''
@@ -139,6 +141,7 @@ def open_file(file_name: str):
 
     trial_name = parser.get('main', 'trial_name')
     description = parser.get('main','description')
+    trial_end_timestep = parser.get('main', 'trial_end_timestep')
 
     blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
     blue_lines_sensor_type = parser.get('blue_lines', 'sensor_type').split(sep = ', ')
@@ -154,7 +157,7 @@ def open_file(file_name: str):
     sequence_time_step = [float(x) for x in sequence_time_step]
     sequence_power = [float(x) for x in sequence_power]
 
-    return Config(trial_name, description, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power)
+    return Config(trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power)
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     

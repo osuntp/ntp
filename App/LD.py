@@ -46,6 +46,7 @@ def clean(raw_message_string: str):
     if(clean_message[0] == 'stdout'):
         for i in range(1, len(clean_message)):
             clean_message[i] = float(clean_message[i])
+            
     return clean_message    
 
 def get_new_dataframe():

@@ -1,3 +1,6 @@
+from PyQt5.QtCore import endl
+from UI.UI import UI
+from StateMachine.TestStand import TestStand
 import Model
 import SM
 from abc import ABC, abstractmethod
@@ -25,6 +28,33 @@ class AbstractState(ABC):
     def exit_state(self):
         pass
 
+class DemoStandbyState(AbstractState):
+
+    is_first_start = True
+    ui: UI = None
+
+    def enter_state(self):
+        Log.info('Test Stand has entered the Standby State')
+        self.model.trial_time = 0
+        self.model.reset_dataframe()
+        self.model.trial_button_text = 'Start Trial'
+        self.model.current_trial_time_stamp_index = 0
+        self.model.trial_is_complete = False
+        self.model.trial_is_running = False
+        self.model.trial_is_paused = False
+
+        if (self.is_first_start):
+            self.is_first_start = False
+        else:
+            self.ui.run.set_start_button_clickable(True)
+            self.ui.run.set_pause_button_clickable(False)
+
+    def tick(self):
+        pass
+
+    def exit_state(self):
+        pass
+
 class IdleState(AbstractState):
 
     def enter_state(self):
@@ -38,20 +68,69 @@ class IdleState(AbstractState):
 
 class DemoAutoState(AbstractState):
 
-    temperature_target: float = 30
-    deadzone: float = 10
+    trial_end_time = 0
+    current_sequence_index: int = 0
+    test_stand: TestStand
+    standby_state: DemoStandbyState
 
     def enter_state(self):
         Log.info('Test Stand has entered the Auto State.')
         self.model.trial_is_running = True
         self.model.trial_is_paused = False
         self.model.last_trial_time_stamp = time.time()
+        self.model.trial_button_text = 'Running Trial - ' + str(round(self.model.trial_time, 1))
+
+        self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
 
     def tick(self):
-        time_stamp = time.time()
-        delta_time = time_stamp - self.model.last_trial_time_stamp
-        self.model.trial_time = self.model.trial_time + delta_time
-        self.model.last_trial_time_stamp = time_stamp
+        if(self.model.trial_is_running):
+            time_stamp = time.time()
+            delta_time = time_stamp - self.model.last_trial_time_stamp
+            self.model.trial_time = self.model.trial_time + delta_time
+            self.model.last_trial_time_stamp = time_stamp
+
+            self.model.trial_button_text = 'Running Trial - ' + str(round(self.model.trial_time, 1))
+
+            # If this is not the last sequence step
+            if(self.current_sequence_index <= len(self.model.loaded_config.sequence_time_step)-2):
+
+                # If the trial time has reached the next sequence step
+                if(self.model.trial_time >= float(self.model.loaded_config.sequence_time_step[self.current_sequence_index+1])):
+                    self.current_sequence_index = self.current_sequence_index+1
+
+                    self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
+                    
+            elif(self.model.trial_time >= float(self.model.loaded_config.trial_end_timestep)):
+                self.current_sequence_index = 0
+                self.model.save_trial_data(is_aborted_trial=False)
+                self.trial_end_time = time.time()
+                self.model.trial_is_complete = True
+                self.model.trial_is_running = False
+
+        elif(self.model.trial_is_complete):
+            current_time = time.time()
+
+            if(current_time > (self.trial_end_time + 0)):
+                self.model.trial_button_text = 'Trial Ended.'
+
+            if(current_time > (self.trial_end_time + 0.5)):
+                self.model.trial_button_text = 'Trial Ended. .'
+
+            if(current_time > (self.trial_end_time + 1.0)):
+                self.model.trial_button_text = 'Trial Ended. . .'
+
+            if(current_time > (self.trial_end_time + 1.5)):
+                self.model.trial_button_text = 'Saving Data.'
+
+            if(current_time > (self.trial_end_time + 2)):
+                self.model.trial_button_text = 'Saving Data. .'
+
+            if(current_time > (self.trial_end_time + 2.5)):
+                self.model.trial_button_text = 'Saving Data. . .'
+
+            if(current_time > (self.trial_end_time + 3)):
+                self.test_stand.switch_state(self.standby_state)
+        
 
     def exit_state(self):
         pass
@@ -63,25 +142,10 @@ class DemoIdleState(AbstractState):
         self.model.trial_is_running = False
         self.model.trial_is_paused = True
 
-    def tick(self):
-        pass
-
-    def exit_state(self):
-        pass
-
-class DemoStandbyState(AbstractState):
-
-    def enter_state(self):
-        Log.info('Test Stand has entered the Standby State')
-        self.model.trial_time = 0
-        self.model.current_trial_time_stamp_index = 0
-        self.model.trial_is_running = False
-        self.model.trial_is_paused = False
-        
+        self.model.trial_button_text = 'Resume Trial at ' + str(round(self.model.trial_time,1))
 
     def tick(self):
         pass
 
     def exit_state(self):
         pass
-
