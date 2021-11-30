@@ -21,6 +21,10 @@ SfmConfig sfm3019;
 void setup() {
   Serial.begin(9600);
 
+  while (!Serial) delay(1);
+
+  Serial.println("<DAQ>");
+  
   // Setup mass flow meter
   const char* driver_version = sfm_common_get_driver_version();
   if (driver_version) {
