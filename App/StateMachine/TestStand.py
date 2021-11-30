@@ -1,5 +1,9 @@
 import threading
 import time
+from Log import Log
+
+from SM import SerialMonitor
+from SM import Arduino
 
 class TestStand:
 
@@ -7,6 +11,7 @@ class TestStand:
 
     demo_state = None
     current_state = None
+    serial_monitor: SerialMonitor = None
 
     def setup(self, initial_state):
         self.current_state = initial_state
@@ -32,3 +37,8 @@ class TestStand:
 
     def turn_off_state_machine(self):
         self.state_machine_stopped = True
+    
+    def set_valve_position(self, new_position):
+        Log.info('The Test Stand is setting the valve to the following position: ' + str(new_position))
+        message = '<stdin, valve, ' + str(new_position) + '>\n'
+        self.serial_monitor.write(Arduino.CONTROLLER, message)
