@@ -19,10 +19,10 @@ class SerialMonitor:
     daq_id = 'daq'
     controller_id = 'controller'
     daq_arduino = None
-    controller_arduino = None
+    tsc_arduino = None
     baudrate = 9600
     daq_buffer = ''
-    controller_buffer = ''
+    tsc_buffer = ''
 
     model: Model = None
 
@@ -31,11 +31,12 @@ class SerialMonitor:
 
     def write(self, arduino: Arduino, message: str):
         if(arduino == Arduino.CONTROLLER):
-            self.controller_arduino.write(message.encode('utf-8'))
+            self.tsc_arduino.write(message.encode('utf-8'))
+            # print('SM is writing the following message: ' + str(message))
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode('utf-8'))
 
-    def connect_arduinos(self, daq_port: str, controller_port:str):
+    def connect_arduinos(self, daq_port: str, tsc_port:str):
         
         # CONNECT DAQ
         try:
@@ -76,32 +77,33 @@ class SerialMonitor:
         # CONNECT CONTROLLER
         try:
 
-            if(self.controller_arduino is None):
-                self.controller_arduino = serial.Serial(port=controller_port, baudrate = self.baudrate, write_timeout = 0)
+            if(self.tsc_arduino is None):
+                self.tsc_arduino = serial.Serial(port=tsc_port, baudrate = self.baudrate, write_timeout = 0)
 
                 time_out = time.time() + 2
                 waiting_for_response = True
 
                 while(waiting_for_response):
-                    in_waiting = self.controller_arduino.in_waiting
+                    in_waiting = self.tsc_arduino.in_waiting
 
                     if(in_waiting > 0):
-                        self.controller_buffer += self.controller_arduino.read(in_waiting).decode('utf-8')
+                        self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
 
-                        while '\n' in self.controller_buffer:
-                            raw_message_line, self.controller_buffer = self.controller_buffer.split('\n',1)
+                        while '\n' in self.tsc_buffer:
+                            raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n',1)
                             clean_message = LD.clean(raw_message_line)
 
                             if(clean_message[0] == 'TSC'):
                                 self.model.controller_status_text = 'Connected'
                                 waiting_for_response = False
+                                self.start_tsc_monitor_loop()
                                 self.model.controller_is_connected = True
                     time.sleep(0.1)
 
                     if(time.time() > time_out):
                         self.model.controller_status_text = 'Connection Timed Out'
-                        self.controller_arduino.close()
-                        self.controller_arduino = None
+                        self.tsc_arduino.close()
+                        self.tsc_arduino = None
                         waiting_for_response = False
         except SerialException:
             self.model.controller_status_text = 'Invalid Port'
@@ -121,6 +123,36 @@ class SerialMonitor:
             time.sleep(0.01)
 
         print('data collection loop exiting')
+
+    def start_tsc_monitor_loop(self):
+        self.tsc_monitor_thread= threading.Thread(target = self.tsc_monitor_loop)
+        self.tsc_monitor_thread.start()
+
+    def tsc_monitor_loop(self):
+        self.tsc_monitor_loop_is_running = True
+
+        while(self.tsc_monitor_loop_is_running):
+
+            self.read_from_tsc()
+
+            time.sleep(0.01)
+
+    def read_from_tsc(self):
+        if(self.tsc_arduino is None):
+            return
+
+        in_waiting = self.tsc_arduino.in_waiting
+        
+        if(in_waiting > 0):
+            # Add everything from serial to daq_buffer
+            self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
+
+            while '\n' in self.tsc_buffer: #split data line by line and store it in var
+                raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n', 1)
+
+                clean_message = LD.clean(raw_message_line)
+                print(clean_message)
+                self.__handle_tsc_message(clean_message)
 
     def read_from_daq(self):
         if(self.daq_arduino is None):
@@ -155,6 +187,24 @@ class SerialMonitor:
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
+    def __handle_tsc_message(self, message: list):
+        prefix = message[0]
+
+        message.pop(0)
+    
+        print(message)
+        print('The message from TSC is ' + str(prefix))
+        if(prefix == 'stdout'):
+            Log.warning('Received stdout message from TSC')
+        elif(prefix == 'stdinfo'):
+            Log.info(message[0])
+        elif(prefix == 'stderr'):
+            print('Arduino Error: ' + message[0])
+        elif(prefix == 'TSC'):
+            print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')     
+        else:
+            Log.warning('Unknown message type received from TSC. The prefix was ' + prefix)   
+
     def disconnect_arduinos(self):
         if(self.daq_arduino is not None):
             self.write(Arduino.DAQ, '<DAQ STOP>\n')
@@ -177,25 +227,25 @@ class SerialMonitor:
             self.daq_arduino.close()
             self.daq_arduino = None
 
-        if(self.controller_arduino is not None):
+        if(self.tsc_arduino is not None):
             self.write(Arduino.CONTROLLER, '<Controller STOP>\n')
 
             waiting_for_response = True
             while(waiting_for_response):
-                in_waiting = self.controller_arduino.in_waiting
+                in_waiting = self.tsc_arduino.in_waiting
 
                 if(in_waiting > 0):
-                    self.controller_buffer += self.controller_arduino.read(in_waiting).decode('utf-8')
+                    self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
 
-                    while '\n' in self.controller_buffer:
-                        raw_message_line, self.controller_buffer = self.controller_buffer.split('\n',1)
+                    while '\n' in self.tsc_buffer:
+                        raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n',1)
                         clean_message = LD.clean(raw_message_line)
-                        if(clean_message[0] == 'Controller'):
+                        if(clean_message[0] == 'TSC'):
                             waiting_for_response = False
                             self.model.controller_is_connected = True
 
-            self.controller_arduino.close()
-            self.controller_arduino = None
+            self.tsc_arduino.close()
+            self.tsc_arduino = None
 
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
@@ -247,13 +297,18 @@ class SerialMonitor:
         # else:
         #     self.arduinos_are_connected = True
 
-
-
     def on_window_exit(self):
-        if(self.daq_monitor_loop_is_running):
+        try:
             self.daq_monitor_loop_is_running = False
             self.data_collection_thread.join()
-        self.disconnect_arduinos()
+        except AttributeError:
+            pass
+        try:
+            self.tsc_monitor_loop_is_running = False
+            self.tsc_monitor_thread.join()
+        except AttributeError:
+            pass
+        #self.disconnect_arduinos()
 
 # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
     def __get_serial_ports(self):
