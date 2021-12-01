@@ -21,7 +21,7 @@ void setup()
 
   Serial.println("<TSC>");
 
-//  massFlowValve.attach(9);
+  massFlowValve.attach(9);
 }
 
 void loop()
@@ -44,7 +44,6 @@ void CheckSerialForMessage()
 
   while (Serial.available() > 0 && newMessageIsAvailable == false)
   {
-    Serial.println("reading");
     rc = Serial.read();
 
     if (recvInProgress == true)
@@ -91,9 +90,12 @@ void HandleNewMessage()
       float valvePosition;
       valvePosition = atof(strtokIndx);
 
-      //      massFlowValve.write(valvePosition);
-      //      delay(15);
-      Serial.println(valvePosition);
+      massFlowValve.write(valvePosition);
+      delay(15);
+      
+      Serial.print("<stdinfo, TSC set the Valve Position to ");
+      Serial.print(valvePosition);
+      Serial.println(">");
     }
   }
   
