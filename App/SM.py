@@ -151,7 +151,6 @@ class SerialMonitor:
                 raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n', 1)
 
                 clean_message = LD.clean(raw_message_line)
-                print(clean_message)
                 self.__handle_tsc_message(clean_message)
 
     def read_from_daq(self):
@@ -180,9 +179,9 @@ class SerialMonitor:
         elif(prefix == 'stdinfo'):
             Log.info(message[0])
         elif(prefix == 'stderr'):
-            print('Arduino Error: ' + message[0])
+            Log.error(message[0])
         elif(prefix == 'DAQ'):
-            print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
+            Log.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
         
         else:
             Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
@@ -191,15 +190,13 @@ class SerialMonitor:
         prefix = message[0]
 
         message.pop(0)
-    
-        print(message)
-        print('The message from TSC is ' + str(prefix))
+
         if(prefix == 'stdout'):
             Log.warning('Received stdout message from TSC')
         elif(prefix == 'stdinfo'):
             Log.info(message[0])
         elif(prefix == 'stderr'):
-            print('Arduino Error: ' + message[0])
+            Log.error(message[0])
         elif(prefix == 'TSC'):
             print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')     
         else:

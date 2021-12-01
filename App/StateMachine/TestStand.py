@@ -39,6 +39,6 @@ class TestStand:
         self.state_machine_stopped = True
     
     def set_valve_position(self, new_position):
-        Log.info('The Test Stand is setting the valve to the following position: ' + str(new_position))
+        Log.info('Test Stand sending message to TSC to set valve to following position: ' + str(new_position))
         message = '<stdin, valve, ' + str(new_position) + '>\n'
         self.serial_monitor.write(Arduino.CONTROLLER, message)
