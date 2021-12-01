@@ -77,10 +77,11 @@ class Log:
 
     @classmethod
     def __update_log_ui(cls):
-        if(cls.ui is None):
-            return
+        pass
+        # if(cls.ui is None):
+        #     return
 
-        cls.ui.logs.update_python_log(cls.file_path)
+        # cls.ui.logs.update_python_log(cls.file_path)
     @classmethod
     def __handle_attribute_error(cls):
         cls.create()

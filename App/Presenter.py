@@ -166,6 +166,8 @@ class Presenter:
         elif(self.model.trial_is_complete):
             self.ui.run.set_pause_button_clickable(False)
 
+        self.ui.logs.update_python_log(Log.file_path)
+
     def tab_clicked(self, tab_index):
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
             return
