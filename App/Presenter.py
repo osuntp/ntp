@@ -168,6 +168,15 @@ class Presenter:
 
         self.ui.logs.update_python_log(Log.file_path)
 
+        # Update manual control page
+        # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
+        # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
+
+        # Update status lights on left columns
+        # if any temp is above 80 deg. F, "Hot Stand" should be on
+        # if valve position is not 90 degrees, "Valve Open" should be on
+        # if heater is on, "Heater On" should be on
+
     def tab_clicked(self, tab_index):
         if(self.ui.current_tab == self.ui.tabs[tab_index]):
             return

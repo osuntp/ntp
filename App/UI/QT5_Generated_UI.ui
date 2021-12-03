@@ -615,7 +615,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1581,18 +1581,83 @@ background-color: rgb(229, 231, 240);</string>
          </layout>
         </widget>
         <widget class="QWidget" name="manual_control_page">
-         <widget class="QLabel" name="label">
+         <widget class="QWidget" name="verticalLayoutWidget">
           <property name="geometry">
            <rect>
-            <x>370</x>
-            <y>320</y>
-            <width>481</width>
-            <height>16</height>
+            <x>230</x>
+            <y>270</y>
+            <width>160</width>
+            <height>87</height>
            </rect>
           </property>
-          <property name="text">
-           <string>this is manual control page</string>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Valve Position</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="currentValvePosLabel">
+             <property name="text">
+              <string>Current: &lt;&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="sendValveCommand">
+             <property name="text">
+              <string>Send Command</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="verticalLayoutWidget_2">
+          <property name="geometry">
+           <rect>
+            <x>510</x>
+            <y>270</y>
+            <width>160</width>
+            <height>87</height>
+           </rect>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <item>
+            <widget class="QLabel" name="label_31">
+             <property name="text">
+              <string>Heater Power</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="currentHeaterLabel">
+             <property name="text">
+              <string>Current: &lt;&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_2"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="sendHeaterCommand">
+             <property name="text">
+              <string>Send Command</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
         <widget class="QWidget" name="configuration_page">
