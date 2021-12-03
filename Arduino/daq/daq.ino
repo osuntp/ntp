@@ -18,6 +18,10 @@ Adafruit_MAX31855 TC3(TC_CLK, TC_3_CS, TC_DO);
 int error = 0;
 SfmConfig sfm3019;
 
+int pressurePin = A0;
+int pressureValue = 0;
+float pressurePSI= 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -80,20 +84,20 @@ void setup() {
   sensirion_sleep_usec(SFM3019_MEASUREMENT_INITIALIZATION_TIME_US);
 
   // Setup thermocouples
-  Serial.println("<stdinfo,Initializing thermocouples>");
-  if (!TC1.begin()) {
-    Serial.println("<stderr,TC1 did not start>");
-    while (1) delay(10);
-  }
-  if (!TC2.begin()) {
-    Serial.println("<stderr,TC2 did not start>");
-    while (1) delay(10);
-  }
-  if (!TC3.begin()) {
-    Serial.println("<stderr,TC3 did not start>");
-    while (1) delay(10);
-  }
-  Serial.println("<stdinfo,Thermocouples initialized>");
+//  Serial.println("<stdinfo,Initializing thermocouples>");
+//  if (!TC1.begin()) {
+//    Serial.println("<stderr,TC1 did not start>");
+//    while (1) delay(10);
+//  }
+//  if (!TC2.begin()) {
+//    Serial.println("<stderr,TC2 did not start>");
+//    while (1) delay(10);
+//  }
+//  if (!TC3.begin()) {
+//    Serial.println("<stderr,TC3 did not start>");
+//    while (1) delay(10);
+//  }
+//  Serial.println("<stdinfo,Thermocouples initialized>");
 }
 
 void loop() {
@@ -126,44 +130,63 @@ void loop() {
     Serial.print("<stdinfo, SFM status: ");
     Serial.print(status, HEX);
     Serial.println(">");
-
+//
   }
 
-  // Read thermocouples
-  double c1 = TC1.readCelsius();
-  double c2 = TC2.readCelsius();
-  double c3 = TC3.readCelsius();
-  if (isnan(c1)) {
-    Serial.println("<stderr,TC1 NaN>");
-  }
-  if (isnan(c2)) {
-    Serial.println("<stderr,TC2 NaN>");
-  }
-  if (isnan(c3)) {
-    Serial.println("<stderr,TC3 NaN>");
-  }
-  double it1 = TC1.readInternal();
-  double it2 = TC2.readInternal();
-  double it3 = TC3.readInternal();
+double c1 = 0;
+double c2 = 0;
+double c3 = 0;
 
+double it1 = 0;
+double it2 = 0;
+double it3 = 0;
+
+//  // Read thermocouples
+//  double c1 = TC1.readCelsius();
+//  double c2 = TC2.readCelsius();
+//  double c3 = TC3.readCelsius();
+//  if (isnan(c1)) {
+//    Serial.println("<stderr,TC1 NaN>");
+//  }
+//  if (isnan(c2)) {
+//    Serial.println("<stderr,TC2 NaN>");
+//  }
+//  if (isnan(c3)) {
+//    Serial.println("<stderr,TC3 NaN>");
+//  }
+//  double it1 = TC1.readInternal();
+//  double it2 = TC2.readInternal();
+//  double it3 = TC3.readInternal();
+
+  pressureValue = analogRead(pressurePin);
+
+  float pressureValueFloat = (float)pressureValue;
+  
+  pressurePSI = (pressureValueFloat / 1024)*100;
+  
+
+  //String stringPressurePSI = String(pressurePSI, 6);
+  
   // Send data stream
-  Serial.print("<stdin,");
+  Serial.print("<stdout, ");
   Serial.print(flow);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(flow_temperature);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(c1);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(it1);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(c2);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(it2);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(c3);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(it3);
+  Serial.print(", ");
+  Serial.print(pressurePSI, 7);
   Serial.println(">");
 
-  delay(5000);
+  delay(1000);
 }

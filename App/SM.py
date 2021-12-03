@@ -176,6 +176,7 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
+            print(message)
         elif(prefix == 'stdinfo'):
             Log.info(message[0])
         elif(prefix == 'stderr'):

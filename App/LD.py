@@ -9,7 +9,8 @@ import datetime
 import os
 from typing import List
 
-columns = ['Time', 'Mass Flow', 'Heater Current', 'Heater TC', 'Heater TC IT', 'Inlet TC', 'Inlet TC IT', 'Midpoint TC', 'Midpoint TC IT', 'Outlet TC', 'Outlet TC IT', 'Tank Pressure', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Valve Position', 'Heater Status', 'OpenFOAM Progress']
+# columns = ['Time', 'Mass Flow', 'Heater Current', 'Heater TC', 'Heater TC IT', 'Inlet TC', 'Inlet TC IT', 'Midpoint TC', 'Midpoint TC IT', 'Outlet TC', 'Outlet TC IT', 'Tank Pressure', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Valve Position', 'Heater Status', 'OpenFOAM Progress']
+columns = ['Time', 'Mass Flow', 'Flow Temperature', 'Temperature 1', 'Internal Temperature 1', 'Temperature 2', 'Internal Temperature 2', 'Temperature 3', 'Internal Temperature 3', 'Pressure', 'Valve Position']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name(trial_name: str, is_aborted_trial: bool):

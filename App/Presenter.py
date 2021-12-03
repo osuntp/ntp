@@ -100,7 +100,7 @@ class Presenter:
             self.ui.run.plot1_outlet.setData([0],[0])
 
         if(self.ui.run.plot1_heat_sink_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Heater TC')
+            x, y = self.model.get_run_plot_data('Flow Temperature')
             self.ui.run.plot1_heat_sink.setData(x,y)
         else:
             self.ui.run.plot1_heat_sink.setData([0],[0])
@@ -125,7 +125,7 @@ class Presenter:
             self.ui.run.plot2_outlet.setData([0],[0])
 
         if(self.ui.run.plot2_tank_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Tank Pressure')
+            x, y = self.model.get_run_plot_data('Pressure')
             self.ui.run.plot2_tank.setData(x,y)
         else:
             self.ui.run.plot2_tank.setData([0],[0])

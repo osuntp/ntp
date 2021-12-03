@@ -40,6 +40,7 @@ class Model:
     plot3_buffer = 10
     plot4_buffer = 10
 
+    current_mass_flow:float = 0
 
     def __init__(self):
         self.reset_dataframe()
@@ -50,11 +51,15 @@ class Model:
         current_time = time.time()
         message.insert(0, current_time)
         message.append(self.valve_position)
-        message.append(self.heater_status)
-        message.append(self.openFOAM_progress)
+
+        self.current_mass_flow = message[1]
+
+        # message.append(self.heater_status)
+        # message.append(self.openFOAM_progress)
 
         # Add data point to diagnostics dataframe
         self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
+        
         while((self.latest_values[0] - self.ui_diagnostics_data['Time'].iloc[0]) > self.hidden_data_buffer):
             
             self.ui_diagnostics_data = self.ui_diagnostics_data.iloc[1: , :]

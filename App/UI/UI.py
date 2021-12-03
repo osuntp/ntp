@@ -153,6 +153,10 @@ class Logs:
                 data += line + "<br><br>"
             self.python.setHtml(data)
 
+
+        self.python.verticalScrollBar().setValue(self.python.verticalScrollBar().maximum())
+
+
 class Configuration:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.trial_name_field = pyqt5.configuration_trialname_field

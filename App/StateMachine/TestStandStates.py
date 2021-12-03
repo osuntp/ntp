@@ -70,6 +70,9 @@ class DemoAutoState(AbstractState):
 
     trial_end_time = 0
     current_sequence_index: int = 0
+    target_mass_flow = 0
+    current_valve_position = 0
+    delta_valve_position = 1
     test_stand: TestStand
     standby_state: DemoStandbyState
 
@@ -80,7 +83,9 @@ class DemoAutoState(AbstractState):
         self.model.last_trial_time_stamp = time.time()
         self.model.trial_button_text = 'Running Trial - ' + str(round(self.model.trial_time, 1))
 
-        self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
+        #self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
+
+        self.target_mass_flow = self.model.loaded_config.sequence_power[self.current_sequence_index]
 
     def tick(self):
         if(self.model.trial_is_running):
@@ -98,8 +103,10 @@ class DemoAutoState(AbstractState):
                 if(self.model.trial_time >= float(self.model.loaded_config.sequence_time_step[self.current_sequence_index+1])):
                     self.current_sequence_index = self.current_sequence_index+1
 
-                    self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
-                    
+                    self.target_mass_flow = self.model.loaded_config.sequence_power[self.current_sequence_index]
+                    # self.test_stand.set_valve_position(valve_position)
+                    # self.model.valve_position = valve_position
+
             elif(self.model.trial_time >= float(self.model.loaded_config.trial_end_timestep)):
                 self.current_sequence_index = 0
                 self.model.save_trial_data(is_aborted_trial=False)
@@ -107,6 +114,22 @@ class DemoAutoState(AbstractState):
                 self.model.trial_is_complete = True
                 self.model.trial_is_running = False
 
+            if(self.model.current_mass_flow < self.target_mass_flow):
+                self.current_valve_position = self.current_valve_position - self.delta_valve_position
+                           
+            else:
+                self.current_valve_position = self.current_valve_position + self.delta_valve_position
+
+            if(self.current_valve_position > 90):
+                self.current_valve_position = 90
+
+            elif(self.current_valve_position < 0):          
+                self.current_valve_position = 0
+
+            self.test_stand.set_valve_position(self.current_valve_position)
+            self.model.valve_position = self.current_valve_position
+
+            
         elif(self.model.trial_is_complete):
             current_time = time.time()
 
