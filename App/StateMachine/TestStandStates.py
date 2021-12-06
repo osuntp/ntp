@@ -72,7 +72,7 @@ class DemoAutoState(AbstractState):
     current_sequence_index: int = 0
     target_mass_flow = 0
     current_valve_position = 0
-    delta_valve_position = 1
+    delta_valve_position = 0.25
     test_stand: TestStand
     standby_state: DemoStandbyState
 
@@ -114,12 +114,12 @@ class DemoAutoState(AbstractState):
                 self.model.trial_is_complete = True
                 self.model.trial_is_running = False
 
-            if(self.model.current_mass_flow < self.target_mass_flow):
+            if(self.model.current_mass_flow < (self.target_mass_flow-5)):
                 self.current_valve_position = self.current_valve_position - self.delta_valve_position
                            
-            else:
+            elif(self.model.current_mass_flow > (self.target_mass_flow+5)):
                 self.current_valve_position = self.current_valve_position + self.delta_valve_position
-
+            
             if(self.current_valve_position > 90):
                 self.current_valve_position = 90
 

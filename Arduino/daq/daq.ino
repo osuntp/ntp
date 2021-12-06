@@ -188,5 +188,5 @@ double it3 = 0;
   Serial.print(pressurePSI, 7);
   Serial.println(">");
 
-  delay(1000);
+  delay(100);
 }
