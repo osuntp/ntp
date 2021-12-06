@@ -1602,17 +1602,17 @@ background-color: rgb(229, 231, 240);</string>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="currentValvePosLabel">
+            <widget class="QLabel" name="manual_currentValvePosLabel">
              <property name="text">
               <string>Current: &lt;&gt;</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox"/>
+            <widget class="QSpinBox" name="manual_valveSpinBox"/>
            </item>
            <item>
-            <widget class="QPushButton" name="sendValveCommand">
+            <widget class="QPushButton" name="manual_sendValveCommandButton">
              <property name="text">
               <string>Send Command</string>
              </property>
@@ -1641,17 +1641,17 @@ background-color: rgb(229, 231, 240);</string>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="currentHeaterLabel">
+            <widget class="QLabel" name="manual_currentHeaterLabel">
              <property name="text">
               <string>Current: &lt;&gt;</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox_2"/>
+            <widget class="QSpinBox" name="manual_heatersSpinBox"/>
            </item>
            <item>
-            <widget class="QPushButton" name="sendHeaterCommand">
+            <widget class="QPushButton" name="manual_sendHeaterCommandButton">
              <property name="text">
               <string>Send Command</string>
              </property>

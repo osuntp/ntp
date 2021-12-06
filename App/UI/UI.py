@@ -41,6 +41,7 @@ class UI:
         self.setup = Setup(self.pyqt5)
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
+        self.manual = Manual(self.pyqt5)
         self.configuration = Configuration(self.pyqt5)
         self.run = Run(self.pyqt5)
         
@@ -155,6 +156,20 @@ class Logs:
 
 
         self.python.verticalScrollBar().setValue(self.python.verticalScrollBar().maximum())
+
+class Manual:
+    def __init__(self, pyqt5: Ui_MainWindow):
+        self.current_valve_position_label = pyqt5.manual_currentValvePosLabel
+        self.send_valve_command_button = pyqt5.manual_sendValveCommandButton
+        self.valve_field = pyqt5.manual_valveSpinBox
+
+        self.current_heater_label = pyqt5.manual_currentHeaterLabel
+        self.send_heater_command_button = pyqt5.manual_sendHeaterCommandButton
+        self.heater_field = pyqt5.manual_heatersSpinBox
+
+    def set_command_buttons_active(self, is_active):
+        self.send_valve_command_button.setEnabled(is_active)
+        self.send_heater_command_button.setEnabled(is_active)
 
 
 class Configuration:

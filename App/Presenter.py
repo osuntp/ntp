@@ -39,6 +39,10 @@ class Presenter:
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
 
+        # Manual
+        self.ui.manual.send_valve_command_button.clicked.connect(self.manual_send_valve_command_clicked)
+        self.ui.manual.send_heater_command_button.clicked.connect(self.manual_send_heater_command_clicked)
+
         # Configuration
         self.ui.configuration.blue_lines_plus_button.clicked.connect(self.configuration_blue_lines_plus_clicked)
         self.ui.configuration.blue_lines_minus_button.clicked.connect(self.configuration_blue_lines_minus_clicked)
@@ -49,6 +53,7 @@ class Presenter:
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
         self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
 
+        
 
         # Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
@@ -79,6 +84,8 @@ class Presenter:
 
         self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
         self.ui.setup.controller_status_label.setText(self.model.controller_status_text)
+
+        self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
 
         # Update Plot1
         if(self.ui.run.plot1_inlet_check.isChecked()):
@@ -226,6 +233,16 @@ class Presenter:
         Stylize.set_button_active(self.ui.setup.manual_connect_button, True)
         self.ui.setup.manual_connect_button.setDisabled(False)
 
+# MANUAL PAGE LOGIC
+    def manual_send_valve_command_clicked(self):
+        value = self.ui.manual.valve_field.value()
+
+        if(value>=0 and value<=90):
+            self.ui.manual.current_valve_position_label.setText('Current: ' + str(value))
+            self.test_stand.set_valve_position(value)
+
+    def manual_send_heater_command_clicked(self):
+        pass
 
 # CONFIGURATION PAGE LOGIC
     def configuration_blue_lines_plus_clicked(self):
@@ -266,6 +283,8 @@ class Presenter:
             trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
             
             Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
+
+
 
 # RUN PAGE LOGIC
     # def run_trial_ended(self):
@@ -316,7 +335,7 @@ class Presenter:
 
     def run_paused_clicked(self):
         Log.info('Trial has paused.')
-        self.test_stand.switch_state(self.test_stand_idle_state)
+        self.test_stand.switch_state(self.test_stand_idle_state)    
         self.ui.run.set_start_button_clickable(True)
         self.ui.run.set_pause_button_clickable(False)
 
