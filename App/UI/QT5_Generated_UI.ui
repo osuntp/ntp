@@ -615,7 +615,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2112,6 +2112,9 @@ border: 1px solid white;</string>
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
+                <property name="columnCount">
+                 <number>5</number>
+                </property>
                 <column>
                  <property name="text">
                   <string>Timestep (s)</string>
@@ -2119,7 +2122,22 @@ border: 1px solid white;</string>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Value</string>
+                  <string>Mass Flow Rate (slm)</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Heater Power (W)</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Valve Position (degrees)</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>OF Instruction</string>
                  </property>
                 </column>
                </widget>

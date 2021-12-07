@@ -19,6 +19,9 @@ class Config:
 
     sequence_time_step: List[float]
     sequence_power: List[float]
+    sequence_mass_flow_rate: List[float]
+    sequence_valve_position: List[float]
+    sequence_OF_instruction: List[float]
 
 class ValidationThread(QThread):
 
@@ -94,6 +97,10 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
 # Test Sequence Data
     time_step = ''
     power = ''
+    mass_flow_rate = ''
+    valve_position = ''
+    OF_instruction = ''
+
 
     for i in range(test_sequence.rowCount()):
         time_step += (str(test_sequence.item(i,0).text()))
@@ -102,9 +109,15 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
         if(i < (test_sequence.rowCount() - 1)):
             time_step += ', '
             power += ', '
+            mass_flow_rate += ', '
+            valve_position += ', '
+            OF_instruction += ', '
 
     config.set('test_sequence', 'time_step', time_step)
     config.set('test_sequence', 'power', power)
+    config.set('test_sequence', 'mass_flow_rate', mass_flow_rate)
+    config.set('test_sequence', 'valve_position', valve_position)
+    config.set('test_sequence', 'OF_instruction', OF_instruction)
     
     with open(file_name, 'w') as f:
         config.write(f)
@@ -153,11 +166,17 @@ def open_file(file_name: str):
 
     sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
     sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
+    sequence_mass_flow_rate = parser.get('test_sequence', 'mass_flow_rate').split(sep = ', ')
+    sequence_valve_position = parser.get('test_sequence', 'valve_position').split(sep = ', ')
+    sequence_OF_instruction = parser.get('test_sequence', 'OF_instruction').split(sep = ', ')
 
     sequence_time_step = [float(x) for x in sequence_time_step]
     sequence_power = [float(x) for x in sequence_power]
+    sequence_mass_flow_rate = [float(x) for x in sequence_mass_flow_rate]
+    sequence_valve_position = [float(x) for x in sequence_valve_position]
+    sequence_OF_instruction = [float(x) for x in sequence_OF_instruction]
 
-    return Config(trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power)
+    return Config(trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power, sequence_mass_flow_rate, sequence_valve_position, sequence_OF_instruction)
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
@@ -208,7 +227,18 @@ def test_sequence_is_valid(table: QtWidgets.QTableWidget):
                 return 'The time steps in the test sequence table are out of order.'
             
             # Other
+            # 1: mass flow
+            # 2: heater
+            # 3: valve
+            # 4: OF instruction
             float(table.item(i,1).text())
+            float(table.item(i,2).text())
+            float(table.item(i,3).text())
+            float(table.item(i,4).text())
+
+            if bool(table.item(i,1).text() and table.item(i,3).text()):
+                return 'Cannot prescribe mass flow and valve position.'
+
             
         except ValueError:
             return 'Invalid characters detected in test sequence table.'

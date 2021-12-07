@@ -27,9 +27,11 @@ class Model:
     daq_is_connected = False
     controller_is_connected = False
 
-    valve_position = 0
+    valve_position = 90 # 90 degrees = closed
     heater_status = 0
     openFOAM_progress = 0
+    mass_flow_rate = 0
+    OF_instruction = 0 # TODO: change to str?
 
     loaded_config: Config = None
 

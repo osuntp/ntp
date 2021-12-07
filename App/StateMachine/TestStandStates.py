@@ -85,7 +85,10 @@ class DemoAutoState(AbstractState):
 
         #self.test_stand.set_valve_position(self.model.loaded_config.sequence_power[self.current_sequence_index])
 
-        self.target_mass_flow = self.model.loaded_config.sequence_power[self.current_sequence_index]
+        self.target_mass_flow = self.model.loaded_config.sequence_mass_flow_rate[self.current_sequence_index]
+        self.target_valve_position = self.model.loaded_config.sequence_valve_position[self.current_sequence_index]
+        self.target_power = self.model.loaded_config.sequence_power[self.current_sequence_index]
+        self.target_OF_instruction = self.model.loaded_config.sequence_OF_instruction[self.current_sequence_index]
 
     def tick(self):
         if(self.model.trial_is_running):
@@ -103,7 +106,11 @@ class DemoAutoState(AbstractState):
                 if(self.model.trial_time >= float(self.model.loaded_config.sequence_time_step[self.current_sequence_index+1])):
                     self.current_sequence_index = self.current_sequence_index+1
 
-                    self.target_mass_flow = self.model.loaded_config.sequence_power[self.current_sequence_index]
+                    self.target_mass_flow = self.model.loaded_config.sequence_mass_flow_rate[self.current_sequence_index]
+                    self.target_valve_position = self.model.loaded_config.sequence_valve_position[self.current_sequence_index]
+                    self.target_power = self.model.loaded_config.sequence_power[self.current_sequence_index]
+                    self.target_OF_instruction = self.model.loaded_config.sequence_OF_instruction[self.current_sequence_index]
+                    
                     # self.test_stand.set_valve_position(valve_position)
                     # self.model.valve_position = valve_position
 
@@ -114,20 +121,43 @@ class DemoAutoState(AbstractState):
                 self.model.trial_is_complete = True
                 self.model.trial_is_running = False
 
-            if(self.model.current_mass_flow < (self.target_mass_flow-5)):
-                self.current_valve_position = self.current_valve_position - self.delta_valve_position
-                           
-            elif(self.model.current_mass_flow > (self.target_mass_flow+5)):
-                self.current_valve_position = self.current_valve_position + self.delta_valve_position
             
-            if(self.current_valve_position > 90):
-                self.current_valve_position = 90
+            if self.target_mass_flow: # Control mass flow rate
+                # TODO: update mass flow controller algorithm (implement PID?)
 
-            elif(self.current_valve_position < 0):          
-                self.current_valve_position = 0
+                # Determine valve position
+                if(self.model.current_mass_flow < (self.target_mass_flow-5)):
+                    self.current_valve_position = self.current_valve_position - self.delta_valve_position
+                            
+                elif(self.model.current_mass_flow > (self.target_mass_flow+5)):
+                    self.current_valve_position = self.current_valve_position + self.delta_valve_position
+                
+                if(self.current_valve_position > 90):
+                    self.current_valve_position = 90
 
-            self.test_stand.set_valve_position(self.current_valve_position)
-            self.model.valve_position = self.current_valve_position
+                elif(self.current_valve_position < 0):          
+                    self.current_valve_position = 0
+                
+                # Update valve position
+                self.test_stand.set_valve_position(self.current_valve_position)
+                self.model.valve_position = self.current_valve_position
+
+            elif self.target_valve_position: # Control valve position
+                self.current_valve_position = self.target_valve_position
+                self.test_stand.set_valve_position(self.current_valve_position)
+                self.model.valve_position = self.current_valve_position
+
+            if self.target_power: # Control heater power
+                # TODO: implement heater power control system
+                # Switching frequency can't be faster than 1/2 AC cycle (e.g., 1/120 s = 8.33 ms)
+                # Let's use 10 Hz switching frequency
+                # Max power is 520 W, so if you want (say) 260 W, that is a 50 % duty cycle (on for 5 periods, then off for 5 periods)
+                # Have to round desired power to nearest 50 ms period (e.g., can't have a 75% duty cycle because that would be on for 7.5 periods, then off for 2.5 periods)
+                # In other words, can only have duty cycles as multiples of 10% (520 W, 468, 416, 364, etc.)
+                pass
+
+
+            
 
             
         elif(self.model.trial_is_complete):
