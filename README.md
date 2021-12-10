@@ -5,91 +5,64 @@
 
 <h1 align="center">NTP @ OSU</h3>
 
-<div align="center">
-
-  [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
-  [![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/gulanr/ntp/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/gulanr/ntp/pulls)
-
-</div>
-
----
-
-<p align="center"> This repository contains the code developed for NTP real-time simulation programs at The Ohio State University.
+<p align="center"> This repository contains the code developed for NTP tie tube simulator test facility at The Ohio State University.
     <br> 
 </p>
 
-## 📝 Table of Contents
+## Table of Contents
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](#usage)
-- [Built Using](#built_using)
-- [TODO](https://github.com/gulanr/ntp/projects)
 - [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
-Within this repository are the codes to operate real-time simulation experiments. 
+## About <a name = "about"></a>
+Within this repository are the codes, configuration files, data processing workflows, and documentation related to conducting experiments using the NTP tie tube simulator test facility, located in W092, Scott Lab. 
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
-What things you need to install the software and how to install them.
-
-```
-Give examples
-```
+The software was built using [Anaconda](https://www.anaconda.com/) and [VS Code](https://code.visualstudio.com/) in [Python 3.8](https://www.python.org/downloads/release/python-380/). To use the software, it is recommended to create a Conda Environment and use the `requirements.txt` file located in the main directory of this repository.
 
 ### Installing
-A step by step series of examples that tell you how to get a development env running.
+Begin by downloading or otherwise cloning the repository to your desired directory. You may simply download a [compressed (.zip) archive](https://github.com/gulanr/ntp/archive/refs/heads/main.zip) of everything, or use [Git](https://git-scm.com/), [GitHub Desktop](https://desktop.github.com/), or even VS Code's source control management tools to keep an up-to-date copy of the code.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+In Conda, ensure your desired environment is active, and open the `CMD.exe Prompt` application. You'll know things are set up properly if the command prompt displays something like:
 
 ```
-until finished
+(ntp) C:\Users\noahr>
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
-
-## 🔧 Running the tests <a name = "tests"></a>
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-Explain what these tests test and why
-
+where "`ntp`" is the name of the environment you created in Conda. Next, navigate to wherever you downloaded the source code to (using the `cd` command, for example), and enter
 ```
-Give an example
+>pip3 install -r requirements.txt
 ```
 
-### And coding style tests
-Explain what these tests test and why
-
+This will automatically install the Python modules and packages necessary to run the source code. Once this is complete, you can enter
 ```
-Give an example
+> python App\main.py
 ```
+to launch the software and verify that everything was installed correctly.
 
-## 🎈 Usage <a name="usage"></a>
-Add notes about how to use the system.
+## Usage <a name="usage"></a>
+Complete documentation on the usage and its instructions are still being created. In the meantime, running the `main.py` Python file in the `App` directory will start the software.
 
-## 🚀 Deployment <a name = "deployment"></a>
-Add additional notes about how to deploy this on a live system.
+At a high level, the repository is broken down into several subdirectories. The big ones are:
+- App: main directory for code relating to the test facility software
+- Arduino: firmware for the data acquisition system and the insturmentation control system
+- Post: code used to post-process test data
 
-## ⛏️ Built Using <a name = "built_using"></a>
-- 
+And there are additional subdirectories for logs, configuration files, documentation, a sandbox, etc.
 
-## ✍️ Authors <a name = "authors"></a>
+### Development
+There is no formal development methodology in this project. The authors of the software are aerospace engineers, not software engineers, and therefore, features and fixes have been implemented on an "as needed" basis in response to issues discovered in lab or while using the software. There is no product road map extending beyond what can be achieved in the next couple of weeks.
+
+If you are a researcher using the software and would like to recommend a new feature that would be convenient to your work, you are encouraged to reach out to the "custodians" of the software, listed below.
+
+If you are adept in software development and have interest in the project, there are probably a billion things which can be cleaned up, improved, or completely overhauled and redone. Get in touch if you want to chip in.
+
+## Authors <a name = "authors"></a>
 - [@gulanr](https://github.com/gulanr)
 - [@jakestonehill](https://github.com/jakestonehill)
 
 See also the list of [contributors](https://github.com/gulanr/ntp/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-- readme template came from [kylelobo](https://github.com/kylelobo/The-Documentation-Compendium)
