@@ -17,11 +17,12 @@ class Config:
     blue_lines_limit_type: List[str]
     blue_lines_value: List[float]
 
-    sequence_time_step: List[float]
-    sequence_power: List[float]
-    sequence_mass_flow_rate: List[float]
-    sequence_valve_position: List[float]
-    sequence_OF_instruction: List[float]
+    sequence_values: List
+    # sequence_time_step: List[float]
+    # sequence_power: List[float]
+    # sequence_mass_flow_rate: List[float]
+    # sequence_valve_position: List[float]
+    # sequence_OF_instruction: List[float]
 
 class ValidationThread(QThread):
 
@@ -162,9 +163,10 @@ def select_file():
     
     return response[0]
 
-def open_file(file_name: str):
+def open_file(file_name: str, num_of_sequence_columns: int):
     parser = ConfigParser()
     parser.read(file_name)
+
 
     trial_name = parser.get('main', 'trial_name')
     description = parser.get('main','description')
@@ -178,19 +180,32 @@ def open_file(file_name: str):
     blue_lines_time_step = [float(x) for x in blue_lines_time_step]
     blue_lines_value = [float(x) for x in blue_lines_value]
 
-    sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
-    sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
-    sequence_mass_flow_rate = parser.get('test_sequence', 'mass_flow_rate').split(sep = ', ')
-    sequence_valve_position = parser.get('test_sequence', 'valve_position').split(sep = ', ')
-    sequence_OF_instruction = parser.get('test_sequence', 'OF_instruction').split(sep = ', ')
+    sequence_values = []
 
-    sequence_time_step = [float(x) for x in sequence_time_step]
-    sequence_power = [float(x) for x in sequence_power]
-    sequence_mass_flow_rate = [float(x) for x in sequence_mass_flow_rate]
-    sequence_valve_position = [float(x) for x in sequence_valve_position]
-    sequence_OF_instruction = [float(x) for x in sequence_OF_instruction]
+    for i in range(num_of_sequence_columns):
+        id_string = 'value' + str(i)
 
-    return Config(trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_time_step, sequence_power, sequence_mass_flow_rate, sequence_valve_position, sequence_OF_instruction)
+        values = parser.get('test_sequence', id_string).split(sep = ', ')
+
+        values = [float(x) for x in values]
+        sequence_values.append(values)
+
+    return Config(trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
+
+
+    # sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
+    # sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
+    # sequence_mass_flow_rate = parser.get('test_sequence', 'mass_flow_rate').split(sep = ', ')
+    # sequence_valve_position = parser.get('test_sequence', 'valve_position').split(sep = ', ')
+    # sequence_OF_instruction = parser.get('test_sequence', 'OF_instruction').split(sep = ', ')
+
+    # sequence_time_step = [float(x) for x in sequence_time_step]
+    # sequence_power = [float(x) for x in sequence_power]
+    # sequence_mass_flow_rate = [float(x) for x in sequence_mass_flow_rate]
+    # sequence_valve_position = [float(x) for x in sequence_valve_position]
+    # sequence_OF_instruction = [float(x) for x in sequence_OF_instruction]
+
+    # return config_values
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     

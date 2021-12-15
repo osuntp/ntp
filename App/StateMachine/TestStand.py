@@ -32,11 +32,11 @@ class TestStand:
             time.sleep(0.1)
 
     def switch_state(self, new_state):
-        self.current_state.enter_state()
+        self.current_state.exit_state()
 
         self.current_state = new_state
 
-        self.current_state.exit_state()
+        self.current_state.enter_state()
 
     def turn_off_state_machine(self):
         self.state_machine_stopped = True

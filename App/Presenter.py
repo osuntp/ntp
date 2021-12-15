@@ -18,6 +18,7 @@ class Presenter:
     test_stand: TestStand.TestStand = None
     test_stand_standby_state: TestStandStates.StandbyState
     test_stand_trial_running_state: TestStandStates.TrialRunningState
+    test_stand_trial_ended_state: TestStandStates.TrialEndedState
 
     def __init__(self):
         pass
@@ -161,13 +162,13 @@ class Presenter:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
         # If Trial is running
-        if(self.model.trial_is_running):
-            next_index = self.model.current_trial_time_stamp_index + 1
+        # if(self.model.trial_is_running):
+        #     next_index = self.model.current_trial_time_stamp_index + 1
             
-            if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
-                if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
-                    self.model.current_trial_time_stamp_index = next_index
-                    self.ui.run.set_sequence_table_row_bold(next_index+1)
+        #     if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
+        #         if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
+        #             self.model.current_trial_time_stamp_index = next_index
+        #             self.ui.run.set_sequence_table_row_bold(next_index+1)
 
         self.ui.logs.update_python_log(Log.file_path)
 
@@ -302,17 +303,24 @@ class Presenter:
     #         Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
 
     def run_attempt_to_activate_start_button(self):
-        if(self.model.loaded_config is not None and self.serial_monitor.is_fully_connected):
+        # TODO: Replace this method logic with the commented code below:
+        # if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
+        #     self.ui.run.set_start_button_clickable(True)
+        # else:
+        #     self.ui.run.set_start_button_clickable(False)
+        print('Presenter.run_attempt_to_activate_start_button()')
+        if(self.model.config_is_loaded):
             self.ui.run.set_start_button_clickable(True)
+        else:
+            self.ui.run.set_start_button_clickable(False)
 
-    def run_start_clicked(self):        
-        self.ui.run.set_sequence_table_row_bold(1)    
+    def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
 
 
     def run_paused_clicked(self):
         Log.info('Trial has been stopped.')
-        self.test_stand.switch_state(self.test_stand_standby_state)    
+        self.test_stand.switch_state(self.test_stand_trial_ended_state)    
 
     def run_load_clicked(self):
         file_name = Config.select_file()
@@ -321,10 +329,13 @@ class Presenter:
             return
 
         Log.info('Trial configuration has been loaded.')
-        config: Config.Config = Config.open_file(file_name)
-        self.model.loaded_config = config
-        self.ui.run.set_loaded_trial_text(config.trial_name)      
-        self.ui.run.set_sequence_table(config)
+        config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.columns))
+
+        self.model.config_is_loaded = True
+
+        self.ui.run.set_loaded_trial_text(config.trial_name)
+        self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+        # self.ui.run.set_sequence_table(config)
         
         self.run_attempt_to_activate_start_button()
     

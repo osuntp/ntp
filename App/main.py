@@ -41,7 +41,7 @@ if __name__ == "__main__":
     test_stand = TestStand()
 
     standby_state = TestStandStates.StandbyState()
-    trial_ended_state = TestStandStates.TrialEndedState
+    trial_ended_state = TestStandStates.TrialEndedState()
     trial_running_state = TestStandStates.TrialRunningState()
 
     cwd = os.getcwd()
@@ -77,7 +77,13 @@ if __name__ == "__main__":
     standby_state.model = model
     standby_state.serial_monitor = serial_monitor
     standby_state.ui = ui
+    standby_state.presenter = presenter
     trial_running_state.test_stand = test_stand
+    trial_running_state.model = model
+    trial_running_state.ui = ui
+    trial_ended_state.standby_state = standby_state
+    trial_ended_state.ui = ui
+    trial_ended_state.test_stand = test_stand
 
     # auto_state.model = model
     # auto_state.test_stand = test_stand
@@ -90,6 +96,7 @@ if __name__ == "__main__":
     presenter.serial_monitor = serial_monitor
     presenter.test_stand_standby_state = standby_state
     presenter.test_stand_trial_running_state = trial_running_state
+    presenter.test_stand_trial_ended_state = trial_ended_state
     presenter.app = app
 
     serial_monitor.model = model

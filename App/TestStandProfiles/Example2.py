@@ -12,3 +12,6 @@ class TestStandBehaviour:
 
     def end(self):
         pass
+
+    def set_sequence_values(self, values):
+        print('hit')

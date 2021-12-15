@@ -14,19 +14,16 @@ class StandbyState():
     ui: UI = None
 
     def enter_state(self):
+        print('StandbyState.enter_state()')
         Log.info('Test Stand has entered the Standby State')
 
         self.model.trial_time = 0
         self.model.reset_dataframe()
-        self.model.trial_button_text = 'Start Trial'
+        self.ui.run.set_start_button_text('Start Trial')
         self.model.trial_is_running = False
 
-        if(self.serial_monitor.is_fully_connected and self.model.loaded_config is not None):
-            self.ui.run.set_start_button_clickable(True)
-            self.ui.run.set_pause_button_clickable(False)
-        else:
-            self.ui.run.set_start_button_clickable(False)
-            self.ui.run.set_pause_button_clickable(False)
+        self.presenter.run_attempt_to_activate_start_button()
+        self.ui.run.set_pause_button_clickable(False)
 
     def tick(self):
         pass
@@ -48,12 +45,11 @@ class TrialEndedState():
     def enter_state(self):
         Log.info('Trial Ended.')
         self.ui.run.set_pause_button_clickable(False)
-
-        self.timestamp = time.time()
+        self.start_timestamp = time.time()
 
     def tick(self):
         timestamp = time.time()
-        time_passed = timestamp - self.start_timestep
+        time_passed = timestamp - self.start_timestamp
 
         if(time_passed > 0):
             text = 'Trial Ended.'
@@ -63,22 +59,19 @@ class TrialEndedState():
 
         if(time_passed > 1):
             text = 'Trial Ended. . .'
-            
-        if(time_passed > 1.5):
-            text = 'Trial Ended. .'
 
-        if(time_passed > 2):
+        if(time_passed > 1.5):
             text = 'Saving Data.'
 
-        if(time_passed > 2.5):
+        if(time_passed > 2):
             text = 'Saving Data. .'
 
-        if(time_passed > 3):
+        if(time_passed > 2.5):
             text = 'Saving Data. . .'
 
         self.ui.run.set_start_button_text(text)
 
-        if(time_passed > 3.5):
+        if(time_passed > 3):
             self.test_stand.switch_state(self.standby_state)
 
     def exit_state(self):
@@ -91,19 +84,43 @@ class TrialRunningState():
     ui: UI = None
     trial_ended_state: TrialEndedState = None
 
+    current_sequence_row = 0
+    start_timestamp = 0
+
     current_profile = None
 
     def enter_state(self):
+        self.start_timestamp = time.time()
+        self.trial_time = 0
+        self.model.trial_is_running = True
+        self.ui.run.set_start_button_runningtrial()
+        self.ui.run.set_pause_button_clickable(True)
+
         self.current_profile.start()
 
     def tick(self):
+        self.model.trial_time = time.time() - self.start_timestamp
+        self.current_profile.trial_time = self.model.trial_time
+
+        # print('new')
+        # print(self.start_timestamp)
+        # print(time.time())
+
+        time_string = '%.1f' % self.model.trial_time
+
+        self.ui.run.start_button.setText('Running Trial - ' + time_string)
+
         self.current_profile.tick()
 
     def exit_state(self):
+        self.model.trial_is_running = False
         self.current_profile.end()
 
     def set_current_profile(self, profile):
         self.current_profile = profile
+
+
+
 
 # class StandbyState():
 

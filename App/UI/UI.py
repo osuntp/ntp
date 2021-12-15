@@ -521,10 +521,12 @@ class Run:
                     table.item(i,j).setFont(normal_font)
 
     def set_start_button_clickable(self, is_clickable):
+        print('UI.set_start_button_clickable()')
         Stylize.set_start_button_active(self.start_button, is_clickable)
         self.start_button.setEnabled(is_clickable)
 
     def set_start_button_runningtrial(self):
+        print('UI.set_start_button_runningtrial()')
         Stylize.set_start_button_runningtrial(self.start_button)
         self.start_button.setEnabled(False)
 

@@ -31,7 +31,8 @@ class Model:
     mass_flow_rate = 0
     OF_instruction = 0 # TODO: change to str?
 
-    loaded_config: Config = None
+    config_is_loaded = False
+    bolded_config_row = 0
 
     current_trial_time_stamp_index = 0
 
