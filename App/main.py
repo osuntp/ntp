@@ -100,6 +100,7 @@ if __name__ == "__main__":
     app.aboutToQuit.connect(test_stand.turn_off_state_machine)
     test_stand.setup(standby_state)
     presenter.setup()
+    test_stand.set_profile(0)
 
     window.show()
     sys.exit(app.exec_())

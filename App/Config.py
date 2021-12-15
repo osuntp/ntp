@@ -59,7 +59,7 @@ class ValidationThread(QThread):
             self.validation_message.emit(message)
             self.validation_is_complete.emit(False)
 
-def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, test_sequence: QtWidgets.QTableWidget, trial_end_timestep: str):
+def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, num_of_test_sequence_var:int, test_sequence: QtWidgets.QTableWidget, trial_end_timestep: str):
     config = ConfigParser()
 
     config.add_section('main')
@@ -95,29 +95,41 @@ def create_file(file_name: str, trial_name:str, description:str, blue_lines: QtW
     config.set('blue_lines', 'value', value)
 
 # Test Sequence Data
-    time_step = ''
-    power = ''
-    mass_flow_rate = ''
-    valve_position = ''
-    OF_instruction = ''
+    for i in range(num_of_test_sequence_var):
 
+        test_sequence_values_string = ''
 
-    for i in range(test_sequence.rowCount()):
-        time_step += (str(test_sequence.item(i,0).text()))
-        power += (str(test_sequence.item(i, 1).text()))
+        for j in range(test_sequence.rowCount()):
+            test_sequence_values_string += str(test_sequence.item(j,i).text())
 
-        if(i < (test_sequence.rowCount() - 1)):
-            time_step += ', '
-            power += ', '
-            mass_flow_rate += ', '
-            valve_position += ', '
-            OF_instruction += ', '
+            if(j < (test_sequence.rowCount() - 1)):
+                test_sequence_values_string += ', '
 
-    config.set('test_sequence', 'time_step', time_step)
-    config.set('test_sequence', 'power', power)
-    config.set('test_sequence', 'mass_flow_rate', mass_flow_rate)
-    config.set('test_sequence', 'valve_position', valve_position)
-    config.set('test_sequence', 'OF_instruction', OF_instruction)
+        value_name = 'value' + str(i)
+        config.set('test_sequence', value_name, test_sequence_values_string)
+
+    # time_step = ''
+    # power = ''
+    # mass_flow_rate = ''
+    # valve_position = ''
+    # OF_instruction = ''
+
+    # for i in range(test_sequence.rowCount()):
+    #     time_step += (str(test_sequence.item(i,0).text()))
+    #     power += (str(test_sequence.item(i, 1).text()))
+
+    #     if(i < (test_sequence.rowCount() - 1)):
+    #         time_step += ', '
+    #         power += ', '
+    #         mass_flow_rate += ', '
+    #         valve_position += ', '
+    #         OF_instruction += ', '
+
+    # config.set('test_sequence', 'time_step', time_step)
+    # config.set('test_sequence', 'power', power)
+    # config.set('test_sequence', 'mass_flow_rate', mass_flow_rate)
+    # config.set('test_sequence', 'valve_position', valve_position)
+    # config.set('test_sequence', 'OF_instruction', OF_instruction)
     
     with open(file_name, 'w') as f:
         config.write(f)
@@ -126,9 +138,11 @@ def get_save_file_name_from_user():
     file_dialog = QtWidgets.QFileDialog()
     file_filter = 'Config File (*.ini)'
 
+    cwd = os.getcwd()
+
     response = file_dialog.getSaveFileName(
         caption = 'Select a config file',
-        directory = 'Config.ini',
+        directory = cwd + '\TrialConfigs\Config.ini',
         filter = file_filter,
         initialFilter = 'Config File (*.ini)'
     )

@@ -261,30 +261,45 @@ class Presenter:
         self.ui.configuration.clear_all()
 
     def configuration_save_clicked(self):
-        self.config_validation_thread = Config.ValidationThread(self.ui)
+        file_name = Config.get_save_file_name_from_user()
 
-        self.config_validation_thread.validation_message.connect(self.on_configuration_validation_message)
-        self.config_validation_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
+        if(file_name == ''):
+            return
 
-        self.config_validation_thread.start()
+        trial_name = self.ui.configuration.trial_name_field.text()
+        description = self.ui.configuration.description_field.toPlainText()
+        blue_lines = self.ui.configuration.blue_lines_table
+        num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.columns)
+        test_sequence = self.ui.configuration.sequence_table
+        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
+        
+        Config.create_file(file_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
 
-    def on_configuration_validation_message(self, message):
-        self.ui.configuration.set_status_text(message)
+        # TODO: Validation was removed, consider if it needs added again
+        # self.config_validation_thread = Config.ValidationThread(self.ui)
 
-    def on_configuration_validation_is_complete(self, validation_was_successful):
-        if(validation_was_successful):
-            file_name = Config.get_save_file_name_from_user()
+        # self.config_validation_thread.validation_message.connect(self.on_configuration_validation_message)
+        # self.config_validation_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
 
-            if(file_name == ''):
-                return
+        # self.config_validation_thread.start()
 
-            trial_name = self.ui.configuration.trial_name_field.text()
-            description = self.ui.configuration.description_field.toPlainText()
-            blue_lines = self.ui.configuration.blue_lines_table
-            test_sequence = self.ui.configuration.sequence_table
-            trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
+    # def on_configuration_validation_message(self, message):
+    #     self.ui.configuration.set_status_text(message)
+
+    # def on_configuration_validation_is_complete(self, validation_was_successful):
+    #     if(validation_was_successful):
+    #         file_name = Config.get_save_file_name_from_user()
+
+    #         if(file_name == ''):
+    #             return
+
+    #         trial_name = self.ui.configuration.trial_name_field.text()
+    #         description = self.ui.configuration.description_field.toPlainText()
+    #         blue_lines = self.ui.configuration.blue_lines_table
+    #         test_sequence = self.ui.configuration.sequence_table
+    #         trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
             
-            Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
+    #         Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
 
     def run_attempt_to_activate_start_button(self):
         if(self.model.loaded_config is not None and self.serial_monitor.is_fully_connected):
