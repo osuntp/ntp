@@ -16,9 +16,8 @@ class Presenter:
     model: Model.Model = None
     serial_monitor: SM.SerialMonitor = None
     test_stand: TestStand.TestStand = None
-    test_stand_standby_state: TestStandStates.DemoStandbyState
-    test_stand_idle_state: TestStandStates.DemoIdleState
-    test_stand_auto_state: TestStandStates.DemoAutoState
+    test_stand_standby_state: TestStandStates.StandbyState
+    test_stand_trial_running_state: TestStandStates.TrialRunningState
 
     def __init__(self):
         pass
@@ -35,6 +34,7 @@ class Presenter:
 
         # Setup
         self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
+        self.ui.setup.test_stand_behaviour_field.activated.connect(self.setup_behaviour_change_clicked)
 
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
@@ -160,8 +160,6 @@ class Presenter:
         else:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
-        self.ui.run.start_button.setText(self.model.trial_button_text)
-
         # If Trial is running
         if(self.model.trial_is_running):
             next_index = self.model.current_trial_time_stamp_index + 1
@@ -170,8 +168,6 @@ class Presenter:
                 if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
                     self.model.current_trial_time_stamp_index = next_index
                     self.ui.run.set_sequence_table_row_bold(next_index+1)
-        elif(self.model.trial_is_complete):
-            self.ui.run.set_pause_button_clickable(False)
 
         self.ui.logs.update_python_log(Log.file_path)
 
@@ -192,7 +188,7 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        if(self.model.trial_is_paused or self.model.trial_is_running):
+        if(self.model.trial_is_running):
 
             Log.info('ABORTING CURRENT TRIAL')
             Log.info('Saving ')
@@ -232,6 +228,12 @@ class Presenter:
         self.serial_monitor.connect_arduinos(daq_port, controller_port)
         Stylize.set_button_active(self.ui.setup.manual_connect_button, True)
         self.ui.setup.manual_connect_button.setDisabled(False)
+
+    def setup_behaviour_change_clicked(self):
+        i = self.ui.setup.test_stand_behaviour_field.currentIndex()
+        self.test_stand.set_profile(i)
+
+
 
 # MANUAL PAGE LOGIC
     def manual_send_valve_command_clicked(self):
@@ -284,60 +286,18 @@ class Presenter:
             
             Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
 
+    def run_attempt_to_activate_start_button(self):
+        if(self.model.loaded_config is not None and self.serial_monitor.is_fully_connected):
+            self.ui.run.set_start_button_clickable(True)
 
+    def run_start_clicked(self):        
+        self.ui.run.set_sequence_table_row_bold(1)    
+        self.test_stand.switch_state(self.test_stand_trial_running_state)
 
-# RUN PAGE LOGIC
-    # def run_trial_ended(self):
-    #     if self.model.trial_is_running:
-    #         self.ui.run.set_start_button_clickable(False)
-    #         self.ui.run.set_pause_button_clickable(False)
-    #         self.ui.set_abort_tab_clickable(False)
-
-    #         self.model.trial_button_text = 'Trial Ended.'
-    #         self.ui.run.start_button.setText('Trial Ended.')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-    #         self.model.trial_button_text = 'Trial Ended. .'
-    #         self.ui.run.start_button.setText('Trial Ended. .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)            
-    #         self.model.trial_button_text = 'Trial Ended. . .'
-    #         self.ui.run.start_button.setText('Trial Ended. . .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-
-    #         self.model.trial_button_text = 'Saving Data.'
-    #         self.ui.run.start_button.setText('Saving Data.')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-    #         self.model.trial_button_text = 'Saving Data. .'
-    #         self.ui.run.start_button.setText('Saving Data. .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)            
-    #         self.model.trial_button_text = 'Saving Data. . .'
-    #         self.ui.run.start_button.setText('Saving Data. . .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-
-    #         self.model.trial_button_text = 'Start Trial'
-    #         self.ui.run.set_start_button_clickable(True)
-
-    def run_start_clicked(self):
-        if not(self.model.trial_is_paused):
-            self.ui.run.set_sequence_table_row_bold(1)
-            Log.info('Trial has started.')
-        else:
-            Log.info('Trial has resumed.')
-        
-        self.test_stand.switch_state(self.test_stand_auto_state)
-        self.ui.run.set_start_button_clickable(False)
-        self.ui.run.set_pause_button_clickable(True)
 
     def run_paused_clicked(self):
-        Log.info('Trial has paused.')
-        self.test_stand.switch_state(self.test_stand_idle_state)    
-        self.ui.run.set_start_button_clickable(True)
-        self.ui.run.set_pause_button_clickable(False)
+        Log.info('Trial has been stopped.')
+        self.test_stand.switch_state(self.test_stand_standby_state)    
 
     def run_load_clicked(self):
         file_name = Config.select_file()
@@ -348,9 +308,10 @@ class Presenter:
         Log.info('Trial configuration has been loaded.')
         config: Config.Config = Config.open_file(file_name)
         self.model.loaded_config = config
-        self.ui.run.set_loaded_trial_text(config.trial_name)
-        self.ui.run.set_start_button_clickable(True)
+        self.ui.run.set_loaded_trial_text(config.trial_name)      
         self.ui.run.set_sequence_table(config)
+        
+        self.run_attempt_to_activate_start_button()
     
     def run_plot_apply_buffer_clicked(self, plot_index):
         try:

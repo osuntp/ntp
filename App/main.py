@@ -18,13 +18,18 @@ from UI.UI import UI
 from UI.UI import Window
 from Presenter import Presenter
 import sys
+import os
+import importlib.util
 
-if __name__ == "__main__":
-
+def create_log():
     now = datetime.datetime.now()
     current_time = now.strftime("%H%M%S")
     log_file_name = 'app_' + str(current_time) + '.log'
     Log.create(log_name = 'NTP_Log', file_name=log_file_name, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
+
+if __name__ == "__main__":
+
+    create_log()
 
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
@@ -34,35 +39,59 @@ if __name__ == "__main__":
     model = Model()
     serial_monitor = SerialMonitor()
     test_stand = TestStand()
-    standby_state = TestStandStates.DemoStandbyState()
-    idle_state = TestStandStates.DemoIdleState()
-    auto_state = TestStandStates.DemoAutoState()
+
+    standby_state = TestStandStates.StandbyState()
+    trial_ended_state = TestStandStates.TrialEndedState
+    trial_running_state = TestStandStates.TrialRunningState()
+
+    cwd = os.getcwd()
+
+    profiles = []
+
+    for file in os.listdir("App/TestStandProfiles"):
+        if file.endswith(".py"):
+            
+            file_location = cwd + '\App\TestStandProfiles\\'
+            
+            spec = importlib.util.spec_from_file_location("module.name", os.path.join(file_location, file))
+            
+            module = importlib.util.module_from_spec(spec)
+            
+            spec.loader.exec_module(module)
+
+            profile = module.TestStandBehaviour()
+
+            profiles.append(profile)
+
+            ui.setup.test_stand_behaviour_field.addItem(profile.name)
+
+    test_stand.profiles = profiles
 
     # Assign Dependencies
     Log.ui = ui
 
+    test_stand.ui = ui
     test_stand.serial_monitor = serial_monitor
+    test_stand.trial_running_state = trial_running_state
 
     standby_state.model = model
     standby_state.serial_monitor = serial_monitor
     standby_state.ui = ui
+    trial_running_state.test_stand = test_stand
 
-    idle_state.model = model
-    idle_state.serial_monitor = serial_monitor
-
-    auto_state.model = model
-    auto_state.test_stand = test_stand
-    auto_state.standby_state = standby_state
-    auto_state.serial_monitor = serial_monitor    
+    # auto_state.model = model
+    # auto_state.test_stand = test_stand
+    # auto_state.standby_state = standby_state
+    # auto_state.serial_monitor = serial_monitor    
 
     presenter.ui = ui
     presenter.model = model
     presenter.test_stand = test_stand
     presenter.serial_monitor = serial_monitor
     presenter.test_stand_standby_state = standby_state
-    presenter.test_stand_idle_state = idle_state
-    presenter.test_stand_auto_state = auto_state
+    presenter.test_stand_trial_running_state = trial_running_state
     presenter.app = app
+
     serial_monitor.model = model
 
     # Setup

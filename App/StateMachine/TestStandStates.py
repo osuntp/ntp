@@ -1,72 +1,149 @@
-from PyQt5.QtCore import endl
 from UI.UI import UI
 from StateMachine.TestStand import TestStand
 import Model
 import SM
-from abc import ABC, abstractmethod
 
-import StateMachine.TestStand
 import time
 from Log import Log
 
-
-# All state classes derive from this abstract base class
-class AbstractState(ABC):
+class StandbyState():
 
     model: Model.Model = None
+    presenter = None
     serial_monitor: SM.SerialMonitor = None
-
-    @abstractmethod
-    def enter_state(self):
-        pass
-
-    @abstractmethod
-    def tick(self):
-        pass
-
-    @abstractmethod
-    def exit_state(self):
-        pass
-
-class DemoStandbyState(AbstractState):
-
-    is_first_start = True
     ui: UI = None
 
     def enter_state(self):
         Log.info('Test Stand has entered the Standby State')
+
         self.model.trial_time = 0
         self.model.reset_dataframe()
         self.model.trial_button_text = 'Start Trial'
-        self.model.current_trial_time_stamp_index = 0
-        self.model.trial_is_complete = False
         self.model.trial_is_running = False
-        self.model.trial_is_paused = False
 
-        if (self.is_first_start):
-            self.is_first_start = False
-        else:
+        if(self.serial_monitor.is_fully_connected and self.model.loaded_config is not None):
             self.ui.run.set_start_button_clickable(True)
+            self.ui.run.set_pause_button_clickable(False)
+        else:
+            self.ui.run.set_start_button_clickable(False)
             self.ui.run.set_pause_button_clickable(False)
 
     def tick(self):
         pass
+    
+    def exit_state(self):
+        pass
+
+class TrialEndedState():
+
+    model: Model.Model = None
+    serial_monitor: SM.SerialMonitor = None
+    test_stand: TestStand = None
+    ui: UI = None
+    standby_state: StandbyState = None
+
+    start_timestamp = 0
+    text = ''
+
+    def enter_state(self):
+        Log.info('Trial Ended.')
+        self.ui.run.set_pause_button_clickable(False)
+
+        self.timestamp = time.time()
+
+    def tick(self):
+        timestamp = time.time()
+        time_passed = timestamp - self.start_timestep
+
+        if(time_passed > 0):
+            text = 'Trial Ended.'
+
+        if(time_passed > 0.5):
+            text = 'Trial Ended. .'
+
+        if(time_passed > 1):
+            text = 'Trial Ended. . .'
+            
+        if(time_passed > 1.5):
+            text = 'Trial Ended. .'
+
+        if(time_passed > 2):
+            text = 'Saving Data.'
+
+        if(time_passed > 2.5):
+            text = 'Saving Data. .'
+
+        if(time_passed > 3):
+            text = 'Saving Data. . .'
+
+        self.ui.run.set_start_button_text(text)
+
+        if(time_passed > 3.5):
+            self.test_stand.switch_state(self.standby_state)
 
     def exit_state(self):
         pass
 
-class IdleState(AbstractState):
+class TrialRunningState():
+    model: Model.Model = None
+    serial_monitor: SM.SerialMonitor = None
+    test_stand: TestStand = None
+    ui: UI = None
+    trial_ended_state: TrialEndedState = None
+
+    current_profile = None
 
     def enter_state(self):
+        self.current_profile.start()
+
+    def tick(self):
+        self.current_profile.tick()
+
+    def exit_state(self):
+        self.current_profile.end()
+
+    def set_current_profile(self, profile):
+        self.current_profile = profile
+
+# class StandbyState():
+
+#     is_first_start = True
+#     ui: UI = None
+
+#     def start(self):
+#         Log.info('Test Stand has entered the Standby State')
+#         self.model.trial_time = 0
+#         self.model.reset_dataframe()
+#         self.model.trial_button_text = 'Start Trial'
+#         self.model.current_trial_time_stamp_index = 0
+#         self.model.trial_is_complete = False
+#         self.model.trial_is_running = False
+#         self.model.trial_is_paused = False
+
+#         if (self.is_first_start):
+#             self.is_first_start = False
+#         else:
+#             self.ui.run.set_start_button_clickable(True)
+#             self.ui.run.set_pause_button_clickable(False)
+
+#     def tick(self):
+#         pass
+
+#     def end(self):
+#         pass
+
+class IdleState():
+
+    def start(self):
         print('entered idle state and machine is ' + str(self.test_stand))
 
     def tick(self):
         print('idle state tick')
 
-    def exit_state(self):
+    def end(self):
         print('exit idle state')
 
-class DemoAutoState(AbstractState):
+class DemoAutoState():
 
     trial_end_time = 0
     current_sequence_index: int = 0
@@ -74,9 +151,9 @@ class DemoAutoState(AbstractState):
     current_valve_position = 0
     delta_valve_position = 0.25
     test_stand: TestStand
-    standby_state: DemoStandbyState
+    standby_state: StandbyState
 
-    def enter_state(self):
+    def start(self):
         Log.info('Test Stand has entered the Auto State.')
         self.model.trial_is_running = True
         self.model.trial_is_paused = False
@@ -185,10 +262,10 @@ class DemoAutoState(AbstractState):
                 self.test_stand.switch_state(self.standby_state)
         
 
-    def exit_state(self):
+    def end(self):
         pass
 
-class DemoIdleState(AbstractState):
+class DemoIdleState():
 
     def enter_state(self):
         Log.info('Test Stand has entered the Idle State.')

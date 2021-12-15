@@ -32,6 +32,11 @@ class Stylize:
     QPushButton:hover{ background-color: rgb(0, 170, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
     QPushButton:pressed{ background-color: rgb(0, 50, 0); color: rgb(255, 255, 255); border: 2px solid black;}"
 
+    start_button_runningtrial = "\
+    QPushButton{ background-color: rgb(0, 130, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:hover{ background-color: rgb(0, 170, 0); color: rgb(255, 255, 255); border: 2px solid black;} \
+    QPushButton:pressed{ background-color: rgb(0, 50, 0); color: rgb(255, 255, 255); border: 2px solid black;}"
+
     start_button_inactive = "\
     QPushButton{ background-color: rgb(65, 65, 65); color: rgb(255, 255, 255); border: 2px solid black;} \
     QPushButton:hover{ background-color: rgb(65, 65, 65); color: rgb(255, 255, 255); border: 2px solid black;} \
@@ -79,7 +84,11 @@ class Stylize:
         if(is_active):
             button.setStyleSheet(cls.start_button_active)
         else:
-            button.setStyleSheet(cls.start_button_inactive)
+            button.setStyleSheet(cls.button_inactive)
+
+    @classmethod
+    def set_start_button_runningtrial(cls,button):
+        button.setStyleSheet(cls.start_button_runningtrial)
 
     @classmethod
     def set_pause_button_active(cls,button, is_active):

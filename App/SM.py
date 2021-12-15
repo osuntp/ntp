@@ -23,6 +23,7 @@ class SerialMonitor:
     baudrate = 9600
     daq_buffer = ''
     tsc_buffer = ''
+    is_fully_connected = False
 
     model: Model = None
 
@@ -107,6 +108,11 @@ class SerialMonitor:
                         waiting_for_response = False
         except SerialException:
             self.model.controller_status_text = 'Invalid Port'
+
+        self.is_fully_connected = self.tsc_arduino is not None and self.daq_arduino is not None
+
+        if(self.is_fully_connected):
+            self.presenter.run_attempt_to_activate_start_button()
 
     def start_daq_monitor_loop(self):
         self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)

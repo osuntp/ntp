@@ -21,8 +21,6 @@ class Model:
     last_trial_time_stamp = 0
     trial_time = 0
     trial_is_running = False
-    trial_is_paused = False
-    trial_is_complete = True
 
     daq_is_connected = False
     controller_is_connected = False

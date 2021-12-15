@@ -134,10 +134,9 @@ class Setup:
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button
 
-        self.setting_ui_frequency_field = pyqt5.setup_ui_frequency_field
-        self.apply_settings_button = pyqt5.setup_apply_settings_button
+        self.test_stand_behaviour_field = pyqt5.setup_teststand_behaviour_field
 
-        Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
+        Stylize.button([self.auto_connect_button, self.manual_connect_button])
         Stylize.set_button_active(self.auto_connect_button, False)
 
 class Logs:
@@ -235,6 +234,18 @@ class Configuration:
             return
 
         table.removeRow(row_count - 1)
+
+    def set_sequence_table_columns(self, column_names):
+        table = self.sequence_table
+        column_count = table.columnCount()
+
+        for i in range(column_count):
+            item = table.horizontalHeaderItem(i)
+            item.setText('')
+
+        for i in range(len(column_names)):
+            item = table.horizontalHeaderItem(i)
+            item.setText(column_names[i])
 
     def add_row_to_sequence_table(self):
         table = self.sequence_table
@@ -435,10 +446,6 @@ class Run:
         self.plot4_openFOAM.setPen(pyqtgraph.mkPen(color='g', width = line_width))
 
         Stylize.button([self.load_button])
-        Stylize.set_button_active(self.start_button, False)
-        self.start_button.setEnabled(False)
-        Stylize.set_pause_button_active(self.pause_button, False)
-        self.pause_button.setEnabled(False)
         Stylize.table(self.sequence_table)
 
     def set_loaded_trial_text(self, text: str):
@@ -449,7 +456,6 @@ class Run:
 
         while(table.rowCount() > 0.5):
             table.removeRow(table.rowCount() - 1)
-
 
         table.insertRow(table.rowCount())
 
@@ -518,9 +524,16 @@ class Run:
         Stylize.set_start_button_active(self.start_button, is_clickable)
         self.start_button.setEnabled(is_clickable)
 
+    def set_start_button_runningtrial(self):
+        Stylize.set_start_button_runningtrial(self.start_button)
+        self.start_button.setEnabled(False)
+
     def set_pause_button_clickable(self, is_clickable):
         Stylize.set_pause_button_active(self.pause_button, is_clickable)
         self.pause_button.setEnabled(is_clickable)
+
+    def set_start_button_text(self, text: str):
+        self.start_button.setText(text)
 
 class UpdateThread(QThread):
     update_signal = pyqtSignal()
