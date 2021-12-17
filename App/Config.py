@@ -154,9 +154,11 @@ def select_file():
     file_dialog = QtWidgets.QFileDialog()
     file_filter = 'Config File (*.ini)'
 
+    cwd = os.getcwd()
+
     response = file_dialog.getOpenFileName(
         caption = 'Select a config file',
-        directory = os.getcwd(),
+        directory = cwd + '\TrialConfigs\\',
         filter = file_filter,
         initialFilter = 'Config File (*.ini)'
     )
