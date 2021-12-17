@@ -81,4 +81,4 @@ class TestStand:
         self.valve_position = new_position
         message = '<stdin, valve, ' + str(new_position) + '>\n'
         # self.serial_monitor.write(Arduino.CONTROLLER, message)
-        print(message)
+        # print(message)

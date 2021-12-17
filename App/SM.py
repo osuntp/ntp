@@ -95,19 +95,19 @@ class SerialMonitor:
                             clean_message = LD.clean(raw_message_line)
 
                             if(clean_message[0] == 'TSC'):
-                                self.model.controller_status_text = 'Connected'
+                                self.model.tsc_status_text = 'Connected'
                                 waiting_for_response = False
                                 self.start_tsc_monitor_loop()
                                 self.model.controller_is_connected = True
                     time.sleep(0.1)
 
                     if(time.time() > time_out):
-                        self.model.controller_status_text = 'Connection Timed Out'
+                        self.model.tsc_status_text = 'Connection Timed Out'
                         self.tsc_arduino.close()
                         self.tsc_arduino = None
                         waiting_for_response = False
         except SerialException:
-            self.model.controller_status_text = 'Invalid Port'
+            self.model.tsc_status_text = 'Invalid Port'
 
         self.is_fully_connected = self.tsc_arduino is not None and self.daq_arduino is not None
 

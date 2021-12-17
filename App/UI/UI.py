@@ -462,6 +462,8 @@ class Run:
         Stylize.end_button(self.pause_button)
         Stylize.table(self.sequence_table)
 
+        
+
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
 
@@ -469,6 +471,7 @@ class Run:
         table = self.sequence_table
         column_count = len(columns)
 
+        table.setColumnCount(0)
         table.setColumnCount(column_count)
 
         for i in range(column_count):
@@ -476,7 +479,7 @@ class Run:
             item.setText(columns[i])
             table.setHorizontalHeaderItem(i, item)
 
-    def set_sequence_table(self, sequence_values: List):
+    def set_sequence_table(self, sequence_values: List, end_time: float):
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
@@ -497,11 +500,18 @@ class Run:
         
         table.insertRow(table.rowCount())
 
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('End Trial')
-        table.setItem(table.rowCount()-1, 0, item)
+        for j in range(len(sequence_values)):
+            item  = QtWidgets.QTableWidgetItem()
+
+            if(j == 0):
+                item.setText('End Trial at ' + str(end_time) + 's')
+            else:
+                item.setText('')
+
+            table.setItem(table.rowCount()-1, j, item)
         
     def set_sequence_table_row_bold(self, row_int):
+
         table = self.sequence_table
 
         bold_font = QFont()
@@ -512,14 +522,20 @@ class Run:
         row_count = table.rowCount()
         column_count = table.columnCount()
 
-        for i in range(row_count-1):
+        self.sequence_table_bold_row = row_int
+
+        if(row_int == -1):
+            row_int = row_count-1
+
+        # print(row_count)
+        for i in range(row_count):
+            print(i)
             for j in range(column_count-1):
+                
                 if(i == row_int):
-                    table.item(i,j).setFont(bold_font)
+                    table.item(i,j).setFont(bold_font)                 
                 else:
                     table.item(i,j).setFont(normal_font)
-
-        self.sequence_table_bold_row = row_int
 
     def set_start_button_clickable(self, is_clickable):
         # Stylize.set_start_button_active(self.start_button, is_clickable)

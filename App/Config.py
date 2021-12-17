@@ -167,7 +167,6 @@ def open_file(file_name: str, num_of_sequence_columns: int):
     parser = ConfigParser()
     parser.read(file_name)
 
-
     trial_name = parser.get('main', 'trial_name')
     description = parser.get('main','description')
     trial_end_timestep = parser.get('main', 'trial_end_timestep')

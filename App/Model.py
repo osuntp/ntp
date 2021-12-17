@@ -7,9 +7,6 @@ import time
 
 class Model:
 
-    daq_status_text = 'Not Connected'
-    controller_status_text = 'Not Connected'
-
     hidden_data_buffer = 90 # time in seconds
 
     latest_values = [0]
@@ -31,6 +28,21 @@ class Model:
     plot4_buffer = 10
     
     test_stand = None
+
+
+# Values for UI Display
+
+    # Setup Page
+    daq_status_text = 'Not Connected'
+    tsc_status_text = 'Not Connected'
+    connect_arduinos_button_enabled = True
+
+    # Run Page
+    start_button_text = 'Start Trial'
+    run_sequence_bolded_row = -1
+
+
+
 
     def __init__(self):
         self.reset_dataframe()

@@ -82,108 +82,122 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-        if(self.model.trial_is_running):
-            if(self.test_stand_trial_running_state.current_profile.current_step is not self.ui.run.sequence_table_bold_row):
-                self.ui.run.set_sequence_table_row_bold(self.test_stand_trial_running_state.current_profile.current_step)
-        else:
-            self.ui.run.set_sequence_table_row_bold(self.ui.run.sequence_table.rowCount())
+        page = self.ui.pyqt5.stacked_widget.currentIndex()
+
+        # 5 - Setup
+        # 0 - Diagnostics
+        # 1 - Logs
+        # 2 - Manual
+        # 3 - Config
+        # 4 - Run
+
+        # Setup Page
+        if(page == 5):
+            self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
+            self.ui.setup.controller_status_label.setText(self.model.tsc_status_text)
+
+            self.ui.setup.manual_connect_button.setEnabled(self.model.connect_arduinos_button_enabled)
+
+        # Diagnostics Page
+        if(page == 0):
+            # TODO: Implement diagnostics UI update logic
+            pass
         
-        self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
-        self.ui.setup.controller_status_label.setText(self.model.controller_status_text)
+        # Logs Page
+        if(page == 1):
+            self.ui.logs.update_python_log(Log.file_path)
 
-        self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
+        # Manual Page
+        if(page == 2):
+            self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
 
-        # Update Plot1
-        if(self.ui.run.plot1_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet TC')
-            self.ui.run.plot1_inlet.setData(x,y)
-        else:
-            self.ui.run.plot1_inlet.setData([0],[0])
+            # TODO: Update manual control page
+            # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
+            # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
 
-        if(self.ui.run.plot1_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint TC')
-            self.ui.run.plot1_midpoint.setData(x,y)
-        else:
-            self.ui.run.plot1_midpoint.setData([0],[0])
+        # Configuration Page
+        if(page == 3):
+            pass
 
-        if(self.ui.run.plot1_outlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Outlet TC')
-            self.ui.run.plot1_outlet.setData(x,y)
-        else:
-            self.ui.run.plot1_outlet.setData([0],[0])
+        if(page == 4):
+            self.ui.run.start_button.setText(self.model.start_button_text)
 
-        if(self.ui.run.plot1_heat_sink_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Flow Temperature')
-            self.ui.run.plot1_heat_sink.setData(x,y)
-        else:
-            self.ui.run.plot1_heat_sink.setData([0],[0])
+            if(self.model.run_sequence_bolded_row != self.ui.run.sequence_table_bold_row):
+                
+                self.ui.run.set_sequence_table_row_bold(self.model.run_sequence_bolded_row)
 
-        # Update Plot2
-        if(self.ui.run.plot2_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet Pressure')
-            self.ui.run.plot2_inlet.setData(x,y)
-        else:
-            self.ui.run.plot2_inlet.setData([0],[0])
+            # Update Plot1
+            if(self.ui.run.plot1_inlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Inlet TC')
+                self.ui.run.plot1_inlet.setData(x,y)
+            else:
+                self.ui.run.plot1_inlet.setData([0],[0])
 
-        if(self.ui.run.plot2_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint Pressure')
-            self.ui.run.plot2_midpoint.setData(x,y)
-        else:
-            self.ui.run.plot2_midpoint.setData([0],[0])
+            if(self.ui.run.plot1_midpoint_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Midpoint TC')
+                self.ui.run.plot1_midpoint.setData(x,y)
+            else:
+                self.ui.run.plot1_midpoint.setData([0],[0])
 
-        if(self.ui.run.plot2_outlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Outlet Pressure')
-            self.ui.run.plot2_outlet.setData(x,y)
-        else:
-            self.ui.run.plot2_outlet.setData([0],[0])
+            if(self.ui.run.plot1_outlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Outlet TC')
+                self.ui.run.plot1_outlet.setData(x,y)
+            else:
+                self.ui.run.plot1_outlet.setData([0],[0])
 
-        if(self.ui.run.plot2_tank_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Pressure')
-            self.ui.run.plot2_tank.setData(x,y)
-        else:
-            self.ui.run.plot2_tank.setData([0],[0])
+            if(self.ui.run.plot1_heat_sink_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Flow Temperature')
+                self.ui.run.plot1_heat_sink.setData(x,y)
+            else:
+                self.ui.run.plot1_heat_sink.setData([0],[0])
 
-        # Update Plot3
-        x, y = self.model.get_run_plot_data('Mass Flow')
-        self.ui.run.plot3_mass_flow.setData(x,y)
+            # Update Plot2
+            if(self.ui.run.plot2_inlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Inlet Pressure')
+                self.ui.run.plot2_inlet.setData(x,y)
+            else:
+                self.ui.run.plot2_inlet.setData([0],[0])
 
-        # Update Plot4
-        if(self.ui.run.plot4_valve_position_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Valve Position')
-            self.ui.run.plot4_valve_position.setData(x,y)
-        else:
-            self.ui.run.plot4_valve_position.setData([0],[0])
+            if(self.ui.run.plot2_midpoint_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Midpoint Pressure')
+                self.ui.run.plot2_midpoint.setData(x,y)
+            else:
+                self.ui.run.plot2_midpoint.setData([0],[0])
 
-        if(self.ui.run.plot4_heater_duty_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Heater Status')
-            self.ui.run.plot4_heater_duty.setData(x,y)
-        else:
-            self.ui.run.plot4_heater_duty.setData([0],[0])
+            if(self.ui.run.plot2_outlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Outlet Pressure')
+                self.ui.run.plot2_outlet.setData(x,y)
+            else:
+                self.ui.run.plot2_outlet.setData([0],[0])
 
-        if(self.ui.run.plot4_openfoam_check.isChecked()):
-            x, y = self.model.get_run_plot_data('OpenFOAM Progress')
-            self.ui.run.plot4_openFOAM.setData(x,y)
-        else:
-            self.ui.run.plot4_openFOAM.setData([0],[0])
+            if(self.ui.run.plot2_tank_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Pressure')
+                self.ui.run.plot2_tank.setData(x,y)
+            else:
+                self.ui.run.plot2_tank.setData([0],[0])
 
+            # Update Plot3
+            x, y = self.model.get_run_plot_data('Mass Flow')
+            self.ui.run.plot3_mass_flow.setData(x,y)
 
+            # Update Plot4
+            if(self.ui.run.plot4_valve_position_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Valve Position')
+                self.ui.run.plot4_valve_position.setData(x,y)
+            else:
+                self.ui.run.plot4_valve_position.setData([0],[0])
 
+            if(self.ui.run.plot4_heater_duty_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Heater Status')
+                self.ui.run.plot4_heater_duty.setData(x,y)
+            else:
+                self.ui.run.plot4_heater_duty.setData([0],[0])
 
-
-        # If Trial is running
-        # if(self.model.trial_is_running):
-        #     next_index = self.model.current_trial_time_stamp_index + 1
-            
-        #     if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
-        #         if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
-        #             self.model.current_trial_time_stamp_index = next_index
-        #             self.ui.run.set_sequence_table_row_bold(next_index+1)
-
-        self.ui.logs.update_python_log(Log.file_path)
-
-        # Update manual control page
-        # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
-        # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
+            if(self.ui.run.plot4_openfoam_check.isChecked()):
+                x, y = self.model.get_run_plot_data('OpenFOAM Progress')
+                self.ui.run.plot4_openFOAM.setData(x,y)
+            else:
+                self.ui.run.plot4_openFOAM.setData([0],[0])
 
         # Update status lights on left columns
         # if any temp is above 80 deg. F, "Hot Stand" should be on
@@ -215,6 +229,9 @@ class Presenter:
 
     def setup_behaviour_change_clicked(self):
         i = self.ui.setup.test_stand_behaviour_field.currentIndex()
+
+        self.model.config_is_loaded = False
+        self.run_attempt_to_activate_start_button()
         self.test_stand.set_profile(i)
 
 
@@ -319,7 +336,7 @@ class Presenter:
         self.ui.run.set_loaded_trial_text(config.trial_name)
         self.test_stand.end_trial_time = float(config.trial_end_timestep)
         self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
-        self.ui.run.set_sequence_table(config.sequence_values)
+        self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
         
         self.run_attempt_to_activate_start_button()
     
