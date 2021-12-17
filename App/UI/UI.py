@@ -1,4 +1,5 @@
-
+from PyQt5 import QtWidgets
+from typing import List
 from PyQt5.QtGui import QFont
 from UI.QT5_Generated_UI import Ui_MainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -16,12 +17,15 @@ class Window(QMainWindow):
     pass
 
 class UI:
+    app: QtWidgets.QApplication = None
+
     def __init__(self, window):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
         self.pyqt5 = Ui_MainWindow()
         self.pyqt5.setupUi(window)
         # [END OF DO NOT EDIT]
+        
 
         self.tabs_widget = self.pyqt5.stacked_widget
         self.tabs = [self.pyqt5.diagnostics_tab, self.pyqt5.logs_tab, self.pyqt5.manual_control_tab, self.pyqt5.configuration_tab, self.pyqt5.run_tab, self.pyqt5.setup_tab]
@@ -37,6 +41,7 @@ class UI:
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
         self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
         self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
+        self.side_bar_state_text = self.pyqt5.side_bar_state_status
 
         self.setup = Setup(self.pyqt5)
         self.diagnostics = Diagnostics(self.pyqt5)
@@ -55,6 +60,9 @@ class UI:
         self.tabs_widget.setCurrentIndex(tab_index)
 
         self.current_tab = new_tab
+
+    def set_side_bar_state_text(self, text):
+        self.side_bar_state_text.setText(text)
 
     def set_hot_stand_status_light_is_lit(self, isLit: bool):
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
@@ -137,7 +145,8 @@ class Setup:
         self.test_stand_behaviour_field = pyqt5.setup_teststand_behaviour_field
 
         Stylize.button([self.auto_connect_button, self.manual_connect_button])
-        Stylize.set_button_active(self.auto_connect_button, False)
+        Stylize.button([self.auto_connect_button])
+        self.auto_connect_button.setEnabled(False)
 
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):
@@ -237,20 +246,19 @@ class Configuration:
 
     def set_sequence_table_columns(self, column_names):
         table = self.sequence_table
-        column_count = table.columnCount()
+        
+        column_count = len(column_names)
+
+        table.setColumnCount(column_count)
 
         for i in range(column_count):
-            item = table.horizontalHeaderItem(i)
-            item.setText('')
-
-        for i in range(len(column_names)):
-            item = table.horizontalHeaderItem(i)
+            item = QtWidgets.QTableWidgetItem()
             item.setText(column_names[i])
+            table.setHorizontalHeaderItem(i, item)
 
     def add_row_to_sequence_table(self):
         table = self.sequence_table
         row_count = table.rowCount()
-        column_count = table.columnCount()
 
         table.insertRow(row_count)
 
@@ -295,6 +303,8 @@ class Configuration:
         self.add_row_to_sequence_table()
     
 class Run:
+    sequence_table_bold_row = -1
+
     def __init__(self, pyqt5: Ui_MainWindow):
         self.load_button = pyqt5.run_load_configuration_button
         self.start_button = pyqt5.run_start_button
@@ -328,6 +338,8 @@ class Run:
         self.plot2_tank_check = pyqt5.run_plot2_tank_check
 
         self.plot2_tank_check.setChecked(True)
+
+        
 
         # Checkboxes - Plot3
             # None
@@ -446,62 +458,49 @@ class Run:
         self.plot4_openFOAM.setPen(pyqtgraph.mkPen(color='g', width = line_width))
 
         Stylize.button([self.load_button])
+        Stylize.start_button(self.start_button)
+        Stylize.end_button(self.pause_button)
         Stylize.table(self.sequence_table)
 
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
 
-    def set_sequence_table(self, config: Config.Config):
+    def set_sequence_table_columns(self, columns):
+        table = self.sequence_table
+        column_count = len(columns)
+
+        table.setColumnCount(column_count)
+
+        for i in range(column_count):
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(columns[i])
+            table.setHorizontalHeaderItem(i, item)
+
+    def set_sequence_table(self, sequence_values: List):
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
             table.removeRow(table.rowCount() - 1)
 
-        table.insertRow(table.rowCount())
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('')
-        table.setVerticalHeaderItem(table.rowCount()-1, item)
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('Timestep (s)')
-        item.setTextAlignment(4)
-        table.setItem(table.rowCount()-1, 0, item)
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('Heater Power (W)')
-        item.setTextAlignment(4)
-        table.setItem(table.rowCount()-1, 1, item)
-
-        for i in range(len(config.sequence_time_step)):
+        for i in range(len(sequence_values[0])):
             table.insertRow(table.rowCount())
-            
+
             item = QtWidgets.QTableWidgetItem()
             item.setText('')
             table.setVerticalHeaderItem(table.rowCount()-1, item)
 
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_time_step[i]))
-            table.setItem(table.rowCount()-1, 0, item)
+            for j in range(len(sequence_values)):
 
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_power[i]))
-            table.setItem(table.rowCount()-1, 1, item)
-
+                item = QtWidgets.QTableWidgetItem()
+                item.setText(str(sequence_values[j][i]))
+                table.setItem(table.rowCount()-1, j, item)
+        
         table.insertRow(table.rowCount())
 
         item = QtWidgets.QTableWidgetItem()
-        item.setText('')
-        table.setVerticalHeaderItem(table.rowCount()-1, item)
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText(str(config.trial_end_timestep))
-        table.setItem(table.rowCount()-1, 0, item)
-
-        item = QtWidgets.QTableWidgetItem()
         item.setText('End Trial')
-        table.setItem(table.rowCount()-1, 1, item)
-
+        table.setItem(table.rowCount()-1, 0, item)
+        
     def set_sequence_table_row_bold(self, row_int):
         table = self.sequence_table
 
@@ -513,25 +512,25 @@ class Run:
         row_count = table.rowCount()
         column_count = table.columnCount()
 
-        for i in range(row_count):
-            for j in range(column_count):
+        for i in range(row_count-1):
+            for j in range(column_count-1):
                 if(i == row_int):
                     table.item(i,j).setFont(bold_font)
                 else:
                     table.item(i,j).setFont(normal_font)
 
+        self.sequence_table_bold_row = row_int
+
     def set_start_button_clickable(self, is_clickable):
-        print('UI.set_start_button_clickable()')
-        Stylize.set_start_button_active(self.start_button, is_clickable)
+        # Stylize.set_start_button_active(self.start_button, is_clickable)
         self.start_button.setEnabled(is_clickable)
 
     def set_start_button_runningtrial(self):
-        print('UI.set_start_button_runningtrial()')
-        Stylize.set_start_button_runningtrial(self.start_button)
+        # Stylize.set_start_button_runningtrial(self.start_button)
         self.start_button.setEnabled(False)
 
     def set_pause_button_clickable(self, is_clickable):
-        Stylize.set_pause_button_active(self.pause_button, is_clickable)
+        # Stylize.set_pause_button_active(self.pause_button, is_clickable)
         self.pause_button.setEnabled(is_clickable)
 
     def set_start_button_text(self, text: str):

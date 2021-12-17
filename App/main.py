@@ -61,6 +61,8 @@ if __name__ == "__main__":
 
             profile = module.TestStandBehaviour()
 
+            profile.test_stand = test_stand
+
             profiles.append(profile)
 
             ui.setup.test_stand_behaviour_field.addItem(profile.name)
@@ -70,20 +72,27 @@ if __name__ == "__main__":
     # Assign Dependencies
     Log.ui = ui
 
+    ui.app = app
+
+    model.test_stand = test_stand
+
     test_stand.ui = ui
     test_stand.serial_monitor = serial_monitor
     test_stand.trial_running_state = trial_running_state
+    test_stand.trial_ended_state = trial_ended_state
 
     standby_state.model = model
     standby_state.serial_monitor = serial_monitor
     standby_state.ui = ui
     standby_state.presenter = presenter
+    standby_state.test_stand = test_stand
     trial_running_state.test_stand = test_stand
     trial_running_state.model = model
     trial_running_state.ui = ui
     trial_ended_state.standby_state = standby_state
     trial_ended_state.ui = ui
     trial_ended_state.test_stand = test_stand
+    trial_ended_state.model = model
 
     # auto_state.model = model
     # auto_state.test_stand = test_stand

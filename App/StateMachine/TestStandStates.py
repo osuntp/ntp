@@ -12,9 +12,9 @@ class StandbyState():
     presenter = None
     serial_monitor: SM.SerialMonitor = None
     ui: UI = None
+    test_stand: TestStand = None
 
     def enter_state(self):
-        print('StandbyState.enter_state()')
         Log.info('Test Stand has entered the Standby State')
 
         self.model.trial_time = 0
@@ -24,6 +24,8 @@ class StandbyState():
 
         self.presenter.run_attempt_to_activate_start_button()
         self.ui.run.set_pause_button_clickable(False)
+
+        self.test_stand.set_valve_position(90)
 
     def tick(self):
         pass
@@ -43,6 +45,9 @@ class TrialEndedState():
     text = ''
 
     def enter_state(self):
+        self.model.save_trial_data(False)
+        self.model.reset_dataframe()
+        
         Log.info('Trial Ended.')
         self.ui.run.set_pause_button_clickable(False)
         self.start_timestamp = time.time()
@@ -84,7 +89,6 @@ class TrialRunningState():
     ui: UI = None
     trial_ended_state: TrialEndedState = None
 
-    current_sequence_row = 0
     start_timestamp = 0
 
     current_profile = None
@@ -92,6 +96,7 @@ class TrialRunningState():
     def enter_state(self):
         self.start_timestamp = time.time()
         self.trial_time = 0
+        self.current_sequence_row = 0
         self.model.trial_is_running = True
         self.ui.run.set_start_button_runningtrial()
         self.ui.run.set_pause_button_clickable(True)
@@ -99,14 +104,15 @@ class TrialRunningState():
         self.current_profile.start()
 
     def tick(self):
-        self.model.trial_time = time.time() - self.start_timestamp
-        self.current_profile.trial_time = self.model.trial_time
+        self.test_stand.trial_time = time.time() - self.start_timestamp
+        self.current_profile.trial_time = self.test_stand.trial_time
 
-        # print('new')
-        # print(self.start_timestamp)
-        # print(time.time())
+        if(self.test_stand.trial_time > self.test_stand.end_trial_time):
+            print('hit')
+            self.test_stand.end_trial()
+            return
 
-        time_string = '%.1f' % self.model.trial_time
+        time_string = '%.1f' % self.test_stand.trial_time
 
         self.ui.run.start_button.setText('Running Trial - ' + time_string)
 

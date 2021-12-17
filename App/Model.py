@@ -9,7 +9,6 @@ class Model:
 
     daq_status_text = 'Not Connected'
     controller_status_text = 'Not Connected'
-    trial_button_text = 'Start'
 
     hidden_data_buffer = 90 # time in seconds
 
@@ -18,30 +17,20 @@ class Model:
     time_between_plot_points = 0.1
     time_of_last_plot_point = 0
 
-    last_trial_time_stamp = 0
-    trial_time = 0
     trial_is_running = False
 
     daq_is_connected = False
     controller_is_connected = False
 
-    valve_position = 90 # 90 degrees = closed
-    heater_status = 0
-    openFOAM_progress = 0
-    mass_flow_rate = 0
-    OF_instruction = 0 # TODO: change to str?
-
     config_is_loaded = False
-    bolded_config_row = 0
-
-    current_trial_time_stamp_index = 0
+    loaded_config_trial_name = ''
 
     plot1_buffer = 10
     plot2_buffer = 10
     plot3_buffer = 10
     plot4_buffer = 10
-
-    current_mass_flow:float = 0
+    
+    test_stand = None
 
     def __init__(self):
         self.reset_dataframe()
@@ -51,12 +40,10 @@ class Model:
     def update(self, message: List):
         current_time = time.time()
         message.insert(0, current_time)
-        message.append(self.valve_position)
+        message.append(self.test_stand.valve_position)
 
-        self.current_mass_flow = message[1]
-
-        # message.append(self.heater_status)
-        # message.append(self.openFOAM_progress)
+        # message.append(self.test_stand.heater_status)
+        # message.append(self.test_stand.openFOAM_progress)
 
         # Add data point to diagnostics dataframe
         self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
@@ -77,9 +64,13 @@ class Model:
                 self.ui_run_data = LD.append_point_to_frame(message, self.ui_run_data)
 
                 while((self.latest_values[0] - self.ui_run_data['Time'].iloc[0]) > self.hidden_data_buffer):
-                    self.ui_run_data = self.ui_run_data.iloc[1: , :]                  
+                    self.ui_run_data = self.ui_run_data.iloc[1: , :]
 
-        self.latest_values = message        
+            self.test_stand.mass_flow = message[1]
+            self.test_stand.inlet_temp = message[3]
+            self.test_stand.mid_temp = message[5]
+            self.test_stand.outlet_temp = message[7]
+            self.test_stand.inlet_press = message[9]
 
     def get_run_plot_data(self, name: str):
         if(self.ui_run_data.empty):
@@ -143,8 +134,6 @@ class Model:
         for i in range(len(data_column)):
             time_column[i] = float(round((time_column[i] - latest_time_stamp), 2))
             data_column[i] = float(data_column[i])
-            
-            # print(time_column[i])
 
         if(len(time_column == 0)):
             time_column = [0]
@@ -153,7 +142,7 @@ class Model:
         return time_column, data_column
 
     def save_trial_data(self, is_aborted_trial: bool):
-        LD.save_to_csv(self.trial_data, self.loaded_config.trial_name, is_aborted_trial)
+        LD.save_to_csv(self.trial_data, self.loaded_config_trial_name, is_aborted_trial)
 
     def reset_dataframe(self):
         self.trial_data = LD.get_new_dataframe()

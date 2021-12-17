@@ -82,7 +82,12 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-
+        if(self.model.trial_is_running):
+            if(self.test_stand_trial_running_state.current_profile.current_step is not self.ui.run.sequence_table_bold_row):
+                self.ui.run.set_sequence_table_row_bold(self.test_stand_trial_running_state.current_profile.current_step)
+        else:
+            self.ui.run.set_sequence_table_row_bold(self.ui.run.sequence_table.rowCount())
+        
         self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
         self.ui.setup.controller_status_label.setText(self.model.controller_status_text)
 
@@ -161,6 +166,10 @@ class Presenter:
         else:
             self.ui.run.plot4_openFOAM.setData([0],[0])
 
+
+
+
+
         # If Trial is running
         # if(self.model.trial_is_running):
         #     next_index = self.model.current_trial_time_stamp_index + 1
@@ -189,33 +198,7 @@ class Presenter:
 
     # TODO: Define abort procedure
     def abort_clicked(self):
-        if(self.model.trial_is_running):
-
-            Log.info('ABORTING CURRENT TRIAL')
-            Log.info('Saving ')
-            self.ui.run.set_start_button_clickable(False)
-            self.ui.run.set_pause_button_clickable(False)
-            self.ui.set_abort_tab_clickable(False)
-
-            self.test_stand.switch_state(self.test_stand_standby_state)
-            self.model.trial_button_text = 'Aborting. '
-            self.ui.run.start_button.setText('Aborting. ')
-            self.app.processEvents()
-            time.sleep(0.5)
-            self.model.trial_button_text = 'Aborting. .'
-            self.ui.run.start_button.setText('Aborting. .')
-            self.app.processEvents()
-            time.sleep(0.5)            
-            self.model.trial_button_text = 'Aborting. . .'
-            self.ui.run.start_button.setText('Aborting. . .')
-            self.app.processEvents()
-            time.sleep(0.5)
-            
-            self.ui.run.set_start_button_clickable(True)
-            self.ui.set_abort_tab_clickable(True)
-            self.model.trial_button_text = 'Start Trial'
-            self.ui.run.set_sequence_table_row_bold(-1)
-            self.model.save_trial_data(True)
+            print('Abort was pressed but this functionality has not been implemented.')
 
 # SETUP PAGE LOGIC
     def setup_manual_connect_clicked(self): 
@@ -308,7 +291,6 @@ class Presenter:
         #     self.ui.run.set_start_button_clickable(True)
         # else:
         #     self.ui.run.set_start_button_clickable(False)
-        print('Presenter.run_attempt_to_activate_start_button()')
         if(self.model.config_is_loaded):
             self.ui.run.set_start_button_clickable(True)
         else:
@@ -332,10 +314,12 @@ class Presenter:
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.columns))
 
         self.model.config_is_loaded = True
+        self.model.loaded_config_trial_name = config.trial_name
 
         self.ui.run.set_loaded_trial_text(config.trial_name)
+        self.test_stand.end_trial_time = float(config.trial_end_timestep)
         self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
-        # self.ui.run.set_sequence_table(config)
+        self.ui.run.set_sequence_table(config.sequence_values)
         
         self.run_attempt_to_activate_start_button()
     
