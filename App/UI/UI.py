@@ -19,6 +19,10 @@ class Window(QMainWindow):
 class UI:
     app: QtWidgets.QApplication = None
 
+    side_bar_hot_stand_is_lit = False
+    side_bar_heater_is_lit = False
+    side_bar_valve_open_is_lit = False
+
     def __init__(self, window):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
@@ -26,7 +30,6 @@ class UI:
         self.pyqt5.setupUi(window)
         # [END OF DO NOT EDIT]
         
-
         self.tabs_widget = self.pyqt5.stacked_widget
         self.tabs = [self.pyqt5.diagnostics_tab, self.pyqt5.logs_tab, self.pyqt5.manual_control_tab, self.pyqt5.configuration_tab, self.pyqt5.run_tab, self.pyqt5.setup_tab]
         self.current_tab = self.pyqt5.setup_tab
@@ -65,12 +68,15 @@ class UI:
         self.side_bar_state_text.setText(text)
 
     def set_hot_stand_status_light_is_lit(self, isLit: bool):
+        self.side_bar_hot_stand_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
     
     def set_valve_open_status_light_is_lit(self, isLit: bool):
+        self.side_bar_valve_open_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_valve_open_status, isLit)
     
     def set_heater_status_light_is_lit(self, isLit: bool):
+        self.side_bar_heater_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
 
     def set_abort_tab_clickable(self, is_active):
@@ -479,6 +485,9 @@ class Run:
             item.setText(columns[i])
             table.setHorizontalHeaderItem(i, item)
 
+        while(table.rowCount() > 0.5):
+            table.removeRow(table.rowCount() - 1)
+
     def set_sequence_table(self, sequence_values: List, end_time: float):
         table = self.sequence_table
 
@@ -529,7 +538,6 @@ class Run:
 
         # print(row_count)
         for i in range(row_count):
-            print(i)
             for j in range(column_count-1):
                 
                 if(i == row_int):

@@ -20,6 +20,7 @@ class StandbyState():
         self.model.trial_time = 0
         self.model.reset_dataframe()
         self.model.start_button_text = 'Start Trial'
+        self.model.state_text = 'STANDBY'
         self.model.trial_is_running = False
 
         self.presenter.run_attempt_to_activate_start_button()
@@ -45,9 +46,11 @@ class TrialEndedState():
     text = ''
 
     def enter_state(self):
+        self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
         self.model.save_trial_data(False)
         self.model.reset_dataframe()
+        self.model.state_text = 'ENDING'
 
         Log.info('Trial Ended.')
         self.ui.run.set_pause_button_clickable(False)
@@ -99,6 +102,7 @@ class TrialRunningState():
         self.trial_time = 0
         self.current_sequence_row = 0
         self.model.trial_is_running = True
+        self.model.state_text = 'RUNNING'
         self.ui.run.set_start_button_runningtrial()
         self.ui.run.set_pause_button_clickable(True)
 

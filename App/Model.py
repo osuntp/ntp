@@ -32,6 +32,9 @@ class Model:
 
 # Values for UI Display
 
+    # Side Bar
+    state_text = 'STANDBY'
+
     # Setup Page
     daq_status_text = 'Not Connected'
     tsc_status_text = 'Not Connected'

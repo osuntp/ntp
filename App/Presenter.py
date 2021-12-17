@@ -82,6 +82,15 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
+        
+        if(self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position == 90):
+            self.ui.set_valve_open_status_light_is_lit(True)
+        elif(not self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position != 90):
+            self.ui.set_valve_open_status_light_is_lit(False)
+
+        if(self.ui.side_bar_state_text != self.model.state_text):
+            self.ui.set_side_bar_state_text(self.model.state_text)
+
         page = self.ui.pyqt5.stacked_widget.currentIndex()
 
         # 5 - Setup
@@ -220,12 +229,10 @@ class Presenter:
         controller_port = self.ui.setup.controller_port_field.text()
         self.ui.setup.controller_status_label.setText('Attempting to Connect...')
         self.ui.setup.daq_status_label.setText('Attempting to Connect...')
-        Stylize.set_button_active(self.ui.setup.manual_connect_button, False)
-        self.ui.setup.manual_connect_button.setDisabled(True)
+        self.ui.setup.manual_connect_button.setEnabled(False)
         self.app.processEvents()
         self.serial_monitor.connect_arduinos(daq_port, controller_port)
-        Stylize.set_button_active(self.ui.setup.manual_connect_button, True)
-        self.ui.setup.manual_connect_button.setDisabled(False)
+        self.ui.setup.manual_connect_button.setEnabled(True)
 
     def setup_behaviour_change_clicked(self):
         i = self.ui.setup.test_stand_behaviour_field.currentIndex()
