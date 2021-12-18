@@ -109,6 +109,7 @@ if __name__ == "__main__":
     presenter.app = app
 
     serial_monitor.model = model
+    serial_monitor.presenter = presenter
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)

@@ -7,6 +7,7 @@ from Log import Log
 
 
 from SM import SerialMonitor
+import SM
 
 class TestStand:
 
@@ -24,7 +25,7 @@ class TestStand:
     end_trial_time = 0
 
     # Test Stand Values
-    valve_position = 0
+    valve_position = 90
 
     inlet_temp = 0
     mid_temp = 0
@@ -80,5 +81,6 @@ class TestStand:
 
         self.valve_position = new_position
         message = '<stdin, valve, ' + str(new_position) + '>\n'
-        # self.serial_monitor.write(Arduino.CONTROLLER, message)
-        # print(message)
+
+        print('new position set by test stand: ' + str(new_position))
+        self.serial_monitor.write(SM.Arduino.CONTROLLER, message)

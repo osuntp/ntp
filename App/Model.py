@@ -8,6 +8,7 @@ import time
 class Model:
 
     hidden_data_buffer = 90 # time in seconds
+    shown_data_buffer = 10
 
     latest_values = [0]
 
@@ -85,7 +86,8 @@ class Model:
             self.test_stand.inlet_temp = message[3]
             self.test_stand.mid_temp = message[5]
             self.test_stand.outlet_temp = message[7]
-            self.test_stand.inlet_press = message[9]
+            self.test_stand.tank_press = message[9]
+            self.test_stand.inlet_press = message[10]
 
     def get_run_plot_data(self, name: str):
         if(self.ui_run_data.empty):
@@ -103,7 +105,7 @@ class Model:
             elif len(data_column) > len(len_time):
                 data_column = data_column[: len(len_time)]
 
-        latest_time_stamp = self.latest_values[0]
+        latest_time_stamp = time.time()
 
         # time_cutoff = latest_time_stamp - shown_data_buffer 
 
@@ -138,7 +140,7 @@ class Model:
             elif len(data_column) > len(len_time):
                 data_column = data_column[: len(len_time)]
 
-        latest_time_stamp = self.latest_values[0]
+        latest_time_stamp = time.time()
 
         time_cutoff = latest_time_stamp - self.shown_data_buffer  
 
@@ -148,6 +150,8 @@ class Model:
 
         for i in range(len(data_column)):
             time_column[i] = float(round((time_column[i] - latest_time_stamp), 2))
+
+            
             data_column[i] = float(data_column[i])
 
         if(len(time_column == 0)):

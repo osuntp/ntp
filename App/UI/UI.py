@@ -141,9 +141,9 @@ class Setup:
         self.controller_status_label = pyqt5.setup_controller_status_label
 
         self.daq_port_field = pyqt5.setup_daq_port_field
-        self.daq_port_field.setText('COM8')
+        self.daq_port_field.setText('COM7')
         self.controller_port_field = pyqt5.setup_controller_port_field
-        self.controller_port_field.setText('COM6')
+        self.controller_port_field.setText('COM8')
 
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button

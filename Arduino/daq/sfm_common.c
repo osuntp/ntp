@@ -103,7 +103,7 @@ int16_t sfm_common_read_scale_factor_offset_and_unit(
 int16_t sfm_common_convert_flow_float(const SfmConfig* sfm_config,
                                       int16_t flow_raw, float* flow) {
     if (sfm_config->flow_scale == 0) {
-        return -1;
+         return -1;
     }
 
     *flow = ((int32_t)flow_raw - (int32_t)sfm_config->flow_offset) /

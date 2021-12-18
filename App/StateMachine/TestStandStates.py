@@ -25,8 +25,9 @@ class StandbyState():
 
         self.presenter.run_attempt_to_activate_start_button()
         self.ui.run.set_pause_button_clickable(False)
-
-        self.test_stand.set_valve_position(90)
+        
+        if(self.serial_monitor.is_fully_connected):
+            self.test_stand.set_valve_position(90)
 
     def tick(self):
         pass

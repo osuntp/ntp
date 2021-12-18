@@ -180,13 +180,15 @@ class Presenter:
                 self.ui.run.plot2_outlet.setData([0],[0])
 
             if(self.ui.run.plot2_tank_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Pressure')
+                x, y = self.model.get_run_plot_data('Tank Pressure')
                 self.ui.run.plot2_tank.setData(x,y)
             else:
                 self.ui.run.plot2_tank.setData([0],[0])
 
             # Update Plot3
             x, y = self.model.get_run_plot_data('Mass Flow')
+            # print(x)
+            # print(y)
             self.ui.run.plot3_mass_flow.setData(x,y)
 
             # Update Plot4
@@ -274,6 +276,7 @@ class Presenter:
         if(file_name == ''):
             return
 
+        profile_name = self.test_stand_trial_running_state.current_profile.name
         trial_name = self.ui.configuration.trial_name_field.text()
         description = self.ui.configuration.description_field.toPlainText()
         blue_lines = self.ui.configuration.blue_lines_table
@@ -281,7 +284,7 @@ class Presenter:
         test_sequence = self.ui.configuration.sequence_table
         trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
         
-        Config.create_file(file_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
+        Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
 
         # TODO: Validation was removed, consider if it needs added again
         # self.config_validation_thread = Config.ValidationThread(self.ui)
@@ -311,14 +314,14 @@ class Presenter:
 
     def run_attempt_to_activate_start_button(self):
         # TODO: Replace this method logic with the commented code below:
-        # if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
-        #     self.ui.run.set_start_button_clickable(True)
-        # else:
-        #     self.ui.run.set_start_button_clickable(False)
-        if(self.model.config_is_loaded):
+        if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
             self.ui.run.set_start_button_clickable(True)
         else:
             self.ui.run.set_start_button_clickable(False)
+        # if(self.model.config_is_loaded):
+        #     self.ui.run.set_start_button_clickable(True)
+        # else:
+        #     self.ui.run.set_start_button_clickable(False)
 
     def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
@@ -329,23 +332,36 @@ class Presenter:
         self.test_stand.switch_state(self.test_stand_trial_ended_state)    
 
     def run_load_clicked(self):
+        
+
         file_name = Config.select_file()
         
         if(file_name == ''):
             return
 
+        
         Log.info('Trial configuration has been loaded.')
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.columns))
 
-        self.model.config_is_loaded = True
-        self.model.loaded_config_trial_name = config.trial_name
+        current_profile_name = self.test_stand_trial_running_state.current_profile.name
 
-        self.ui.run.set_loaded_trial_text(config.trial_name)
-        self.test_stand.end_trial_time = float(config.trial_end_timestep)
-        self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
-        self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
+        print(config.profile_name)
+        print(current_profile_name)
+        if(config.profile_name != current_profile_name):
+            self.ui.run.set_loaded_trial_text('Invalid CONFIG File')
+            
+        else:
+
+
+            self.model.config_is_loaded = True
+            self.model.loaded_config_trial_name = config.trial_name
+
+            self.ui.run.set_loaded_trial_text(config.trial_name)
+            self.test_stand.end_trial_time = float(config.trial_end_timestep)
+            self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+            self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
         
-        self.run_attempt_to_activate_start_button()
+            self.run_attempt_to_activate_start_button()
     
     def run_plot_apply_buffer_clicked(self, plot_index):
         try:
