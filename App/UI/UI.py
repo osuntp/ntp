@@ -6,11 +6,10 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 # from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
+from SettingsManager import Settings
 
 import pyqtgraph
 from PyQt5 import QtWidgets
-import os
-import Config
 import time
 
 class Window(QMainWindow):
@@ -23,7 +22,7 @@ class UI:
     side_bar_heater_is_lit = False
     side_bar_valve_open_is_lit = False
 
-    def __init__(self, window):       
+    def __init__(self, window, settings: Settings):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
         self.pyqt5 = Ui_MainWindow()
@@ -46,7 +45,7 @@ class UI:
         self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
         self.side_bar_state_text = self.pyqt5.side_bar_state_status
 
-        self.setup = Setup(self.pyqt5)
+        self.setup = Setup(self.pyqt5, settings.daq_port, settings.tsc_port)
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.manual = Manual(self.pyqt5)
@@ -109,7 +108,8 @@ class Diagnostics:
         self.heater_set_point = pyqt5.diagnostics_r07_value
 
     def update_plots(self, diagnostics_dataframe):
-        self.plot1.update_vals(diagnostics_dataframe['column1'], diagnostics_dataframe['column2'])
+        pass
+        # self.plot1.update_vals(diagnostics_dataframe['column1'], diagnostics_dataframe['column2'])
 
     def set_test_stand_status(self, value: float):
         self.test_stand_status.setText(str(value))
@@ -136,23 +136,28 @@ class Diagnostics:
         self.heater_set_point.setText(str(value))
 
 class Setup:
-    def __init__(self, pyqt5: Ui_MainWindow):
+    def __init__(self, pyqt5: Ui_MainWindow, daq_port: str, tsc_port:str):
         self.daq_status_label = pyqt5.setup_daq_status_label
         self.controller_status_label = pyqt5.setup_controller_status_label
 
         self.daq_port_field = pyqt5.setup_daq_port_field
-        self.daq_port_field.setText('COM7')
+        self.daq_port_field.setText(daq_port)
         self.controller_port_field = pyqt5.setup_controller_port_field
-        self.controller_port_field.setText('COM8')
+        self.controller_port_field.setText(tsc_port)
 
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button
 
         self.test_stand_behaviour_field = pyqt5.setup_teststand_behaviour_field
 
+        self.developer_mode_field = pyqt5.setup_developer_mode_field
+
         Stylize.button([self.auto_connect_button, self.manual_connect_button])
         Stylize.button([self.auto_connect_button])
         self.auto_connect_button.setEnabled(False)
+
+    def set_selected_behaviour_field(self, i: int):
+        self.test_stand_behaviour_field.setCurrentIndex(i)
 
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):

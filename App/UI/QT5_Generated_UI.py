@@ -1165,7 +1165,7 @@ class Ui_MainWindow(object):
         self.run_test_sequence_table.setHorizontalHeaderItem(4, item)
         item = QtWidgets.QTableWidgetItem()
         self.run_test_sequence_table.setHorizontalHeaderItem(5, item)
-        self.run_test_sequence_table.horizontalHeader().setVisible(True)
+        self.run_test_sequence_table.horizontalHeader().setVisible(False)
         self.run_test_sequence_table.horizontalHeader().setCascadingSectionResizes(False)
         self.run_test_sequence_table.horizontalHeader().setStretchLastSection(True)
         self.run_test_sequence_table.verticalHeader().setVisible(False)
@@ -1786,16 +1786,27 @@ class Ui_MainWindow(object):
         self.verticalLayout_14.addWidget(self.setup_teststand_behaviour_field)
         spacerItem57 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_14.addItem(spacerItem57)
-        self.horizontalLayout_15.addLayout(self.verticalLayout_14)
+        self.horizontalLayout_23 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_23.setContentsMargins(15, 15, 15, 15)
+        self.horizontalLayout_23.setObjectName("horizontalLayout_23")
         spacerItem58 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_15.addItem(spacerItem58)
+        self.horizontalLayout_23.addItem(spacerItem58)
+        self.setup_developer_mode_field = QtWidgets.QCheckBox(self.setup_page)
+        self.setup_developer_mode_field.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.setup_developer_mode_field.setTristate(False)
+        self.setup_developer_mode_field.setObjectName("setup_developer_mode_field")
+        self.horizontalLayout_23.addWidget(self.setup_developer_mode_field)
+        self.verticalLayout_14.addLayout(self.horizontalLayout_23)
+        self.horizontalLayout_15.addLayout(self.verticalLayout_14)
+        spacerItem59 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_15.addItem(spacerItem59)
         self.stacked_widget.addWidget(self.setup_page)
         self.horizontalLayout_2.addWidget(self.stacked_widget)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(4)
+        self.stacked_widget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1933,6 +1944,7 @@ class Ui_MainWindow(object):
         self.setup_manualconnect_button.setText(_translate("MainWindow", "Connect"))
         self.label_24.setText(_translate("MainWindow", "Settings"))
         self.label_29.setText(_translate("MainWindow", "Test Stand Behaviour Profile:"))
+        self.setup_developer_mode_field.setText(_translate("MainWindow", "Developer Mode"))
 from pyqtgraph import PlotWidget
 
 

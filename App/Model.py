@@ -45,9 +45,6 @@ class Model:
     start_button_text = 'Start Trial'
     run_sequence_bolded_row = -1
 
-
-
-
     def __init__(self):
         self.reset_dataframe()
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
@@ -57,6 +54,8 @@ class Model:
         current_time = time.time()
         message.insert(0, current_time)
         message.append(self.test_stand.valve_position)
+
+        print(message)
 
         # message.append(self.test_stand.heater_status)
         # message.append(self.test_stand.openFOAM_progress)

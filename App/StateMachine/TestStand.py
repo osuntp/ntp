@@ -82,5 +82,4 @@ class TestStand:
         self.valve_position = new_position
         message = '<stdin, valve, ' + str(new_position) + '>\n'
 
-        print('new position set by test stand: ' + str(new_position))
         self.serial_monitor.write(SM.Arduino.CONTROLLER, message)

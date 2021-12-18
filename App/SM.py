@@ -1,6 +1,7 @@
 import sys
 import glob
 
+import random
 import serial
 from serial.serialutil import SerialException
 from Model import Model
@@ -15,6 +16,44 @@ class Arduino(Enum):
     DAQ = 1
     CONTROLLER = 2
 
+class DeveloperArduinos:
+
+    time_of_last_daq_message = 0
+    time_between_daq_messages = 1
+
+    num_of_daq_values = 10
+
+    @classmethod
+    def new_daq_message_available(cls):
+        
+        current_time = time.time()
+
+        message_available = (current_time - cls.time_of_last_daq_message) > cls.time_between_daq_messages
+
+        if(message_available):
+            cls.time_of_last_daq_message = current_time
+
+        return message_available
+
+    @classmethod
+    def get_daq_message(cls):
+
+        message = '<stdout, '
+
+        value = round(random.random(), 2)
+
+        message += str(value)
+
+        for i in range(cls.num_of_daq_values-1):
+            message += ', '
+
+            value = round(random.random(), 2)       
+            message += str(value)
+        
+        message += '>'
+        
+        return message
+
 class SerialMonitor:
     daq_id = 'daq'
     controller_id = 'controller'
@@ -25,15 +64,21 @@ class SerialMonitor:
     tsc_buffer = ''
     is_fully_connected = False
 
+    in_developer_mode = False
+
     model: Model = None
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
 
     def write(self, arduino: Arduino, message: str):
+
+        if(self.in_developer_mode):
+            print('Message to TSC: ' + message)
+            return
+
         if(arduino == Arduino.CONTROLLER):
             self.tsc_arduino.write(message.encode('utf-8'))
-            # print('SM is writing the following message: ' + str(message))
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode('utf-8'))
 
@@ -160,6 +205,16 @@ class SerialMonitor:
                 self.__handle_tsc_message(clean_message)
 
     def read_from_daq(self):
+
+        if(self.in_developer_mode):
+            
+            if(DeveloperArduinos.new_daq_message_available()):
+                
+                message = DeveloperArduinos.get_daq_message()
+
+                clean_message = LD.clean(message)
+                self.__handle_daq_message(clean_message)
+
         if(self.daq_arduino is None):
             return
 
@@ -182,7 +237,6 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
-            print(message)
         elif(prefix == 'stdinfo'):
             Log.info(message[0])
         elif(prefix == 'stderr'):
@@ -250,6 +304,9 @@ class SerialMonitor:
 
             self.tsc_arduino.close()
             self.tsc_arduino = None
+
+        self.daq_monitor_loop_is_running = False
+        self.tsc_monitor_loop_is_running = False
 
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
@@ -345,3 +402,24 @@ class SerialMonitor:
                 pass
 
         return result
+
+    def set_developer_mode(self, in_developer_mode):
+
+        self.in_developer_mode = in_developer_mode
+        
+
+        if(in_developer_mode):
+            self.disconnect_arduinos()
+            self.is_fully_connected = True
+
+            self.model.daq_status_text = 'Developer Mode'
+            self.model.tsc_status_text = 'Developer Mode'
+
+            self.start_daq_monitor_loop()
+            self.start_tsc_monitor_loop()
+        else:
+            self.disconnect_arduinos()
+            self.is_fully_connected = False
+
+            self.model.daq_status_text = 'Not Connected'
+            self.model.tsc_status_text = 'Not Connected'

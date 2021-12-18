@@ -39,7 +39,6 @@ def save_to_csv(dataframe: DataFrame, trial_name: str, is_aborted_trial: bool):
 
 # TODO: Revisit, we'll want a different reg ex so that we can handle other types of messages from arduino (like ID and errors)
 def clean(raw_message_string: str):
-
     split = raw_message_string.split('<')
     clean_message_string = split[1].split('>')[0]
     clean_message = clean_message_string.split(sep = ', ')

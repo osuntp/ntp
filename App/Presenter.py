@@ -36,6 +36,7 @@ class Presenter:
         # Setup
         self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
         self.ui.setup.test_stand_behaviour_field.activated.connect(self.setup_behaviour_change_clicked)
+        self.ui.setup.developer_mode_field.clicked.connect(self.setup_developer_mode_clicked)
 
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
@@ -242,6 +243,11 @@ class Presenter:
         self.model.config_is_loaded = False
         self.run_attempt_to_activate_start_button()
         self.test_stand.set_profile(i)
+
+    def setup_developer_mode_clicked(self):
+
+        is_checked = self.ui.setup.developer_mode_field.isChecked()
+        self.serial_monitor.set_developer_mode(is_checked)
 
 
 
