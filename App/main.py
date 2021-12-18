@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul  9 10:48:57 2021
-
-@author: Jacob Stonehill
-"""
-
-# from Experiment import Experiment
-
 from StateMachine import TestStandStates
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
@@ -20,6 +11,7 @@ from Presenter import Presenter
 import sys
 import os
 import importlib.util
+from SettingsManager import SettingsManager
 
 def create_log():
     now = datetime.datetime.now()
@@ -30,11 +22,15 @@ def create_log():
 if __name__ == "__main__":
 
     create_log()
+    settings = SettingsManager.open_settings_file()
+
+    
+
 
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
-    ui = UI(window)
+    ui = UI(window, settings)
     presenter = Presenter()
     model = Model()
     serial_monitor = SerialMonitor()
@@ -68,6 +64,8 @@ if __name__ == "__main__":
             ui.setup.test_stand_behaviour_field.addItem(profile.name)
 
     test_stand.profiles = profiles
+
+    ui.setup.set_selected_behaviour_field(settings.profile_index)
 
     # Assign Dependencies
     Log.ui = ui
@@ -110,6 +108,12 @@ if __name__ == "__main__":
 
     serial_monitor.model = model
     serial_monitor.presenter = presenter
+
+
+
+
+
+
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
