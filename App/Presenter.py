@@ -8,6 +8,7 @@ from Log import Log
 import time
 import Config
 from UI.Stylize import Stylize
+from SettingsManager import SettingsManager
 
 class Presenter:
 
@@ -19,6 +20,7 @@ class Presenter:
     test_stand_standby_state: TestStandStates.StandbyState
     test_stand_trial_running_state: TestStandStates.TrialRunningState
     test_stand_trial_ended_state: TestStandStates.TrialEndedState
+    test_stand_connecting_state: TestStandStates.ConnectingState
 
     def __init__(self):
         pass
@@ -229,13 +231,14 @@ class Presenter:
 # SETUP PAGE LOGIC
     def setup_manual_connect_clicked(self): 
         daq_port = self.ui.setup.daq_port_field.text()
-        controller_port = self.ui.setup.controller_port_field.text()
-        self.ui.setup.controller_status_label.setText('Attempting to Connect...')
-        self.ui.setup.daq_status_label.setText('Attempting to Connect...')
-        self.ui.setup.manual_connect_button.setEnabled(False)
-        self.app.processEvents()
-        self.serial_monitor.connect_arduinos(daq_port, controller_port)
-        self.ui.setup.manual_connect_button.setEnabled(True)
+        tsc_port = self.ui.setup.controller_port_field.text()
+
+        SettingsManager.save_arduino_ports(daq_port, tsc_port)
+
+        self.test_stand_connecting_state.daq_port = daq_port
+        self.test_stand_connecting_state.tsc_port = tsc_port
+
+        self.test_stand.switch_state(self.test_stand_connecting_state)
 
     def setup_behaviour_change_clicked(self):
         i = self.ui.setup.test_stand_behaviour_field.currentIndex()
@@ -243,13 +246,15 @@ class Presenter:
         self.model.config_is_loaded = False
         self.run_attempt_to_activate_start_button()
         self.test_stand.set_profile(i)
+        SettingsManager.save_profile_index(i)
 
     def setup_developer_mode_clicked(self):
 
         is_checked = self.ui.setup.developer_mode_field.isChecked()
         self.serial_monitor.set_developer_mode(is_checked)
+        SettingsManager.save_developer_mode(is_checked)
 
-
+        self.model.connect_arduinos_button_enabled = not is_checked
 
 # MANUAL PAGE LOGIC
     def manual_send_valve_command_clicked(self):

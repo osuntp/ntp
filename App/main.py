@@ -24,9 +24,6 @@ if __name__ == "__main__":
     create_log()
     settings = SettingsManager.open_settings_file()
 
-    
-
-
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
@@ -39,6 +36,7 @@ if __name__ == "__main__":
     standby_state = TestStandStates.StandbyState()
     trial_ended_state = TestStandStates.TrialEndedState()
     trial_running_state = TestStandStates.TrialRunningState()
+    connecting_state = TestStandStates.ConnectingState()
 
     cwd = os.getcwd()
 
@@ -65,7 +63,7 @@ if __name__ == "__main__":
 
     test_stand.profiles = profiles
 
-    ui.setup.set_selected_behaviour_field(settings.profile_index)
+    ui.setup.set_initial_values_from_settings(settings.profile_index, settings.developer_mode)
 
     # Assign Dependencies
     Log.ui = ui
@@ -91,6 +89,12 @@ if __name__ == "__main__":
     trial_ended_state.ui = ui
     trial_ended_state.test_stand = test_stand
     trial_ended_state.model = model
+    connecting_state.model = model
+    connecting_state.serial_monitor = serial_monitor
+    connecting_state.standby_state = standby_state
+    connecting_state.test_stand = test_stand
+    connecting_state.ui = ui
+
 
     # auto_state.model = model
     # auto_state.test_stand = test_stand
@@ -104,16 +108,13 @@ if __name__ == "__main__":
     presenter.test_stand_standby_state = standby_state
     presenter.test_stand_trial_running_state = trial_running_state
     presenter.test_stand_trial_ended_state = trial_ended_state
+    presenter.test_stand_connecting_state = connecting_state
     presenter.app = app
 
     serial_monitor.model = model
     serial_monitor.presenter = presenter
 
-
-
-
-
-
+    
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
@@ -121,7 +122,12 @@ if __name__ == "__main__":
     app.aboutToQuit.connect(test_stand.turn_off_state_machine)
     test_stand.setup(standby_state)
     presenter.setup()
-    test_stand.set_profile(0)
+    test_stand.set_profile(settings.profile_index)
+
+    if(settings.developer_mode):
+        presenter.setup_developer_mode_clicked()
+    else:
+        presenter.setup_manual_connect_clicked()
 
     window.show()
     sys.exit(app.exec_())

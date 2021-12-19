@@ -35,6 +35,52 @@ class StandbyState():
     def exit_state(self):
         pass
 
+class ConnectingState():
+
+    test_stand: TestStand = None
+    model: Model.Model = None
+    serial_monitor: SM.SerialMonitor = None
+    standby_state: StandbyState = None
+
+    ui: UI = None
+
+    start_time = 0
+
+    daq_port: str = None
+    tsc_port: str = None
+
+
+    def enter_state(self):
+        self.start_time = time.time()
+        self.ui.setup.manual_connect_button.setEnabled(False)
+        self.ui.setup.developer_mode_field.setEnabled(False)
+        self.model.connect_arduinos_button_enabled = False
+
+    def tick(self):
+        time_passed = time.time() - self.start_time
+
+        if(time_passed > 0):
+            text = 'Connecting.'
+
+        if(time_passed > 0.5):
+            text = 'Connecting. .'
+
+        if(time_passed > 1):
+            text = 'Connecting. . .'
+
+        if(time_passed > 1.5):
+            self.serial_monitor.connect_arduinos(self.daq_port, self.tsc_port)
+            self.test_stand.switch_state(self.standby_state)
+        else:
+
+            self.model.daq_status_text = text
+            self.model.tsc_status_text = text
+
+    def exit_state(self):
+        self.ui.setup.manual_connect_button.setEnabled(True)
+        self.ui.setup.developer_mode_field.setEnabled(True)
+        self.model.connect_arduinos_button_enabled = True
+        
 class TrialEndedState():
 
     model: Model.Model = None

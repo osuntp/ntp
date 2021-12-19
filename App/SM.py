@@ -11,6 +11,7 @@ import time
 import threading
 import LD
 from enum import Enum
+from SettingsManager import SettingsManager
 
 class Arduino(Enum):
     DAQ = 1
@@ -20,8 +21,6 @@ class DeveloperArduinos:
 
     time_of_last_daq_message = 0
     time_between_daq_messages = 1
-
-    num_of_daq_values = 10
 
     @classmethod
     def new_daq_message_available(cls):
@@ -36,7 +35,7 @@ class DeveloperArduinos:
         return message_available
 
     @classmethod
-    def get_daq_message(cls):
+    def get_daq_message(cls, num_of_daq_values):
 
         message = '<stdout, '
 
@@ -44,7 +43,7 @@ class DeveloperArduinos:
 
         message += str(value)
 
-        for i in range(cls.num_of_daq_values-1):
+        for i in range(num_of_daq_values-1):
             message += ', '
 
             value = round(random.random(), 2)       
@@ -84,6 +83,9 @@ class SerialMonitor:
 
     def connect_arduinos(self, daq_port: str, tsc_port:str):
         
+        if(self.in_developer_mode):
+            return
+
         # CONNECT DAQ
         try:
             if(self.daq_arduino is None):
@@ -158,6 +160,7 @@ class SerialMonitor:
 
         if(self.is_fully_connected):
             self.presenter.run_attempt_to_activate_start_button()
+            SettingsManager.save_arduino_ports(daq_port, tsc_port)
 
     def start_daq_monitor_loop(self):
         self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)
@@ -209,8 +212,9 @@ class SerialMonitor:
         if(self.in_developer_mode):
             
             if(DeveloperArduinos.new_daq_message_available()):
-                
-                message = DeveloperArduinos.get_daq_message()
+
+                # The number of values is LD.columns-2. Columns currently includes Time and Valve Position which are both appended by model.
+                message = DeveloperArduinos.get_daq_message(len(LD.columns)-2)
 
                 clean_message = LD.clean(message)
                 self.__handle_daq_message(clean_message)

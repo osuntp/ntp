@@ -86,6 +86,7 @@ class UI:
 
         self.abort_tab.setEnabled(is_active)
 
+
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
         self.plot1 = pyqt5.diagnostics_plot1.getPlotItem()
@@ -156,8 +157,9 @@ class Setup:
         Stylize.button([self.auto_connect_button])
         self.auto_connect_button.setEnabled(False)
 
-    def set_selected_behaviour_field(self, i: int):
-        self.test_stand_behaviour_field.setCurrentIndex(i)
+    def set_initial_values_from_settings(self, selected_behaviour_field: int, in_developer_mode: bool):
+        self.test_stand_behaviour_field.setCurrentIndex(selected_behaviour_field)
+        self.developer_mode_field.setChecked(in_developer_mode)
 
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):

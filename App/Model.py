@@ -17,9 +17,6 @@ class Model:
 
     trial_is_running = False
 
-    daq_is_connected = False
-    controller_is_connected = False
-
     config_is_loaded = False
     loaded_config_trial_name = ''
 
