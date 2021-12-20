@@ -19,10 +19,12 @@ class StandbyState():
         
         self.model.start_button_text = 'Start Trial'
         self.model.state_text = 'STANDBY'
-        self.model.trial_is_running = False
-
-        self.presenter.run_attempt_to_activate_start_button()
-        self.ui.run.set_pause_button_clickable(False)
+        
+        self.model.start_button_enabled = self.model.config_is_loaded
+        self.model.stop_button_enabled = False
+        self.model.load_button_enabled = True
+        self.model.developer_checkbox_enabled = True
+        self.model.connect_arduinos_button_enabled = True
         
         if(self.serial_monitor.is_fully_connected):
             self.test_stand.set_valve_position(90)
@@ -47,11 +49,15 @@ class ConnectingState():
     daq_port: str = None
     tsc_port: str = None
 
-
     def enter_state(self):
         self.start_time = time.time()
-        self.ui.setup.manual_connect_button.setEnabled(False)
-        self.ui.setup.developer_mode_field.setEnabled(False)
+
+        self.model.state_text = 'CONNECTING'
+
+        self.model.start_button_enabled = False
+        self.model.stop_button_enabled = False
+        self.model.load_button_enabled = True
+        self.model.developer_checkbox_enabled = False
         self.model.connect_arduinos_button_enabled = False
 
     def tick(self):
@@ -92,13 +98,18 @@ class TrialEndedState():
     def enter_state(self):
         self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
-        self.model.save_trial_data(False)
+        self.model.save_trial_data(is_aborted_trial=False)
         self.model.reset_dataframe()
         self.model.state_text = 'ENDING'
 
         Log.python.info('Trial Ended.')
-        self.ui.run.set_pause_button_clickable(False)
         self.start_timestamp = time.time()
+
+        self.model.start_button_enabled = False
+        self.model.stop_button_enabled = False
+        self.model.load_button_enabled = False
+        self.model.developer_checkbox_enabled = False
+        self.model.connect_arduinos_button_enabled = False
 
     def tick(self):
         timestamp = time.time()
@@ -107,24 +118,24 @@ class TrialEndedState():
         if(time_passed > 0):
             text = 'Trial Ended.'
 
-        if(time_passed > 0.5):
+        if(time_passed > 0.25):
             text = 'Trial Ended. .'
 
-        if(time_passed > 1):
+        if(time_passed > 0.5):
             text = 'Trial Ended. . .'
 
-        if(time_passed > 1.5):
+        if(time_passed > 0.75):
             text = 'Saving Data.'
 
-        if(time_passed > 2):
+        if(time_passed > 1):
             text = 'Saving Data. .'
 
-        if(time_passed > 2.5):
+        if(time_passed > 1.25):
             text = 'Saving Data. . .'
 
         self.model.start_button_text = text
 
-        if(time_passed > 3):
+        if(time_passed > 1.5):
             self.test_stand.switch_state(self.standby_state)
 
     def exit_state(self):
@@ -148,8 +159,12 @@ class TrialRunningState():
         self.current_sequence_row = 0
         self.model.trial_is_running = True
         self.model.state_text = 'RUNNING'
-        self.ui.run.set_start_button_runningtrial()
-        self.ui.run.set_pause_button_clickable(True)
+
+        self.model.start_button_enabled = False
+        self.model.stop_button_enabled = True
+        self.model.load_button_enabled = False
+        self.model.developer_checkbox_enabled = False
+        self.model.connect_arduinos_button_enabled = False
 
         self.current_profile.start()
 

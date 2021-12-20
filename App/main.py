@@ -86,12 +86,6 @@ if __name__ == "__main__":
     connecting_state.test_stand = test_stand
     connecting_state.ui = ui
 
-
-    # auto_state.model = model
-    # auto_state.test_stand = test_stand
-    # auto_state.standby_state = standby_state
-    # auto_state.serial_monitor = serial_monitor    
-
     presenter.ui = ui
     presenter.model = model
     presenter.test_stand = test_stand

@@ -567,21 +567,6 @@ class Run:
                 else:
                     table.item(i,j).setFont(normal_font)
 
-    def set_start_button_clickable(self, is_clickable):
-        # Stylize.set_start_button_active(self.start_button, is_clickable)
-        self.start_button.setEnabled(is_clickable)
-
-    def set_start_button_runningtrial(self):
-        # Stylize.set_start_button_runningtrial(self.start_button)
-        self.start_button.setEnabled(False)
-
-    def set_pause_button_clickable(self, is_clickable):
-        # Stylize.set_pause_button_active(self.pause_button, is_clickable)
-        self.pause_button.setEnabled(is_clickable)
-
-    def set_start_button_text(self, text: str):
-        self.start_button.setText(text)
-
 class UpdateThread(QThread):
     update_signal = pyqtSignal()
 

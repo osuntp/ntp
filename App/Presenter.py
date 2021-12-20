@@ -145,25 +145,34 @@ class Presenter:
         if(page == 4):
             self.ui.run.start_button.setText(self.model.start_button_text)
 
+            if(self.model.start_button_enabled != self.ui.run.start_button.isEnabled()):
+                self.ui.run.start_button.setEnabled(self.model.start_button_enabled)
+
+            if(self.model.stop_button_enabled != self.ui.run.pause_button.isEnabled()):
+                self.ui.run.pause_button.setEnabled(self.model.stop_button_enabled)
+
+            if(self.model.load_button_enabled != self.ui.run.load_button.isEnabled()):
+                self.ui.run.load_button.setEnabled(self.model.load_button_enabled)
+
             if(self.model.run_sequence_bolded_row != self.ui.run.sequence_table_bold_row):
                 
                 self.ui.run.set_sequence_table_row_bold(self.model.run_sequence_bolded_row)
 
             # Update Plot1
             if(self.ui.run.plot1_inlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Inlet TC')
+                x, y = self.model.get_run_plot_data('Inlet Temperature')
                 self.ui.run.plot1_inlet.setData(x,y)
             else:
                 self.ui.run.plot1_inlet.setData([0],[0])
 
             if(self.ui.run.plot1_midpoint_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Midpoint TC')
+                x, y = self.model.get_run_plot_data('Mid Temperature')
                 self.ui.run.plot1_midpoint.setData(x,y)
             else:
                 self.ui.run.plot1_midpoint.setData([0],[0])
 
             if(self.ui.run.plot1_outlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Outlet TC')
+                x, y = self.model.get_run_plot_data('Outlet Temperature')
                 self.ui.run.plot1_outlet.setData(x,y)
             else:
                 self.ui.run.plot1_outlet.setData([0],[0])
@@ -182,7 +191,7 @@ class Presenter:
                 self.ui.run.plot2_inlet.setData([0],[0])
 
             if(self.ui.run.plot2_midpoint_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Midpoint Pressure')
+                x, y = self.model.get_run_plot_data('Mid Pressure')
                 self.ui.run.plot2_midpoint.setData(x,y)
             else:
                 self.ui.run.plot2_midpoint.setData([0],[0])
@@ -194,15 +203,13 @@ class Presenter:
                 self.ui.run.plot2_outlet.setData([0],[0])
 
             if(self.ui.run.plot2_tank_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Tank Pressure')
+                x, y = self.model.get_run_plot_data('Supply Pressure')
                 self.ui.run.plot2_tank.setData(x,y)
             else:
                 self.ui.run.plot2_tank.setData([0],[0])
 
             # Update Plot3
             x, y = self.model.get_run_plot_data('Mass Flow')
-            # print(x)
-            # print(y)
             self.ui.run.plot3_mass_flow.setData(x,y)
 
             # Update Plot4
@@ -219,8 +226,9 @@ class Presenter:
                 self.ui.run.plot4_heater_duty.setData([0],[0])
 
             if(self.ui.run.plot4_openfoam_check.isChecked()):
-                x, y = self.model.get_run_plot_data('OpenFOAM Progress')
-                self.ui.run.plot4_openFOAM.setData(x,y)
+                # x, y = self.model.get_run_plot_data('OpenFOAM Progress')
+                # self.ui.run.plot4_openFOAM.setData(x,y)
+                pass
             else:
                 self.ui.run.plot4_openFOAM.setData([0],[0])
 
@@ -255,7 +263,8 @@ class Presenter:
         i = self.ui.setup.test_stand_behaviour_field.currentIndex()
 
         self.model.config_is_loaded = False
-        self.run_attempt_to_activate_start_button()
+        self.model.start_button_enabled = False
+
         self.test_stand.set_profile(i)
         SettingsManager.save_profile_index(i)
 
@@ -334,16 +343,16 @@ class Presenter:
             
     #         Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
 
-    def run_attempt_to_activate_start_button(self):
-        # TODO: Replace this method logic with the commented code below:
-        if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
-            self.ui.run.set_start_button_clickable(True)
-        else:
-            self.ui.run.set_start_button_clickable(False)
-        # if(self.model.config_is_loaded):
-        #     self.ui.run.set_start_button_clickable(True)
-        # else:
-        #     self.ui.run.set_start_button_clickable(False)
+    # def run_attempt_to_activate_start_button(self):
+    #     # TODO: Replace this method logic with the commented code below:
+    #     if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
+    #         self.ui.run.set_start_button_clickable(True)
+    #     else:
+    #         self.ui.run.set_start_button_clickable(False)
+    #     # if(self.model.config_is_loaded):
+    #     #     self.ui.run.set_start_button_clickable(True)
+    #     # else:
+    #     #     self.ui.run.set_start_button_clickable(False)
 
     def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
@@ -375,7 +384,7 @@ class Presenter:
             self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
             self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
         
-            self.run_attempt_to_activate_start_button()
+            self.model.start_button_enabled = (self.test_stand.current_state == self.test_stand_standby_state)
     
     def run_plot_apply_buffer_clicked(self, plot_index):
         try:

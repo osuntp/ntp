@@ -26,19 +26,20 @@ class TestStand:
 
     # Test Stand Values
     valve_position = 90
+    heater_status = 0
 
     inlet_temp = 0
     mid_temp = 0
     outlet_temp = 0
+    heater_temp = 0
 
     inlet_press = 0
     mid_press = 0
     outlet_press = 0
-    tank_press = 0
+    supply_press = 0
 
     mass_flow = 0
-    heater_temp = 0
-
+    
     # Other
     state_machine_stopped = False
 

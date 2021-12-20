@@ -9,7 +9,26 @@ import datetime
 import os
 from typing import List
 
-columns = ['Time', 'Mass Flow', 'Flow Temperature', 'Temperature 1', 'Internal Temperature 1', 'Temperature 2', 'Internal Temperature 2', 'Temperature 3', 'Internal Temperature 3', 'Tank Pressure', 'Inlet Pressure', 'Valve Position']
+columns = [
+    'Time', 
+    'Mass Flow', 
+    'Flow Temperature', 
+    'Heater Current', 
+    'Heater Temperature', 
+    '(IT) Heater Temperature',
+    'Inlet Temperature', 
+    '(IT) Inlet Temperature', 
+    'Mid Temperature', 
+    '(IT) Mid Temperature)', 
+    'Outlet Temperature', 
+    '(IT) Outlet Temperature)', 
+    'Supply Pressure',
+    'Inlet Pressure', 
+    'Mid Pressure',
+    'Outlet Pressure',
+    'Valve Position',
+    'Heater Status'
+    ]
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name(trial_name: str, is_aborted_trial: bool):
@@ -61,7 +80,7 @@ def get_new_dataframe(dataframe_columns):
 
 def append_point_to_frame(dataframe: DataFrame, message: list, dataframe_columns: list):
     data_point = {}
-    for i in range(len(columns)):
+    for i in range(len(dataframe_columns)):
         data_point[dataframe_columns[i]] = message[i]
 
     dataframe = dataframe.append(data_point, ignore_index=True)

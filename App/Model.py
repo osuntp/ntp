@@ -37,10 +37,14 @@ class Model:
     daq_status_text = 'Not Connected'
     tsc_status_text = 'Not Connected'
     connect_arduinos_button_enabled = True
+    developer_checkbox_enabled = True
 
     # Run Page
     start_button_text = 'Start Trial'
     run_sequence_bolded_row = -1
+    start_button_enabled = False
+    stop_button_enabled = False
+    load_button_enabled = True
 
     def __init__(self):
         self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe(LD.columns)
@@ -50,7 +54,8 @@ class Model:
         current_time = time.time()
         message.insert(0, current_time)
         message.append(self.test_stand.valve_position)
-
+        message.append(self.test_stand.heater_status)
+        
         print(message)
 
         # Add data point to diagnostics dataframe

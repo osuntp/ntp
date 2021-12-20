@@ -20,7 +20,7 @@ class Arduino(Enum):
 class DeveloperArduinos:
 
     time_of_last_daq_message = 0
-    time_between_daq_messages = 0.1
+    time_between_daq_messages = 1
 
     @classmethod
     def new_daq_message_available(cls):
@@ -109,7 +109,6 @@ class SerialMonitor:
                             if(clean_message[0] == 'DAQ'):
                                 self.model.daq_status_text = 'Connected'
                                 waiting_for_response = False
-                                self.model.daq_is_connected = True
                                 self.start_daq_monitor_loop()
 
                     if(time.time() > time_out):
@@ -145,7 +144,6 @@ class SerialMonitor:
                                 self.model.tsc_status_text = 'Connected'
                                 waiting_for_response = False
                                 self.start_tsc_monitor_loop()
-                                self.model.controller_is_connected = True
                     time.sleep(0.1)
 
                     if(time.time() > time_out):
@@ -213,11 +211,13 @@ class SerialMonitor:
             
             if(DeveloperArduinos.new_daq_message_available()):
 
-                # The number of values is LD.columns-2. Columns currently includes Time and Valve Position which are both appended by model.
-                message = DeveloperArduinos.get_daq_message(len(LD.columns)-2)
+                # The number of values is LD.columns-3. Columns currently includes Time, Valve Position and Heater Status which are all appended by model.
+                message = DeveloperArduinos.get_daq_message(len(LD.columns)-3)
 
                 clean_message = LD.clean(message)
                 self.__handle_daq_message(clean_message)
+            
+            return
 
         if(self.daq_arduino is None):
             return
@@ -241,8 +241,6 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
-
-            Log.python.info('Data Point Received. asdfasdf asdfasdf asdfasdf asdfasdf asdfasdf asdsfasdf.')
         elif(prefix == 'stdinfo'):
             Log.daq.info(message[0])
         elif(prefix == 'stderr'):
