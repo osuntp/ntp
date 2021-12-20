@@ -45,8 +45,7 @@ class SettingsManager:
             daq_port = str(parser.get('main', 'daq_port'))
             tsc_port = str(parser.get('main', 'tsc_port'))
             developer_mode = ('True' == parser.get('main', 'developer_mode'))
-        
-            
+                   
         except configparser.NoSectionError:
             profile_index = cls.profile_index
             daq_port = cls.daq_port

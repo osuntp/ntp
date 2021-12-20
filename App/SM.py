@@ -20,7 +20,7 @@ class Arduino(Enum):
 class DeveloperArduinos:
 
     time_of_last_daq_message = 0
-    time_between_daq_messages = 1
+    time_between_daq_messages = 0.1
 
     @classmethod
     def new_daq_message_available(cls):
@@ -242,7 +242,7 @@ class SerialMonitor:
         if(prefix == 'stdout'):
             self.model.update(message)
 
-            Log.daq.info('Data Point Received.')
+            Log.python.info('Data Point Received. asdfasdf asdfasdf asdfasdf asdfasdf asdfasdf asdsfasdf.')
         elif(prefix == 'stdinfo'):
             Log.daq.info(message[0])
         elif(prefix == 'stderr'):

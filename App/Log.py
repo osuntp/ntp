@@ -3,7 +3,7 @@ import datetime
 
 class PythonLog:
 
-    new_lines = ''
+    new_lines = []
 
     name = 'APP'
 
@@ -13,7 +13,7 @@ class PythonLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
         
     def debug(self, message):
@@ -22,7 +22,7 @@ class PythonLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def warning(self, message):
@@ -31,7 +31,7 @@ class PythonLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def error(self, message):
@@ -40,12 +40,12 @@ class PythonLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
         
 class DAQLog:
 
-    new_lines = ''
+    new_lines = []
 
     name = 'DAQ'
 
@@ -55,7 +55,7 @@ class DAQLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def debug(self, message):
@@ -64,7 +64,7 @@ class DAQLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def warning(self, message):
@@ -73,7 +73,7 @@ class DAQLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def error(self, message):
@@ -82,12 +82,12 @@ class DAQLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
 class TSCLog:
 
-    new_lines = ''
+    new_lines = []
 
     name = 'TSC'
 
@@ -97,7 +97,7 @@ class TSCLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def debug(self, message):
@@ -106,7 +106,7 @@ class TSCLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def warning(self, message):
@@ -115,7 +115,7 @@ class TSCLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
     def error(self, message):
@@ -124,7 +124,7 @@ class TSCLog:
         ui_line = Log.get_ui_line(message_type, message)
         file_line = Log.get_file_line(self.name, message_type, message)
 
-        self.new_lines = self.new_lines + ui_line
+        self.new_lines.append(ui_line)
         Log.add_to_file(file_line)
 
 class Log:

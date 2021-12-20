@@ -164,6 +164,8 @@ class Setup:
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.python = pyqt5.logs_python_log
+        self.daq = pyqt5.logs_daq_log
+        self.tsc = pyqt5.logs_controller_log
 
     def update_python_log(self, file_path: str):
 

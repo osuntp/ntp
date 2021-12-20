@@ -5,9 +5,7 @@ import SM
 from PyQt5 import QtWidgets
 from UI import UI
 from Log import Log
-import time
 import Config
-from UI.Stylize import Stylize
 from SettingsManager import SettingsManager
 
 class Presenter:
@@ -27,7 +25,6 @@ class Presenter:
     
     def setup(self):
         
-        # TODO: This isn't working in a for loop for some reason, might be because of the lambda expression? revisit
         self.ui.tabs[0].clicked.connect(lambda: self.tab_clicked(0))
         self.ui.tabs[1].clicked.connect(lambda: self.tab_clicked(1))
         self.ui.tabs[2].clicked.connect(lambda: self.tab_clicked(2))
@@ -56,8 +53,6 @@ class Presenter:
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
         self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
-
-        
 
         # Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
@@ -117,8 +112,23 @@ class Presenter:
         
         # Logs Page
         if(page == 1):
-            pass
-            # self.ui.logs.update_python_log(Log.file_path)
+            # Update Python Log
+            while(len(Log.python.new_lines) > 0.5):
+                self.ui.logs.python.append(Log.python.new_lines[0])
+
+                Log.python.new_lines.pop(0)
+
+            # Update DAQ Log
+            while(len(Log.daq.new_lines) > 0.5):
+                self.ui.logs.daq.append(Log.daq.new_lines[0])
+
+                Log.daq.new_lines.pop(0)
+
+            # Update TSC Log
+            while(len(Log.tsc.new_lines) > 0.5):
+                self.ui.logs.tsc.append(Log.tsc.new_lines[0])
+
+                Log.tsc.new_lines.pop(0)
 
         # Manual Page
         if(page == 2):
