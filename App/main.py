@@ -20,7 +20,6 @@ def create_log():
     Log.create(log_name = 'NTP_Log', file_name=log_file_name, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
 
 if __name__ == "__main__":
-
     create_log()
     settings = SettingsManager.open_settings_file()
 

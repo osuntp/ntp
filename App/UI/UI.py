@@ -480,20 +480,33 @@ class Run:
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
 
-    def set_sequence_table_columns(self, columns):
+    def set_sequence_table_columns(self, column_names):
         table = self.sequence_table
-        column_count = len(columns)
+        
+        column_count = len(column_names)
 
-        table.setColumnCount(0)
         table.setColumnCount(column_count)
 
         for i in range(column_count):
             item = QtWidgets.QTableWidgetItem()
-            item.setText(columns[i])
+            item.setText(column_names[i])
             table.setHorizontalHeaderItem(i, item)
 
-        while(table.rowCount() > 0.5):
-            table.removeRow(table.rowCount() - 1)
+        # table = self.sequence_table
+        # column_count = len(columns)
+
+        # while(table.columnCount() > 0.5):
+        #     table.removeColumn(table.columnCount() - 1)
+
+        # for i in range(column_count):
+        #     table.insertColumn(table.columnCount())
+
+        # table.setHorizontalHeaderLabels(columns)
+
+        # while(table.rowCount() > 0.5):
+        #     table.removeRow(table.rowCount() - 1)
+
+        # print(table.horizontalHeaderItem(1).text())
 
     def set_sequence_table(self, sequence_values: List, end_time: float):
         table = self.sequence_table

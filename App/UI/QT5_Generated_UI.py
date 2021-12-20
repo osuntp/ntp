@@ -1165,9 +1165,9 @@ class Ui_MainWindow(object):
         self.run_test_sequence_table.setHorizontalHeaderItem(4, item)
         item = QtWidgets.QTableWidgetItem()
         self.run_test_sequence_table.setHorizontalHeaderItem(5, item)
-        self.run_test_sequence_table.horizontalHeader().setVisible(False)
+        self.run_test_sequence_table.horizontalHeader().setVisible(True)
         self.run_test_sequence_table.horizontalHeader().setCascadingSectionResizes(False)
-        self.run_test_sequence_table.horizontalHeader().setStretchLastSection(True)
+        self.run_test_sequence_table.horizontalHeader().setStretchLastSection(False)
         self.run_test_sequence_table.verticalHeader().setVisible(False)
         self.verticalLayout_11.addWidget(self.run_test_sequence_table)
         self.horizontalLayout_9.addLayout(self.verticalLayout_11)
@@ -1806,7 +1806,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(5)
+        self.stacked_widget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

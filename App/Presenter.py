@@ -355,15 +355,11 @@ class Presenter:
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
 
         current_profile_name = self.test_stand_trial_running_state.current_profile.name
-
-        print(config.profile_name)
-        print(current_profile_name)
+        
         if(config.profile_name != current_profile_name):
             self.ui.run.set_loaded_trial_text('Invalid CONFIG File')
             
         else:
-
-
             self.model.config_is_loaded = True
             self.model.loaded_config_trial_name = config.trial_name
 
