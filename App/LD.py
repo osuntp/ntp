@@ -29,7 +29,6 @@ def __new_save_file_name(trial_name: str, is_aborted_trial: bool):
         prefix = ''
 
     trial_name = trial_name.replace(' ', '_')
-    print(trial_name)
     return year + '_' + month + '_' + day + '_' + current_time + '_' + prefix + 'trial_data_' + trial_name + '.csv'
 
 def save_to_csv(dataframe: DataFrame, trial_name: str, is_aborted_trial: bool):

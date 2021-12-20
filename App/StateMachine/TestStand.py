@@ -78,7 +78,7 @@ class TestStand:
         self.switch_state(self.trial_ended_state)
 
     def set_valve_position(self, new_position):
-        Log.info('Test Stand sending message to TSC to set valve to following position: ' + str(new_position))
+        Log.python.info('Test Stand sending message to TSC to set valve to following position: ' + str(new_position))
 
         self.valve_position = new_position
         message = '<stdin, valve, ' + str(new_position) + '>\n'

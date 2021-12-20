@@ -13,14 +13,8 @@ import os
 import importlib.util
 from SettingsManager import SettingsManager
 
-def create_log():
-    now = datetime.datetime.now()
-    current_time = now.strftime("%H%M%S")
-    log_file_name = 'app_' + str(current_time) + '.log'
-    Log.create(log_name = 'NTP_Log', file_name=log_file_name, file_format='%(asctime)s : %(process)d : %(levelname)s : %(message)s')
-
 if __name__ == "__main__":
-    create_log()
+    Log.create()
     settings = SettingsManager.open_settings_file()
 
     # Create Objects
@@ -65,8 +59,6 @@ if __name__ == "__main__":
     ui.setup.set_initial_values_from_settings(settings.profile_index, settings.developer_mode)
 
     # Assign Dependencies
-    Log.ui = ui
-
     ui.app = app
 
     model.test_stand = test_stand

@@ -15,7 +15,7 @@ class StandbyState():
     test_stand: TestStand = None
 
     def enter_state(self):
-        Log.info('Test Stand has entered the Standby State')
+        Log.python.info('Test Stand has entered the Standby State')
         
         self.model.start_button_text = 'Start Trial'
         self.model.state_text = 'STANDBY'
@@ -96,7 +96,7 @@ class TrialEndedState():
         self.model.reset_dataframe()
         self.model.state_text = 'ENDING'
 
-        Log.info('Trial Ended.')
+        Log.python.info('Trial Ended.')
         self.ui.run.set_pause_button_clickable(False)
         self.start_timestamp = time.time()
 

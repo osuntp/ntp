@@ -241,15 +241,16 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
+
+            Log.daq.info('Data Point Received.')
         elif(prefix == 'stdinfo'):
-            Log.info(message[0])
+            Log.daq.info(message[0])
         elif(prefix == 'stderr'):
-            Log.error(message[0])
+            Log.daq.error(message[0])
         elif(prefix == 'DAQ'):
-            Log.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
-        
+            Log.daq.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')       
         else:
-            Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
+            Log.daq.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
     def __handle_tsc_message(self, message: list):
         prefix = message[0]
@@ -257,15 +258,15 @@ class SerialMonitor:
         message.pop(0)
 
         if(prefix == 'stdout'):
-            Log.warning('Received stdout message from TSC')
+            Log.tsc.warning('Received stdout message from TSC')
         elif(prefix == 'stdinfo'):
-            Log.info(message[0])
+            Log.tsc.info(message[0])
         elif(prefix == 'stderr'):
-            Log.error(message[0])
+            Log.tsc.error(message[0])
         elif(prefix == 'TSC'):
-            print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')     
+            Log.tsc.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')        
         else:
-            Log.warning('Unknown message type received from TSC. The prefix was ' + prefix)   
+            Log.tsc.warning('Unknown message type received from TSC. The prefix was ' + prefix)   
 
     def disconnect_arduinos(self):
         if(self.daq_arduino is not None):
@@ -344,23 +345,11 @@ class SerialMonitor:
                             self.controller_arduino = connection
                             
                         else:
-                            Log.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
+                            Log.python.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
                     else:
-                        Log.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
+                        Log.python.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
 
                     break
-
-        # TODO: Uncomment this when we're ready to work with two arduinos at once.
-        # If one arduino wasn't able to connect, disconnect the other.
-        # if self.DAQ_arduino is None:
-        #     Log.error('SerialMonitor: connect_arduinos(): Unable to connect DAQ Arduino, closing any open Arduino connections.')
-        #     self.disconnect_arduinos()
-
-        # elif self.controller_arduino is None:
-        #     Log.error('SerialMonitor: connect_arduinos(): Unable to connect Controller Arduino, closing any open Arduino connections.')
-        #     self.disconnect_arduinos()
-        # else:
-        #     self.arduinos_are_connected = True
 
     def on_window_exit(self):
         try:
@@ -394,7 +383,7 @@ class SerialMonitor:
         elif sys.platform.startswith('darwin'):
             ports = glob.glob('/dev/tty.*')
         else:
-            Log.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
+            Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
 
         result = []
         for port in ports:

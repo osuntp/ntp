@@ -117,7 +117,8 @@ class Presenter:
         
         # Logs Page
         if(page == 1):
-            self.ui.logs.update_python_log(Log.file_path)
+            pass
+            # self.ui.logs.update_python_log(Log.file_path)
 
         # Manual Page
         if(page == 2):
@@ -339,23 +340,19 @@ class Presenter:
 
 
     def run_paused_clicked(self):
-        Log.info('Trial has been stopped.')
         self.test_stand.switch_state(self.test_stand_trial_ended_state)    
 
     def run_load_clicked(self):
-        
-
         file_name = Config.select_file()
         
         if(file_name == ''):
             return
-
-        
-        Log.info('Trial configuration has been loaded.')
+      
+        Log.python.info('Trial configuration has been loaded.')
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
 
         current_profile_name = self.test_stand_trial_running_state.current_profile.name
-        
+
         if(config.profile_name != current_profile_name):
             self.ui.run.set_loaded_trial_text('Invalid CONFIG File')
             
