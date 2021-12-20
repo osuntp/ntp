@@ -34,6 +34,7 @@ class TestStand:
     inlet_press = 0
     mid_press = 0
     outlet_press = 0
+    tank_press = 0
 
     mass_flow = 0
     heater_temp = 0
@@ -70,8 +71,8 @@ class TestStand:
         profile = self.profiles[i]
 
         self.trial_running_state.set_current_profile(profile)
-        self.ui.configuration.set_sequence_table_columns(profile.columns)
-        self.ui.run.set_sequence_table_columns(profile.columns)
+        self.ui.configuration.set_sequence_table_columns(profile.sequence_columns)
+        self.ui.run.set_sequence_table_columns(profile.sequence_columns)
 
     def end_trial(self):
         self.switch_state(self.trial_ended_state)

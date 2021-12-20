@@ -1,10 +1,9 @@
 from StateMachine.TestStand import TestStand
-
+import time
 
 class TestStandBehaviour:
 
     name = 'Noahs Mass Flow Control'
-    columns = ['Timestep (s)', 'Power (W)', 'Mass Flow Rate (slm)', 'Valve Position', 'OF Instruction']
 
     # Sequence Values
     timestep = []
@@ -33,10 +32,6 @@ class TestStandBehaviour:
                  self.current_step = self.current_step + 1
 
         valve_position = self.test_stand.valve_position
-
-        # print(valve_position)
-        # print(self.target_mass_flow[self.current_step])
-        # print(self.test_stand.mass_flow)
 
         # Open valve if mass flow is too low, Close valve if mass flow is too high
 
@@ -84,9 +79,50 @@ class TestStandBehaviour:
     def end(self):
         pass
 
-    # EDIT BUT DO NOT REMOVE
+# EDIT BELOW BUT DO NOT REMOVE
+    sequence_columns = [
+        'Timestep (s)', 
+        'Power (W)', 
+        'Mass Flow Rate (slm)', 
+        'Valve Position', 
+        'OF Instruction'
+        ]
+    
     def set_sequence_values(self, values):
         self.timestep = [float(value) for value in values[0]]
         self.power = [float(value) for value in values[1]]
         self.target_mass_flow = [float(value) for value in values[2]]
         self.OF_instruction = [str(value) for value in values[3]]
+
+    dataframe_columns = [
+        'Time', 
+        'Mass Flow', 
+        'Flow Temperature', 
+        'Temperature 1', 
+        'Internal Temperature 1', 
+        'Temperature 2', 
+        'Internal Temperature 2', 
+        'Temperature 3', 
+        'Internal Temperature 3', 
+        'Tank Pressure', 
+        'Inlet Pressure', 
+        'Valve Position'
+        ]
+
+    def get_dataframe_values(self):
+        values = [
+            time.time(),
+            self.test_stand.mass_flow,
+            0,
+            self.test_stand.inlet_temp,
+            0,
+            self.test_stand.mid_temp,
+            0,
+            self.test_stand.outlet_temp,
+            0,
+            self.test_stand.tank_press,
+            self.test_stand.inlet_press,
+            self.test_stand.valve_position
+        ]
+
+        return values

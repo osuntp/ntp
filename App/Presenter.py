@@ -352,7 +352,7 @@ class Presenter:
 
         
         Log.info('Trial configuration has been loaded.')
-        config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.columns))
+        config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
 
         current_profile_name = self.test_stand_trial_running_state.current_profile.name
 

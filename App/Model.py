@@ -43,9 +43,8 @@ class Model:
     run_sequence_bolded_row = -1
 
     def __init__(self):
-        self.reset_dataframe()
-        self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe()
-        self.ui_diagnostics_data: pandas.DataFrame = LD.get_new_dataframe()
+        self.ui_run_data: pandas.DataFrame = LD.get_new_dataframe(LD.columns)
+        self.ui_diagnostics_data: pandas.DataFrame = LD.get_new_dataframe(LD.columns)
 
     def update(self, message: List):
         current_time = time.time()
@@ -54,11 +53,8 @@ class Model:
 
         print(message)
 
-        # message.append(self.test_stand.heater_status)
-        # message.append(self.test_stand.openFOAM_progress)
-
         # Add data point to diagnostics dataframe
-        self.ui_diagnostics_data = LD.append_point_to_frame(message, self.ui_diagnostics_data)
+        self.ui_diagnostics_data = LD.append_point_to_frame(self.ui_diagnostics_data, message, LD.columns)
         
         while((self.latest_values[0] - self.ui_diagnostics_data['Time'].iloc[0]) > self.hidden_data_buffer):
             
@@ -66,24 +62,24 @@ class Model:
 
         if(self.trial_is_running):
 
-            # Add data point to trial data frame if trial is running
-            self.trial_data = LD.append_point_to_frame(message, self.trial_data)
-
-            if((current_time - self.time_of_last_plot_point) >= self.time_between_plot_points):
-                self.time_of_last_plot_point = current_time
-
-                # Add data point to run dataframe
-                self.ui_run_data = LD.append_point_to_frame(message, self.ui_run_data)
-
-                while((self.latest_values[0] - self.ui_run_data['Time'].iloc[0]) > self.hidden_data_buffer):
-                    self.ui_run_data = self.ui_run_data.iloc[1: , :]
-
             self.test_stand.mass_flow = message[1]
             self.test_stand.inlet_temp = message[3]
             self.test_stand.mid_temp = message[5]
             self.test_stand.outlet_temp = message[7]
             self.test_stand.tank_press = message[9]
             self.test_stand.inlet_press = message[10]
+
+            # Add data point to trial data frame if trial is running
+            self.trial_data = LD.append_point_to_frame(self.trial_data, self.test_stand.trial_running_state.current_profile.get_dataframe_values(), self.test_stand.trial_running_state.current_profile.dataframe_columns)
+
+            if((current_time - self.time_of_last_plot_point) >= self.time_between_plot_points):
+                self.time_of_last_plot_point = current_time
+
+                # Add data point to run dataframe
+                self.ui_run_data = LD.append_point_to_frame(self.ui_run_data, message, LD.columns)
+
+                while((self.latest_values[0] - self.ui_run_data['Time'].iloc[0]) > self.hidden_data_buffer):
+                    self.ui_run_data = self.ui_run_data.iloc[1: , :]
 
     def get_run_plot_data(self, name: str):
         if(self.ui_run_data.empty):
@@ -160,4 +156,4 @@ class Model:
         LD.save_to_csv(self.trial_data, self.loaded_config_trial_name, is_aborted_trial)
 
     def reset_dataframe(self):
-        self.trial_data = LD.get_new_dataframe()
+        self.trial_data = LD.get_new_dataframe(self.test_stand.trial_running_state.current_profile.dataframe_columns)

@@ -9,20 +9,28 @@ import datetime
 import os
 from typing import List
 
-# columns = ['Time', 'Mass Flow', 'Heater Current', 'Heater TC', 'Heater TC IT', 'Inlet TC', 'Inlet TC IT', 'Midpoint TC', 'Midpoint TC IT', 'Outlet TC', 'Outlet TC IT', 'Tank Pressure', 'Inlet Pressure', 'Midpoint Pressure', 'Outlet Pressure', 'Valve Position', 'Heater Status', 'OpenFOAM Progress']
 columns = ['Time', 'Mass Flow', 'Flow Temperature', 'Temperature 1', 'Internal Temperature 1', 'Temperature 2', 'Internal Temperature 2', 'Temperature 3', 'Internal Temperature 3', 'Tank Pressure', 'Inlet Pressure', 'Valve Position']
 
 # TODO: Settle on how we want CSV file names to be generated
 def __new_save_file_name(trial_name: str, is_aborted_trial: bool):
-    now = datetime.datetime.now()
-    current_time = now.strftime("%H%M%S")
+
+    date = datetime.date.today()
+
+    year = str(date.year)
+    month = str(date.month)
+    day = str(date.day)
+
+    current_time = datetime.datetime.now()
+    current_time = current_time.strftime("%H%M%S")
     
     if(is_aborted_trial):
         prefix = 'ABORTED_'
     else:
         prefix = ''
 
-    return current_time + '_' + prefix + 'trial_data_' + trial_name + '_'  + '.csv'
+    trial_name = trial_name.replace(' ', '_')
+    print(trial_name)
+    return year + '_' + month + '_' + day + '_' + current_time + '_' + prefix + 'trial_data_' + trial_name + '.csv'
 
 def save_to_csv(dataframe: DataFrame, trial_name: str, is_aborted_trial: bool):
 
@@ -49,24 +57,13 @@ def clean(raw_message_string: str):
             
     return clean_message    
 
-def get_new_dataframe():
-    return DataFrame(columns=columns)
+def get_new_dataframe(dataframe_columns):
+    return DataFrame(columns=dataframe_columns)
 
-def append_point_to_frame(message: list, dataframe: DataFrame):
-
-    # time = data_point[0]
-    # inlet_temp = data_point[1]
-    # midpoint_temp = data_point[2]
-    # exit_temp = data_point[3]
-    # heat_sink_temp = data_point[4]
-    # inlet_pressure = data_point[5]
-    # midpoint_pressure = data_point[6]
-    # exit_pressure = data_point[7]
-    
-    # pressure = data_point[2]
+def append_point_to_frame(dataframe: DataFrame, message: list, dataframe_columns: list):
     data_point = {}
     for i in range(len(columns)):
-        data_point[columns[i]] = message[i]
+        data_point[dataframe_columns[i]] = message[i]
 
     dataframe = dataframe.append(data_point, ignore_index=True)
     return dataframe

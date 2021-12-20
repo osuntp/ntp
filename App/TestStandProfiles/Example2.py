@@ -2,7 +2,7 @@
 class TestStandBehaviour:
 
     name = 'Example 2 Profile'
-    columns = ['Timestep (s)', 'Valve Position (deg)']
+    sequence_columns = ['Timestep (s)', 'Valve Position (deg)']
 
     def start(self):
         pass

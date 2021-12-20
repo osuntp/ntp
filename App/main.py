@@ -42,12 +42,12 @@ if __name__ == "__main__":
 
     profiles = []
 
-    for file in os.listdir("App/TestStandProfiles"):
-        if file.endswith(".py"):
+    for file in os.listdir('App/TestStandProfiles'):
+        if file.endswith('.py'):
             
             file_location = cwd + '\App\TestStandProfiles\\'
             
-            spec = importlib.util.spec_from_file_location("module.name", os.path.join(file_location, file))
+            spec = importlib.util.spec_from_file_location('module.name', os.path.join(file_location, file))
             
             module = importlib.util.module_from_spec(spec)
             
@@ -113,8 +113,6 @@ if __name__ == "__main__":
 
     serial_monitor.model = model
     serial_monitor.presenter = presenter
-
-    
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
