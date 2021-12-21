@@ -2,7 +2,6 @@ from StateMachine import TestStandStates
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
 from Model import Model
-import datetime
 from Log import Log
 from PyQt5 import QtWidgets
 from UI.UI import UI

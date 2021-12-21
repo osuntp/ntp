@@ -362,37 +362,7 @@ class SerialMonitor:
             pass
         #self.disconnect_arduinos()
 
-# Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
-    def __get_serial_ports(self):
-        """ Lists serial port names
 
-            :raises EnvironmentError:
-                On unsupported or unknown platforms
-            :returns:
-                A list of the serial ports available on the system
-        """
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
-
-        # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            # this excludes your current terminal "/dev/tty"
-            ports = glob.glob('/dev/tty[A-Za-z]*')
-        elif sys.platform.startswith('darwin'):
-            ports = glob.glob('/dev/tty.*')
-        else:
-            Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
-
-        result = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                result.append(port)
-            except (OSError, serial.SerialException):
-                pass
-
-        return result
 
     def set_developer_mode(self, in_developer_mode):
 
@@ -414,3 +384,38 @@ class SerialMonitor:
 
             self.model.daq_status_text = 'Not Connected'
             self.model.tsc_status_text = 'Not Connected'
+
+# Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+def __get_serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+
+    # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+
+    return result
+
+if __name__ == "__main__":
+    print(__get_serial_ports())

@@ -258,11 +258,11 @@ class Configuration:
         self.sequence_plus_button = pyqt5.configuration_sequence_plus
         self.sequence_minus_button = pyqt5.configuration_sequence_minus
 
-        self.status = pyqt5.configuration_status_label
         self.clear_button = pyqt5.configuration_clear_button
         self.save_button = pyqt5.configuration_save_button
+        self.send_to_run_page_button = pyqt5.config_send_to_run_page_button
 
-        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button]
+        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button, self.send_to_run_page_button]
         
         self.clear_all()
 
@@ -335,14 +335,10 @@ class Configuration:
 
         table.removeRow(row_count - 1)
 
-    def set_status_text(self, text: str):
-        self.status.setText(text)
-
     def clear_all(self):
         self.clear_blue_line_table()
         self.clear_sequence_table()
 
-        self.status.setText('')
         self.trial_name_field.setText('')
         self.description_field.setPlainText('')
 
