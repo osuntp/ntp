@@ -120,7 +120,7 @@ class TestStandBehaviour:
             0,
             self.test_stand.outlet_temp,
             0,
-            self.test_stand.tank_press,
+            self.test_stand.supply_press,
             self.test_stand.inlet_press,
             self.test_stand.valve_position
         ]

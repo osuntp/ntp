@@ -89,13 +89,30 @@ class UI:
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
+
+        self.plot1_inlet_check = pyqt5.diagnostics_plot1_inlet_field
+        self.plot1_midpoint_check = pyqt5.diagnostics_plot1_midpoint_field
+        self.plot1_outlet_check = pyqt5.diagnostics_plot1_outlet_field
+        self.plot1_heater_check = pyqt5.diagnostics_plot1_heater_field
+
+        self.plot2_inlet_check = pyqt5.diagnostics_plot2_inlet_field
+        self.plot2_midpoint_check = pyqt5.diagnostics_plot2_midpoint_field
+        self.plot2_outlet_check = pyqt5.diagnostics_plot2_outlet_field
+        self.plot2_supply_check = pyqt5.diagnostics_plot2_supply_field
+
+        self.plot1_inlet_check.setChecked(True)
+        self.plot1_midpoint_check.setChecked(True)
+        self.plot1_outlet_check.setChecked(True)
+        self.plot1_heater_check.setChecked(True)
+
+        self.plot2_inlet_check.setChecked(True)
+        self.plot2_midpoint_check.setChecked(True)
+        self.plot2_outlet_check.setChecked(True)
+        self.plot2_supply_check.setChecked(True)
+
         self.plot1 = pyqt5.diagnostics_plot1.getPlotItem()
         self.plot2 = pyqt5.diagnostics_plot2.getPlotItem()
 
-        # self.plot1.set_labels('Time (s)', 'Temperature (C)')
-        # self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
-
-# TODO: Remove this call to update_vals
         self.plot1.plot([0],[0])
         self.plot2.plot([0],[0])
 
@@ -108,33 +125,65 @@ class Diagnostics:
         self.heater_state = pyqt5.diagnostics_r06_value
         self.heater_set_point = pyqt5.diagnostics_r07_value
 
-    def update_plots(self, diagnostics_dataframe):
-        pass
-        # self.plot1.update_vals(diagnostics_dataframe['column1'], diagnostics_dataframe['column2'])
+        # Plot Settings
+        line_width = 2
+        margin_left = 10
+        margin_top = 0
+        margin_right = 130
+        margin_bottom = 10
+        background_color = (255,255,255)
 
-    def set_test_stand_status(self, value: float):
-        self.test_stand_status.setText(str(value))
+        # Actual Plot - Plot1
+        self.plot1 = pyqt5.diagnostics_plot1
+        pyqt5.diagnostics_plot1.setXRange(-10, 0)
+        pyqt5.diagnostics_plot1.setBackground(background_color)
 
-    def set_valve_voltage(self, value: float):
-        self.valve_voltage.setText(str(value))
+        plot_item = pyqt5.diagnostics_plot1.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Temperature (C)')
+        plot_item.showGrid(x=True, y=True)
 
-    def set_mass_flow(self, value: float):
-        self.mass_flow.setText(str(value))
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-17,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
 
-    def set_heater_current(self, value: float):
-        self.heater_current.setText(str(value))
+        self.plot1_inlet = plot_item.plot(name = 'Inlet')
+        self.plot1_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot1_outlet = plot_item.plot(name = 'Outlet')
+        self.plot1_heater = plot_item.plot(name = 'Heat Sink')
 
-    def set_heater_duty_cycle(self, value: float):
-        self.heater_duty_cycle.setText(str(value))
+        self.plot1_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot1_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot1_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot1_heater.setPen(pyqtgraph.mkPen(color='c', width = line_width))
 
-    def set_heater_power(self, value: float):
-        self.heater_power.setText(str(value))
+        # Actual Plot - Plot2
+        self.plot2 = pyqt5.diagnostics_plot2
+        pyqt5.diagnostics_plot2.setXRange(-10, 0)
+        pyqt5.diagnostics_plot2.setBackground(background_color)
 
-    def set_heater_state(self, value: str):
-        self.heater_state.setText(value)
+        plot_item = pyqt5.diagnostics_plot2.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Pressure (Pa)')
+        plot_item.showGrid(x=True, y=True)
 
-    def set_heater_set_point(self, value: float):
-        self.heater_set_point.setText(str(value))
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-17,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot2_inlet = plot_item.plot(name = 'Inlet')
+        self.plot2_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot2_outlet = plot_item.plot(name = 'Outlet')
+        self.plot2_supply = plot_item.plot(name = 'Supply')
+
+        self.plot2_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot2_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot2_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot2_supply.setPen(pyqtgraph.mkPen(color='c', width = line_width))
 
 class Setup:
     def __init__(self, pyqt5: Ui_MainWindow, daq_port: str, tsc_port:str):
@@ -477,8 +526,6 @@ class Run:
         Stylize.end_button(self.pause_button)
         Stylize.table(self.sequence_table)
 
-        
-
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
 
@@ -493,22 +540,6 @@ class Run:
             item = QtWidgets.QTableWidgetItem()
             item.setText(column_names[i])
             table.setHorizontalHeaderItem(i, item)
-
-        # table = self.sequence_table
-        # column_count = len(columns)
-
-        # while(table.columnCount() > 0.5):
-        #     table.removeColumn(table.columnCount() - 1)
-
-        # for i in range(column_count):
-        #     table.insertColumn(table.columnCount())
-
-        # table.setHorizontalHeaderLabels(columns)
-
-        # while(table.rowCount() > 0.5):
-        #     table.removeRow(table.rowCount() - 1)
-
-        # print(table.horizontalHeaderItem(1).text())
 
     def set_sequence_table(self, sequence_values: List, end_time: float):
         table = self.sequence_table

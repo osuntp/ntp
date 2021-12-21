@@ -615,7 +615,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1054,7 +1054,7 @@ background-color: rgb(206, 211, 230);
 border: 1px solid white;</string>
               </property>
               <property name="text">
-               <string>Valve Voltage</string>
+               <string>Valve Position</string>
               </property>
               <property name="indent">
                <number>15</number>
@@ -1359,6 +1359,66 @@ border: 1px solid white;</string>
              <widget class="PlotWidget" name="diagnostics_plot1"/>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_28">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>15</number>
+              </property>
+              <property name="topMargin">
+               <number>15</number>
+              </property>
+              <property name="rightMargin">
+               <number>15</number>
+              </property>
+              <property name="bottomMargin">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="font">
+                 <font>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Show On Graph:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot1_inlet_field">
+                <property name="text">
+                 <string>Inlet</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot1_midpoint_field">
+                <property name="text">
+                 <string>Midpoint</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot1_outlet_field">
+                <property name="text">
+                 <string>Outlet</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot1_heater_field">
+                <property name="text">
+                 <string>Heater</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <spacer name="verticalSpacer_13">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -1369,7 +1429,7 @@ border: 1px solid white;</string>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>10</width>
-                <height>15</height>
+                <height>5</height>
                </size>
               </property>
              </spacer>
@@ -1409,6 +1469,63 @@ border: 1px solid white;</string>
             </item>
             <item>
              <widget class="PlotWidget" name="diagnostics_plot2"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_29">
+              <property name="leftMargin">
+               <number>15</number>
+              </property>
+              <property name="topMargin">
+               <number>15</number>
+              </property>
+              <property name="rightMargin">
+               <number>15</number>
+              </property>
+              <property name="bottomMargin">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_32">
+                <property name="font">
+                 <font>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Show On Graph:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot2_inlet_field">
+                <property name="text">
+                 <string>Inlet</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot2_midpoint_field">
+                <property name="text">
+                 <string>Midpoint</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot2_outlet_field">
+                <property name="text">
+                 <string>Outlet</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="diagnostics_plot2_supply_field">
+                <property name="text">
+                 <string>Supply</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -2722,7 +2839,7 @@ border: 1px solid white;</string>
                <number>0</number>
               </property>
               <attribute name="horizontalHeaderVisible">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <attribute name="horizontalHeaderCascadingSectionResizes">
                <bool>false</bool>
@@ -2909,7 +3026,7 @@ border: 1px solid white;</string>
                   <item>
                    <widget class="QCheckBox" name="run_plot2_tank_check">
                     <property name="text">
-                     <string>Tank</string>
+                     <string>Supply</string>
                     </property>
                    </widget>
                   </item>
@@ -3153,7 +3270,7 @@ border: 1px solid white;</string>
                   <item>
                    <widget class="QCheckBox" name="run_plot1_heat_sink_check">
                     <property name="text">
-                     <string>Heat Sink</string>
+                     <string>Heater</string>
                     </property>
                    </widget>
                   </item>

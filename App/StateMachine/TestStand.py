@@ -26,7 +26,7 @@ class TestStand:
 
     # Test Stand Values
     valve_position = 90
-    heater_status = 0
+    heater_is_on = False
 
     inlet_temp = 0
     mid_temp = 0
@@ -38,7 +38,10 @@ class TestStand:
     outlet_press = 0
     supply_press = 0
 
+    flow_temp = 0
     mass_flow = 0
+    heater_current = 0
+    heater_power = 0
     
     # Other
     state_machine_stopped = False

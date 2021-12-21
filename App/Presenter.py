@@ -107,8 +107,67 @@ class Presenter:
 
         # Diagnostics Page
         if(page == 0):
-            # TODO: Implement diagnostics UI update logic
-            pass
+
+            self.ui.diagnostics.test_stand_status.setText(str(self.model.state_text))
+
+            self.ui.diagnostics.valve_voltage.setText(str(self.test_stand.valve_position))
+            self.ui.diagnostics.mass_flow.setText(str(self.test_stand.mass_flow))
+            self.ui.diagnostics.heater_current.setText(str(self.test_stand.heater_current))
+            self.ui.diagnostics.heater_duty_cycle.setText('NA')
+            self.ui.diagnostics.heater_power.setText(str(self.test_stand.heater_power))
+            self.ui.diagnostics.heater_state.setText(str(self.test_stand.heater_is_on))
+            self.ui.diagnostics.heater_set_point.setText('NA')
+
+            # Update Plot1
+            if(self.ui.diagnostics.plot1_inlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Inlet Temperature')
+                self.ui.diagnostics.plot1_inlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_inlet.setData([0],[0])
+
+            if(self.ui.diagnostics.plot1_midpoint_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Midpoint Temperature')
+                self.ui.diagnostics.plot1_midpoint.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_midpoint.setData([0],[0])
+
+            if(self.ui.diagnostics.plot1_outlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Outlet Temperature')
+                self.ui.diagnostics.plot1_outlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_outlet.setData([0],[0])
+
+            if(self.ui.diagnostics.plot1_heater_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Heater Temperature')
+                self.ui.diagnostics.plot1_heater.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_heater.setData([0],[0])
+
+            # Update Plot2
+            if(self.ui.diagnostics.plot2_inlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Inlet Pressure')
+                self.ui.diagnostics.plot2_inlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_inlet.setData([0],[0])
+
+            if(self.ui.diagnostics.plot2_midpoint_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Midpoint Pressure')
+                self.ui.diagnostics.plot2_midpoint.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_midpoint.setData([0],[0])
+
+            if(self.ui.diagnostics.plot2_outlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Outlet Pressure')
+                self.ui.diagnostics.plot2_outlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_outlet.setData([0],[0])
+
+            if(self.ui.diagnostics.plot2_supply_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Supply Pressure')
+                self.ui.diagnostics.plot2_supply.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_supply.setData([0],[0])
+            
         
         # Logs Page
         if(page == 1):
@@ -142,6 +201,7 @@ class Presenter:
         if(page == 3):
             pass
 
+        # Run Page
         if(page == 4):
             self.ui.run.start_button.setText(self.model.start_button_text)
 
@@ -160,73 +220,73 @@ class Presenter:
 
             # Update Plot1
             if(self.ui.run.plot1_inlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Inlet Temperature')
+                x, y = self.model.get_run_plot_data('Inlet Temperature', self.model.plot1_buffer)
                 self.ui.run.plot1_inlet.setData(x,y)
             else:
                 self.ui.run.plot1_inlet.setData([0],[0])
 
             if(self.ui.run.plot1_midpoint_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Mid Temperature')
+                x, y = self.model.get_run_plot_data('Midpoint Temperature', self.model.plot1_buffer)
                 self.ui.run.plot1_midpoint.setData(x,y)
             else:
                 self.ui.run.plot1_midpoint.setData([0],[0])
 
             if(self.ui.run.plot1_outlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Outlet Temperature')
+                x, y = self.model.get_run_plot_data('Outlet Temperature', self.model.plot1_buffer)
                 self.ui.run.plot1_outlet.setData(x,y)
             else:
                 self.ui.run.plot1_outlet.setData([0],[0])
 
             if(self.ui.run.plot1_heat_sink_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Flow Temperature')
+                x, y = self.model.get_run_plot_data('Flow Temperature', self.model.plot1_buffer)
                 self.ui.run.plot1_heat_sink.setData(x,y)
             else:
                 self.ui.run.plot1_heat_sink.setData([0],[0])
 
             # Update Plot2
             if(self.ui.run.plot2_inlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Inlet Pressure')
+                x, y = self.model.get_run_plot_data('Inlet Pressure', self.model.plot2_buffer)
                 self.ui.run.plot2_inlet.setData(x,y)
             else:
                 self.ui.run.plot2_inlet.setData([0],[0])
 
             if(self.ui.run.plot2_midpoint_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Mid Pressure')
+                x, y = self.model.get_run_plot_data('Midpoint Pressure', self.model.plot2_buffer)
                 self.ui.run.plot2_midpoint.setData(x,y)
             else:
                 self.ui.run.plot2_midpoint.setData([0],[0])
 
             if(self.ui.run.plot2_outlet_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Outlet Pressure')
+                x, y = self.model.get_run_plot_data('Outlet Pressure', self.model.plot2_buffer)
                 self.ui.run.plot2_outlet.setData(x,y)
             else:
                 self.ui.run.plot2_outlet.setData([0],[0])
 
             if(self.ui.run.plot2_tank_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Supply Pressure')
+                x, y = self.model.get_run_plot_data('Supply Pressure', self.model.plot2_buffer)
                 self.ui.run.plot2_tank.setData(x,y)
             else:
                 self.ui.run.plot2_tank.setData([0],[0])
 
             # Update Plot3
-            x, y = self.model.get_run_plot_data('Mass Flow')
+            x, y = self.model.get_run_plot_data('Mass Flow', self.model.plot3_buffer)
             self.ui.run.plot3_mass_flow.setData(x,y)
 
             # Update Plot4
             if(self.ui.run.plot4_valve_position_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Valve Position')
+                x, y = self.model.get_run_plot_data('Valve Position', self.model.plot4_buffer)
                 self.ui.run.plot4_valve_position.setData(x,y)
             else:
                 self.ui.run.plot4_valve_position.setData([0],[0])
 
             if(self.ui.run.plot4_heater_duty_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Heater Status')
+                x, y = self.model.get_run_plot_data('Heater Status', self.model.plot4_buffer)
                 self.ui.run.plot4_heater_duty.setData(x,y)
             else:
                 self.ui.run.plot4_heater_duty.setData([0],[0])
 
             if(self.ui.run.plot4_openfoam_check.isChecked()):
-                # x, y = self.model.get_run_plot_data('OpenFOAM Progress')
+                # x, y = self.model.get_run_plot_data('OpenFOAM Progress', self.model.plot4_buffer)
                 # self.ui.run.plot4_openFOAM.setData(x,y)
                 pass
             else:
@@ -311,7 +371,7 @@ class Presenter:
         trial_name = self.ui.configuration.trial_name_field.text()
         description = self.ui.configuration.description_field.toPlainText()
         blue_lines = self.ui.configuration.blue_lines_table
-        num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.columns)
+        num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.sequence_columns)
         test_sequence = self.ui.configuration.sequence_table
         trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
         
@@ -401,6 +461,7 @@ class Presenter:
                     self.ui.run.plot1_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot1_buffer = value
                 self.ui.run.plot1.setXRange(-1 * value, 0)
             elif(plot_index == 2):
                 value = float(self.ui.run.plot2_buffer_field.text())
@@ -411,6 +472,7 @@ class Presenter:
                     self.ui.run.plot2_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot2_buffer = value
                 self.ui.run.plot2.setXRange(-1 * value, 0)
             elif(plot_index == 3):
                 value = float(self.ui.run.plot3_buffer_field.text())
@@ -421,6 +483,7 @@ class Presenter:
                     self.ui.run.plot3_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot3_buffer = value
                 self.ui.run.plot3.setXRange(-1 * value, 0)
             elif(plot_index == 4):
                 value = float(self.ui.run.plot4_buffer_field.text())
@@ -431,6 +494,7 @@ class Presenter:
                     self.ui.run.plot4_buffer_field.setText(str(min_value))
                     value = min_value
 
+                self.model.plot4_buffer = value
                 self.ui.run.plot4.setXRange(-1 * value, 0)
         except ValueError:
             return
