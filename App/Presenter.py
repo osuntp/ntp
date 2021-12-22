@@ -69,7 +69,6 @@ class Presenter:
         self.ui.run.plot3_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(3))
         self.ui.run.plot4_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(4))
 
-
         # Start UI Update Loop
         self.__start_ui_update_loop()
 
@@ -377,46 +376,8 @@ class Presenter:
         
         Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
 
-        # TODO: Validation was removed, consider if it needs added again
-        # self.config_validation_thread = Config.ValidationThread(self.ui)
-
-        # self.config_validation_thread.validation_message.connect(self.on_configuration_validation_message)
-        # self.config_validation_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
-
-        # self.config_validation_thread.start()
-
-    # def on_configuration_validation_message(self, message):
-    #     self.ui.configuration.set_status_text(message)
-
-    # def on_configuration_validation_is_complete(self, validation_was_successful):
-    #     if(validation_was_successful):
-    #         file_name = Config.get_save_file_name_from_user()
-
-    #         if(file_name == ''):
-    #             return
-
-    #         trial_name = self.ui.configuration.trial_name_field.text()
-    #         description = self.ui.configuration.description_field.toPlainText()
-    #         blue_lines = self.ui.configuration.blue_lines_table
-    #         test_sequence = self.ui.configuration.sequence_table
-    #         trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
-            
-    #         Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
-
-    # def run_attempt_to_activate_start_button(self):
-    #     # TODO: Replace this method logic with the commented code below:
-    #     if(self.model.config_is_loaded and self.serial_monitor.is_fully_connected):
-    #         self.ui.run.set_start_button_clickable(True)
-    #     else:
-    #         self.ui.run.set_start_button_clickable(False)
-    #     # if(self.model.config_is_loaded):
-    #     #     self.ui.run.set_start_button_clickable(True)
-    #     # else:
-    #     #     self.ui.run.set_start_button_clickable(False)
-
     def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
-
 
     def run_paused_clicked(self):
         self.test_stand.switch_state(self.test_stand_trial_ended_state)    
@@ -442,6 +403,7 @@ class Presenter:
             self.ui.run.set_loaded_trial_text(config.trial_name)
             self.test_stand.end_trial_time = float(config.trial_end_timestep)
             self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+            self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
             self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
         
             self.model.start_button_enabled = (self.test_stand.current_state == self.test_stand_standby_state)

@@ -279,7 +279,7 @@ class Configuration:
         item.setText('')
         table.setVerticalHeaderItem(table.rowCount(), item)
 
-        combo_box_options = ['Mass Flow', 'Heater Current', 'Heater TC', 'Inlet TC', 'Midpoint TC', 'Outlet TC', 'Tank Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
+        combo_box_options = ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
         combo = QtWidgets.QComboBox()
 
         for option in combo_box_options:

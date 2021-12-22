@@ -19,11 +19,6 @@ class Config:
     blue_lines_value: List[float]
 
     sequence_values: List
-    # sequence_time_step: List[float]
-    # sequence_power: List[float]
-    # sequence_mass_flow_rate: List[float]
-    # sequence_valve_position: List[float]
-    # sequence_OF_instruction: List[float]
 
 class ValidationThread(QThread):
 
@@ -65,7 +60,7 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
     config = ConfigParser()
 
     config.add_section('main')
-    # config.add_section('blue_lines')
+    config.add_section('blue_lines')
     config.add_section('test_sequence')
 
     config.set('main', 'profile_name', profile_name)
@@ -74,28 +69,29 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
     config.set('main', 'trial_end_timestep', trial_end_timestep)
 
 # Blue Lines Data
-    # time_step = ''
-    # sensor_type = ''
-    # value = ''
-    # limit_type = ''
+    time_step = ''
+    sensor_type = ''
+    value = ''
+    limit_type = ''
 
-    # for i in range(blue_lines.rowCount()):
+    for i in range(blue_lines.rowCount()):
 
-    #     time_step += (str(blue_lines.item(i,0).text()))
-    #     sensor_type += (str(blue_lines.cellWidget(i,1).currentText()))
-    #     limit_type += blue_lines.cellWidget(i, 2).currentText()
-    #     value += (str(blue_lines.item(i, 3).text()))
+        time_step += (str(blue_lines.item(i,0).text()))
+        sensor_type += (str(blue_lines.cellWidget(i,1).currentText()))
+        limit_type += blue_lines.cellWidget(i, 2).currentText()
+        value += (str(blue_lines.item(i, 3).text()))
 
-    #     if(i < (blue_lines.rowCount() - 1)):
-    #         time_step += ', '
-    #         value += ', '
-    #         limit_type +=', '
+        if(i < (blue_lines.rowCount() - 1)):
+            time_step += ', '
+            sensor_type += ', '
+            limit_type +=', '
+            value += ', '
+            
 
-    
-    # config.set('blue_lines', 'time_step', time_step)
-    # config.set('blue_lines', 'sensor_type', sensor_type)
-    # config.set('blue_lines', 'limit_type', limit_type)
-    # config.set('blue_lines', 'value', value)
+    config.set('blue_lines', 'time_step', time_step)
+    config.set('blue_lines', 'sensor_type', sensor_type)
+    config.set('blue_lines', 'limit_type', limit_type)
+    config.set('blue_lines', 'value', value)
 
 # Test Sequence Data
     for i in range(num_of_test_sequence_var):
@@ -176,19 +172,13 @@ def open_file(file_name: str, num_of_sequence_columns: int):
     description = parser.get('main','description')
     trial_end_timestep = parser.get('main', 'trial_end_timestep')
 
-    # blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
-    # blue_lines_sensor_type = parser.get('blue_lines', 'sensor_type').split(sep = ', ')
-    # blue_lines_value = parser.get('blue_lines', 'value').split(sep = ', ')
-    # blue_lines_limit_type = parser.get('blue_lines', 'limit_type').split(sep=', ')
+    blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
+    blue_lines_sensor_type = parser.get('blue_lines', 'sensor_type').split(sep = ', ')
+    blue_lines_value = parser.get('blue_lines', 'value').split(sep = ', ')
+    blue_lines_limit_type = parser.get('blue_lines', 'limit_type').split(sep=', ')
 
-    # blue_lines_time_step = [float(x) for x in blue_lines_time_step]
-    # blue_lines_value = [float(x) for x in blue_lines_value]
-    blue_lines_sensor_type = []
-    blue_lines_limit_type = []
-    blue_lines_time_step = []
-    blue_lines_value = []
-
-
+    blue_lines_time_step = [float(x) for x in blue_lines_time_step]
+    blue_lines_value = [float(x) for x in blue_lines_value]
 
     sequence_values = []
 

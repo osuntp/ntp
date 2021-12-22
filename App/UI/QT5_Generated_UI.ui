@@ -2190,7 +2190,7 @@ border:2px solid black;</string>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>20</width>
-                  <height>72</height>
+                  <height>70</height>
                  </size>
                 </property>
                </spacer>
@@ -2904,7 +2904,7 @@ border: 1px solid white;</string>
                <bool>false</bool>
               </attribute>
               <attribute name="horizontalHeaderCascadingSectionResizes">
-               <bool>false</bool>
+               <bool>true</bool>
               </attribute>
               <attribute name="horizontalHeaderStretchLastSection">
                <bool>false</bool>
