@@ -175,7 +175,7 @@ class TrialRunningState():
         self.test_stand.blue_lines.update_sequence()
 
         if(not self.test_stand.blue_lines.condition_is_met()):
-            pass
+            self.test_stand.end_trial()
 
         self.test_stand.trial_time = time.time() - self.start_timestamp
         self.current_profile.trial_time = self.test_stand.trial_time
@@ -190,8 +190,6 @@ class TrialRunningState():
         self.model.run_sequence_bolded_row = self.current_profile.current_step
 
         self.current_profile.tick()
-
-            
 
     def exit_state(self):
         self.model.trial_is_running = False

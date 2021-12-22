@@ -68,37 +68,82 @@ class BlueLines:
               
         is_valid = True
 
-        is_valid = is_valid and (mass_flow >= self.mass_flow_min)
-        is_valid = is_valid and (heater_current >= self.heater_current_min)
-        is_valid = is_valid and (heater_temp >= self.heater_temp_min)
-        is_valid = is_valid and (in_temp >= self.inlet_temp_min)
-        is_valid = is_valid and (mid_temp >= self.mid_temp_min)
-        is_valid = is_valid and (out_temp >= self.outlet_temp_min)
-        is_valid = is_valid and (supply_press >= self.supply_press_min)
-        is_valid = is_valid and (in_press >= self.inlet_press_min)
-        is_valid = is_valid and (mid_press >= self.mid_press_min)
-        is_valid = is_valid and (out_press >= self.outlet_press_min)
+        log_output = 'Trial ended early due to blue lines. '
+
+        if(mass_flow < self.mass_flow_min):
+            is_valid = False
+            log_output = log_output + 'The mass flow was ' + str(mass_flow) + ' which is below the blue line minimum of ' + str(self.mass_flow_min) + '.'
+        if(heater_current < self.heater_current_min):
+            is_valid = False
+            log_output = log_output + 'The heater current was ' + str(heater_current) + ' which is below the blue line minimum of ' + str(self.heater_current_min) + '.'
+        if(heater_temp < self.heater_temp_min):
+            is_valid = False
+            log_output = log_output + 'The heater temperature was ' + str(heater_temp) + ' which is below the blue line minimum of ' + str(self.heater_temp_min) + '.'
+        if(in_temp < self.inlet_temp_min):
+            is_valid = False
+            log_output = log_output + 'The inlet temperature was ' + str(in_temp) + ' which is below the blue line minimum of ' + str(self.inlet_temp_min) + '.'
+        if(mid_temp < self.mid_temp_min):
+            is_valid = False
+            log_output = log_output + 'The midpoint temperature was ' + str(mid_temp) + ' which is below the blue line minimum of ' + str(self.mid_temp_min) + '.'
+        if(out_temp < self.outlet_temp_min):
+            is_valid = False
+            log_output = log_output + 'The outlet temperature was ' + str(out_temp) + ' which is below the blue line minimum of ' + str(self.outlet_temp_min) + '.'
+        if(supply_press < self.supply_press_min):
+            is_valid = False
+            log_output = log_output + 'The supply pressure was ' + str(supply_press) + ' which is below the blue line minimum of ' + str(self.supply_press_min) + '.'
+        if(in_press < self.inlet_press_min):
+            is_valid = False
+            log_output = log_output + 'The inlet pressure was ' + str(in_press) + ' which is below the blue line minimum of ' + str(self.inlet_press_min) + '.'
+        if(mid_press < self.mid_press_min):
+            is_valid = False
+            log_output = log_output + 'The midpoint pressure was ' + str(mid_press) + ' which is below the blue line minimum of ' + str(self.mid_press_min) + '.'
+        if(out_press < self.outlet_press_min):
+            is_valid = False
+            log_output = log_output + 'The outlet pressure was ' + str(out_press) + ' which is below the blue line minimum of ' + str(self.outlet_press_min) + '.'
 
         if(self.mass_flow_max != -1):
-            is_valid = is_valid and (mass_flow <= self.mass_flow_max)
+            if(mass_flow > self.mass_flow_max):
+                is_valid = False
+                log_output = log_output + 'The mass flow was ' + str(mass_flow) + ' which is above the blue line maximum of ' + str(self.mass_flow_max) + '.'
         if(self.heater_current_max != -1):
-            is_valid = is_valid and (heater_current <= self.heater_current_max)
+            if(heater_current > self.heater_current_max):
+                is_valid = False
+                log_output = log_output + 'The heater_current was ' + str(heater_current) + ' which is above the blue line maximum of ' + str(self.heater_current_max) + '.'
         if(self.heater_temp_max != -1):
-            is_valid = is_valid and (heater_temp <= self.heater_temp_max)
+            if(heater_temp > self.heater_temp_max):
+                is_valid = False
+                log_output = log_output + 'The heater temperature was ' + str(heater_temp) + ' which is above the blue line maximum of ' + str(self.heater_temp_max) + '.'
         if(self.inlet_temp_max != -1):
-            is_valid = is_valid and (in_temp <= self.inlet_temp_max)
+            if(in_temp > self.inlet_temp_max):
+                is_valid = False
+                log_output = log_output + 'The inlet temperature was ' + str(in_temp) + ' which is above the blue line maximum of ' + str(self.inlet_temp_max) + '. '
         if(self.mid_temp_max != -1):
-            is_valid = is_valid and (mid_temp <= self.mid_temp_max)
+            if(mid_temp > self.mid_temp_max):
+                is_valid = False
+                log_output = log_output + 'The midpoint temperature was ' + str(mid_temp) + ' which is above the blue line maximum of ' + str(self.mid_temp_max) + '. '
         if(self.outlet_temp_max != -1):
-            is_valid = is_valid and (out_temp <= self.outlet_temp_max)
+            if(out_temp > self.outlet_temp_max):
+                is_valid = False
+                log_output = log_output + 'The outlet temperature was ' + str(out_temp) + ' which is above the blue line maximum of ' + str(self.outlet_temp_max) + '. '
         if(self.supply_press_max != -1):
-            is_valid = is_valid and (supply_press <= self.supply_press_max)
+            if(supply_press > self.supply_press_max):
+                is_valid = False
+                log_output = log_output + 'The supply pressure was ' + str(supply_press) + ' which is above the blue line maximum of ' + str(self.supply_press_max) + '. '
         if(self.inlet_press_max != -1):
-            is_valid = is_valid and (in_press <= self.inlet_press_max)
+            if(in_press > self.inlet_press_max):
+                is_valid = False
+                log_output = log_output + 'The inlet pressure was ' + str(in_press) + ' which is above the blue line maximum of ' + str(self.inlet_press_max) + '. '
         if(self.mid_press_max != -1):
-            is_valid = is_valid and (mid_press <= self.mid_press_max)
+            if(mid_press > self.mid_press_max):
+                is_valid = False
+                log_output = log_output + 'The midpoint pressure was ' + str(mid_press) + ' which is above the blue line maximum of ' + str(self.mid_press_max) + '. '
         if(self.outlet_press_max != -1):
-            is_valid = is_valid and (out_press <= self.outlet_press_max)
+            if(out_press > self.outlet_press_max):
+                is_valid = False
+                log_output = log_output + 'The outlet pressure was ' + str(out_press) + ' which is above the blue line maximum of ' + str(self.outlet_press_max) + '. '
+
+        if(not is_valid):
+            Log.python.info(log_output)
 
         return is_valid
 
@@ -115,10 +160,8 @@ class BlueLines:
                 if (limit_type == 'Max'):
                     if(sensor == 'Mass Flow'):
                         self.mass_flow_max = value
-                        print('hit')
                     elif(sensor == 'Heater Current'):
                         self.heater_current_max = value
-                        print('hit')
                     elif(sensor == 'Heater Temp'):
                         self.heater_temp_max = value
                     elif(sensor == 'Inlet Temp'):
