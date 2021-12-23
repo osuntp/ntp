@@ -20,7 +20,7 @@ class StandbyState():
         self.model.start_button_text = 'Start Trial'
         self.model.state_text = 'STANDBY'
         
-        self.model.start_button_enabled = self.model.config_is_loaded
+        self.model.try_to_enable_start_button()
         self.model.stop_button_enabled = False
         self.model.load_button_enabled = True
         self.model.developer_checkbox_enabled = True
@@ -96,6 +96,8 @@ class TrialEndedState():
     text = ''
 
     def enter_state(self):
+        self.test_stand.set_valve_position(90)
+
         self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
         self.model.save_trial_data(is_aborted_trial=False)
@@ -114,6 +116,8 @@ class TrialEndedState():
     def tick(self):
         timestamp = time.time()
         time_passed = timestamp - self.start_timestamp
+
+        text = 'Trial Ended.'
 
         if(time_passed > 0):
             text = 'Trial Ended.'
@@ -141,6 +145,65 @@ class TrialEndedState():
     def exit_state(self):
         pass
 
+class TrialAbortedState():
+    model: Model.Model = None
+    test_stand: TestStand = None
+    standby_state: StandbyState = None
+
+    start_timestamp = 0
+
+    def enter_state(self):
+        self.test_stand.set_valve_position(0)
+        # self.test_stand.set_heater_power(0)
+        print('Abort state does not currently disable the heater. Implement this in the future.')
+
+        self.model.trial_is_running = False
+        self.model.run_sequence_bolded_row = -1
+        self.model.save_trial_data(is_aborted_trial=True)
+        self.model.reset_dataframe()
+
+        self.model.start_button_enabled = False
+        self.model.stop_button_enabled = False
+        self.model.load_button_enabled = False
+        self.model.developer_checkbox_enabled = False
+        self.model.connect_arduinos_button_enabled = False
+
+        self.start_timestamp = time.time()
+
+    def tick(self):
+        timestamp = time.time()
+
+        time_passed = timestamp - self.start_timestamp
+
+        text = 'Trial Aborted.'   
+
+        if(time_passed > 0):
+            text = 'Trial Aborted.'
+
+        if(time_passed > 0.25):
+            text = 'Trial Aborted. .'
+
+        if(time_passed > 0.5):
+            text = 'Trial Aborted. . .'
+
+        if(time_passed > 0.75):
+            text = 'Saving Data.'
+
+        if(time_passed > 1):
+            text = 'Saving Data. .'
+
+        if(time_passed > 1.25):
+            text = 'Saving Data. . .'
+
+        self.model.start_button_text = text
+
+        if(time_passed > 1.5):
+            self.test_stand.switch_state(self.standby_state)
+
+        
+    def exit_state(self):
+        pass
+
 class TrialRunningState():
     model: Model.Model = None
     serial_monitor: SM.SerialMonitor = None
@@ -165,6 +228,7 @@ class TrialRunningState():
         self.model.load_button_enabled = False
         self.model.developer_checkbox_enabled = False
         self.model.connect_arduinos_button_enabled = False
+        self.model.abort_button_enabled = True
 
         self.test_stand.blue_lines.start_sequence()
 
@@ -193,6 +257,7 @@ class TrialRunningState():
 
     def exit_state(self):
         self.model.trial_is_running = False
+        self.model.abort_button_enabled = False
         self.current_profile.end()
 
     def set_current_profile(self, profile):

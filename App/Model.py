@@ -28,12 +28,16 @@ class Model:
     plot4_buffer = 10
     
     test_stand = None
-
+    test_stand_trial_running_state = None
+    test_stand_standby_state = None
+    serial_monitor = None
+    ui = None
 
 # Values for UI Display
 
     # Side Bar
     state_text = 'STANDBY'
+    abort_button_enabled = False
 
     # Setup Page
     daq_status_text = 'Not Connected'
@@ -162,3 +166,34 @@ class Model:
 
     def reset_dataframe(self):
         self.trial_data = LD.get_new_dataframe(self.test_stand.trial_running_state.current_profile.dataframe_columns)
+
+    def set_config(self, config: Config):
+        current_profile_name = self.test_stand_trial_running_state.current_profile.name
+
+        config_is_valid = (config.profile_name == current_profile_name)
+
+        if(config_is_valid):
+            Log.python.info('Trial configuration has been loaded to run page.')
+
+
+            self.config_is_loaded = True
+            self.loaded_config_trial_name = config.trial_name
+
+            self.test_stand.end_trial_time = float(config.trial_end_timestep)
+            self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+
+            self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
+            self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
+            
+        else:
+            Log.python.info('Tried to load configuration to run page, but the configuration was invalid.')
+            self.config_is_loaded = False
+            self.loaded_config_trial_name = 'Invalid CONFIG File'
+   
+        self.try_to_enable_start_button()
+
+    def try_to_enable_start_button(self):
+        if(self.serial_monitor.is_fully_connected and self.test_stand.current_state == self.test_stand_standby_state and self.config_is_loaded):
+            self.start_button_enabled = True
+        else:
+            self.start_button_enabled = False

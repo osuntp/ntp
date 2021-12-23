@@ -16,7 +16,8 @@ class Stylize:
     abort_tab = "\
     QPushButton{ background-color:rgb(170, 0, 0); color:rgb(255, 255, 255); border:2px solid black;} \
     QPushButton:hover{ background-color:rgb(249, 19, 19); color:rgb(255, 255, 255); border:2px solid black;} \
-    QPushButton:pressed{ background-color:rgb(95, 0, 0); color:rgb(255, 255, 255); border:2px solid black;} "
+    QPushButton:pressed{ background-color:rgb(95, 0, 0); color:rgb(255, 255, 255); border:2px solid black;} \
+    QPushButton:disabled{ background-color: rgb(65, 65, 65); color:rgb(139, 139, 139); border:px solid black;}"
 
     standard_button_css = "\
     QPushButton{ background-color:rgb(39, 59, 94); color:rgb(255, 255, 255); border:2px solid black;} \
@@ -34,11 +35,6 @@ class Stylize:
     QPushButton:hover{ background-color:rgb(0, 170, 0); color:rgb(255, 255, 255); border:2px solid black;} \
     QPushButton:pressed{ background-color:rgb(0, 50, 0); color:rgb(255, 255, 255); border:2px solid black;} \
     QPushButton:disabled{ background-color:rgb(65, 65, 65); color:rgb(139, 139, 139); border:2px solid black;}"
-
-    # start_button_runningtrial = "\
-    # QPushButton{ background-color:rgb(65, 65, 65); color:rgb(255, 255, 255); border:2px solid black;} \
-    # QPushButton:hover{ background-color:rgb(65, 65, 65); color:rgb(255, 255, 255); border:2px solid black;} \
-    # QPushButton:pressed{ background-color:rgb(65, 65, 65); color:rgb(255, 255, 255); border:2px solid black;}"
 
     start_button_inactive = "\
     QPushButton{ background-color:rgb(65, 65, 65); color:rgb(255, 255, 255); border:2px solid black;} \
@@ -75,40 +71,13 @@ class Stylize:
         for button in buttons:
             button.setStyleSheet(cls.standard_button_css)
 
-    # @classmethod
-    # def set_button_active(cls, button, is_active):
-    #     if(is_active):
-    #         button.setStyleSheet(cls.standard_button)
-    #     else:
-    #         button.setStyleSheet(cls.button_inactive)
-
     @classmethod
     def start_button(cls, button):
         button.setStyleSheet(cls.start_button_css)
 
-
-    # @classmethod
-    # def set_start_button_active(cls,button, is_active):
-    #     if(is_active):
-    #         # button.setStyleSheet(cls.start_button_active)
-    #         pass
-    #     else:
-    #         button.setStyleSheet(cls.button_inactive)
-
-    # @classmethod
-    # def set_start_button_runningtrial(cls,button):
-    #     button.setStyleSheet(cls.start_button_runningtrial)
-
     @classmethod
     def end_button(cls, button):
         button.setStyleSheet(cls.end_button_css)
-
-    # @classmethod
-    # def set_pause_button_active(cls,button, is_active):
-    #     if(is_active):
-    #         button.setStyleSheet(cls.pause_button_active)
-    #     else:
-    #         button.setStyleSheet(cls.button_inactive)
 
     @classmethod
     def set_current_tab(cls, new_tab, prev_tab):

@@ -17,6 +17,7 @@ class Presenter:
     test_stand: TestStand.TestStand = None
     test_stand_standby_state: TestStandStates.StandbyState
     test_stand_trial_running_state: TestStandStates.TrialRunningState
+    test_stand_trial_aborted_state: TestStandStates.TrialAbortedState
     test_stand_trial_ended_state: TestStandStates.TrialEndedState
     test_stand_connecting_state: TestStandStates.ConnectingState
 
@@ -53,6 +54,7 @@ class Presenter:
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
         self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
+        self.ui.configuration.send_to_run_page_button.clicked.connect(self.configuration_send_to_run_page_clicked)
 
         # Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
@@ -87,6 +89,8 @@ class Presenter:
 
         if(self.ui.side_bar_state_text != self.model.state_text):
             self.ui.set_side_bar_state_text(self.model.state_text)
+
+        self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
 
         page = self.ui.pyqt5.stacked_widget.currentIndex()
 
@@ -202,6 +206,10 @@ class Presenter:
 
         # Run Page
         if(page == 4):
+
+            if(self.model.loaded_config_trial_name != self.ui.run.loaded_trial_text.text()):
+                self.ui.run.loaded_trial_text.setText(self.model.loaded_config_trial_name)
+
             self.ui.run.start_button.setText(self.model.start_button_text)
 
             if(self.model.start_button_enabled != self.ui.run.start_button.isEnabled()):
@@ -302,9 +310,8 @@ class Presenter:
 
         self.ui.set_current_tab(tab_index)
 
-    # TODO: Define abort procedure
     def abort_clicked(self):
-            print('Abort was pressed but this functionality has not been implemented.')
+            self.test_stand.switch_state(self.test_stand_trial_aborted_state)
 
 # SETUP PAGE LOGIC
     def setup_manual_connect_clicked(self): 
@@ -376,6 +383,42 @@ class Presenter:
         
         Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
 
+    def configuration_send_to_run_page_clicked(self):
+        profile_name = self.test_stand_trial_running_state.current_profile.name
+        trial_name = self.ui.configuration.trial_name_field.text()
+        description = self.ui.configuration.description_field.toPlainText()
+        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
+
+        blue_lines_time_step = []
+        blue_lines_sensor_type = []
+        blue_lines_limit_type = []
+        blue_lines_value = []
+
+        table = self.ui.configuration.blue_lines_table
+
+        for i in range (table.rowCount()-1):
+            blue_lines_time_step.append(float(table.item(i, 0).text()))
+            blue_lines_sensor_type.append(table.item(i, 1).text())
+            blue_lines_limit_type.append(table.item(i,2).text())
+            blue_lines_value.append(float(table.item(i,3).text()))
+
+        sequence_values = []
+        table = self.ui.configuration.sequence_table
+
+        for i in range(table.columnCount()):
+            value_list = []
+
+            for j in range(table.rowCount()):
+                
+                value_list.append(table.item(j,i).text())
+
+            print(value_list)
+            sequence_values.append(value_list)
+
+        config = Config.Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
+
+        self.model.set_config(config)
+
     def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
 
@@ -388,25 +431,9 @@ class Presenter:
         if(file_name == ''):
             return
       
-        Log.python.info('Trial configuration has been loaded.')
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
 
-        current_profile_name = self.test_stand_trial_running_state.current_profile.name
-
-        if(config.profile_name != current_profile_name):
-            self.ui.run.set_loaded_trial_text('Invalid CONFIG File')
-            
-        else:
-            self.model.config_is_loaded = True
-            self.model.loaded_config_trial_name = config.trial_name
-
-            self.ui.run.set_loaded_trial_text(config.trial_name)
-            self.test_stand.end_trial_time = float(config.trial_end_timestep)
-            self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
-            self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
-            self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
-        
-            self.model.start_button_enabled = (self.test_stand.current_state == self.test_stand_standby_state)
+        self.model.set_config(config)       
     
     def run_plot_apply_buffer_clicked(self, plot_index):
         try:

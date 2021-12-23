@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
     standby_state = TestStandStates.StandbyState()
     trial_ended_state = TestStandStates.TrialEndedState()
+    trial_aborted_state = TestStandStates.TrialAbortedState()
     trial_running_state = TestStandStates.TrialRunningState()
     connecting_state = TestStandStates.ConnectingState()
 
@@ -61,6 +62,11 @@ if __name__ == "__main__":
     ui.app = app
 
     model.test_stand = test_stand
+    model.test_stand_standby_state = standby_state
+    model.test_stand_trial_running_state = trial_running_state
+    model.serial_monitor = serial_monitor
+    model.ui = ui
+
 
     test_stand.ui = ui
     test_stand.serial_monitor = serial_monitor
@@ -75,6 +81,9 @@ if __name__ == "__main__":
     trial_running_state.test_stand = test_stand
     trial_running_state.model = model
     trial_running_state.ui = ui
+    trial_aborted_state.model = model
+    trial_aborted_state.test_stand = test_stand
+    trial_aborted_state.standby_state = standby_state
     trial_ended_state.standby_state = standby_state
     trial_ended_state.ui = ui
     trial_ended_state.test_stand = test_stand
@@ -91,12 +100,13 @@ if __name__ == "__main__":
     presenter.serial_monitor = serial_monitor
     presenter.test_stand_standby_state = standby_state
     presenter.test_stand_trial_running_state = trial_running_state
+    presenter.test_stand_trial_aborted_state = trial_aborted_state
+    aborted_state = trial_aborted_state
     presenter.test_stand_trial_ended_state = trial_ended_state
     presenter.test_stand_connecting_state = connecting_state
     presenter.app = app
 
     serial_monitor.model = model
-    serial_monitor.presenter = presenter
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)

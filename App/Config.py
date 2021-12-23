@@ -20,42 +20,6 @@ class Config:
 
     sequence_values: List
 
-class ValidationThread(QThread):
-
-    validation_message = pyqtSignal(object)
-    validation_is_complete = pyqtSignal(object)
-
-    def __init__(self, ui):
-        QThread.__init__(self)
-        self.ui = ui
-
-    def run(self):
-        self.validation_message.emit('Validating.')
-        time.sleep(0.25)
-        self.validation_message.emit('Validating. .')
-        time.sleep(0.25)
-        self.validation_message.emit('Validating. . .')
-        time.sleep(0.2)
-
-        blue_lines_table = self.ui.configuration.blue_lines_table
-        test_sequence_table = self.ui.configuration.sequence_table
-        message = 'valid'
-
-        if(message == 'valid'):
-            message = blue_lines_is_valid(blue_lines_table)
-
-        if(message == 'valid'):
-            message = test_sequence_is_valid(test_sequence_table)
-
-        if(message == 'valid'):
-            message = 'Valid Configuration\nSaving to configuration file.'
-            self.validation_message.emit(message)
-            self.validation_is_complete.emit(True)
-        else:
-            message = 'INVALID CONFIGURATION\n' + message
-            self.validation_message.emit(message)
-            self.validation_is_complete.emit(False)
-
 def create_file(file_name: str, profile_name:str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, num_of_test_sequence_var:int, test_sequence: QtWidgets.QTableWidget, trial_end_timestep: str):
     config = ConfigParser()
 
@@ -85,8 +49,7 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
             time_step += ', '
             sensor_type += ', '
             limit_type +=', '
-            value += ', '
-            
+            value += ', '     
 
     config.set('blue_lines', 'time_step', time_step)
     config.set('blue_lines', 'sensor_type', sensor_type)
@@ -106,29 +69,6 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
 
         value_name = 'value' + str(i)
         config.set('test_sequence', value_name, test_sequence_values_string)
-
-    # time_step = ''
-    # power = ''
-    # mass_flow_rate = ''
-    # valve_position = ''
-    # OF_instruction = ''
-
-    # for i in range(test_sequence.rowCount()):
-    #     time_step += (str(test_sequence.item(i,0).text()))
-    #     power += (str(test_sequence.item(i, 1).text()))
-
-    #     if(i < (test_sequence.rowCount() - 1)):
-    #         time_step += ', '
-    #         power += ', '
-    #         mass_flow_rate += ', '
-    #         valve_position += ', '
-    #         OF_instruction += ', '
-
-    # config.set('test_sequence', 'time_step', time_step)
-    # config.set('test_sequence', 'power', power)
-    # config.set('test_sequence', 'mass_flow_rate', mass_flow_rate)
-    # config.set('test_sequence', 'valve_position', valve_position)
-    # config.set('test_sequence', 'OF_instruction', OF_instruction)
     
     with open(file_name, 'w') as f:
         config.write(f)
@@ -191,21 +131,6 @@ def open_file(file_name: str, num_of_sequence_columns: int):
         sequence_values.append(values)
 
     return Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
-
-
-    # sequence_time_step = parser.get('test_sequence', 'time_step').split(sep = ', ')
-    # sequence_power = parser.get('test_sequence', 'power').split(sep = ', ')
-    # sequence_mass_flow_rate = parser.get('test_sequence', 'mass_flow_rate').split(sep = ', ')
-    # sequence_valve_position = parser.get('test_sequence', 'valve_position').split(sep = ', ')
-    # sequence_OF_instruction = parser.get('test_sequence', 'OF_instruction').split(sep = ', ')
-
-    # sequence_time_step = [float(x) for x in sequence_time_step]
-    # sequence_power = [float(x) for x in sequence_power]
-    # sequence_mass_flow_rate = [float(x) for x in sequence_mass_flow_rate]
-    # sequence_valve_position = [float(x) for x in sequence_valve_position]
-    # sequence_OF_instruction = [float(x) for x in sequence_OF_instruction]
-
-    # return config_values
     
 def blue_lines_is_valid(table: QtWidgets.QTableWidget):
     
@@ -254,12 +179,7 @@ def test_sequence_is_valid(table: QtWidgets.QTableWidget):
 
             if((i > 0.5) and (current_time_step <= previous_time_step)):
                 return 'The time steps in the test sequence table are out of order.'
-            
-            # Other
-            # 1: mass flow
-            # 2: heater
-            # 3: valve
-            # 4: OF instruction
+
             float(table.item(i,1).text())
             float(table.item(i,2).text())
             float(table.item(i,3).text())
@@ -267,7 +187,6 @@ def test_sequence_is_valid(table: QtWidgets.QTableWidget):
 
             if bool(table.item(i,1).text() and table.item(i,3).text()):
                 return 'Cannot prescribe mass flow and valve position.'
-
             
         except ValueError:
             return 'Invalid characters detected in test sequence table.'

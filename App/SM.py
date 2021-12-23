@@ -157,7 +157,7 @@ class SerialMonitor:
         self.is_fully_connected = self.tsc_arduino is not None and self.daq_arduino is not None
 
         if(self.is_fully_connected):
-            self.presenter.run_attempt_to_activate_start_button()
+            self.model.try_to_enable_start_button()
             SettingsManager.save_arduino_ports(daq_port, tsc_port)
 
     def start_daq_monitor_loop(self):
@@ -366,8 +366,7 @@ class SerialMonitor:
 
     def set_developer_mode(self, in_developer_mode):
 
-        self.in_developer_mode = in_developer_mode
-        
+        self.in_developer_mode = in_developer_mode     
 
         if(in_developer_mode):
             self.disconnect_arduinos()
@@ -384,6 +383,8 @@ class SerialMonitor:
 
             self.model.daq_status_text = 'Not Connected'
             self.model.tsc_status_text = 'Not Connected'
+            
+        self.model.try_to_enable_start_button()
 
 # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
 def __get_serial_ports():
