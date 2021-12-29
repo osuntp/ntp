@@ -1,6 +1,7 @@
 import sys
 import glob
 
+import random
 import serial
 from serial.serialutil import SerialException
 from Model import Model
@@ -10,10 +11,47 @@ import time
 import threading
 import LD
 from enum import Enum
+from SettingsManager import SettingsManager
 
 class Arduino(Enum):
     DAQ = 1
     CONTROLLER = 2
+
+class DeveloperArduinos:
+
+    time_of_last_daq_message = 0
+    time_between_daq_messages = 1
+
+    @classmethod
+    def new_daq_message_available(cls):
+        
+        current_time = time.time()
+
+        message_available = (current_time - cls.time_of_last_daq_message) > cls.time_between_daq_messages
+
+        if(message_available):
+            cls.time_of_last_daq_message = current_time
+
+        return message_available
+
+    @classmethod
+    def get_daq_message(cls, num_of_daq_values):
+
+        message = '<stdout, '
+
+        value = round(random.random(), 2)
+
+        message += str(value)
+
+        for i in range(num_of_daq_values-1):
+            message += ', '
+
+            value = round(random.random(), 2)       
+            message += str(value)
+        
+        message += '>'
+        
+        return message
 
 class SerialMonitor:
     daq_id = 'daq'
@@ -23,6 +61,9 @@ class SerialMonitor:
     baudrate = 9600
     daq_buffer = ''
     tsc_buffer = ''
+    is_fully_connected = False
+
+    in_developer_mode = False
 
     model: Model = None
 
@@ -30,14 +71,21 @@ class SerialMonitor:
         self.baudrate = baudrate
 
     def write(self, arduino: Arduino, message: str):
+
+        if(self.in_developer_mode):
+            print('Message to TSC: ' + message)
+            return
+
         if(arduino == Arduino.CONTROLLER):
             self.tsc_arduino.write(message.encode('utf-8'))
-            # print('SM is writing the following message: ' + str(message))
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode('utf-8'))
 
     def connect_arduinos(self, daq_port: str, tsc_port:str):
         
+        if(self.in_developer_mode):
+            return
+
         # CONNECT DAQ
         try:
             if(self.daq_arduino is None):
@@ -61,7 +109,6 @@ class SerialMonitor:
                             if(clean_message[0] == 'DAQ'):
                                 self.model.daq_status_text = 'Connected'
                                 waiting_for_response = False
-                                self.model.daq_is_connected = True
                                 self.start_daq_monitor_loop()
 
                     if(time.time() > time_out):
@@ -94,19 +141,24 @@ class SerialMonitor:
                             clean_message = LD.clean(raw_message_line)
 
                             if(clean_message[0] == 'TSC'):
-                                self.model.controller_status_text = 'Connected'
+                                self.model.tsc_status_text = 'Connected'
                                 waiting_for_response = False
                                 self.start_tsc_monitor_loop()
-                                self.model.controller_is_connected = True
                     time.sleep(0.1)
 
                     if(time.time() > time_out):
-                        self.model.controller_status_text = 'Connection Timed Out'
+                        self.model.tsc_status_text = 'Connection Timed Out'
                         self.tsc_arduino.close()
                         self.tsc_arduino = None
                         waiting_for_response = False
         except SerialException:
-            self.model.controller_status_text = 'Invalid Port'
+            self.model.tsc_status_text = 'Invalid Port'
+
+        self.is_fully_connected = self.tsc_arduino is not None and self.daq_arduino is not None
+
+        if(self.is_fully_connected):
+            self.model.try_to_enable_start_button()
+            SettingsManager.save_arduino_ports(daq_port, tsc_port)
 
     def start_daq_monitor_loop(self):
         self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)
@@ -154,6 +206,19 @@ class SerialMonitor:
                 self.__handle_tsc_message(clean_message)
 
     def read_from_daq(self):
+
+        if(self.in_developer_mode):
+            
+            if(DeveloperArduinos.new_daq_message_available()):
+
+                # The number of values is LD.columns-3. Columns currently includes Time, Valve Position and Heater Status which are all appended by model.
+                message = DeveloperArduinos.get_daq_message(len(LD.columns)-3)
+
+                clean_message = LD.clean(message)
+                self.__handle_daq_message(clean_message)
+            
+            return
+
         if(self.daq_arduino is None):
             return
 
@@ -176,16 +241,14 @@ class SerialMonitor:
 
         if(prefix == 'stdout'):
             self.model.update(message)
-            print(message)
         elif(prefix == 'stdinfo'):
-            Log.info(message[0])
+            Log.daq.info(message[0])
         elif(prefix == 'stderr'):
-            Log.error(message[0])
+            Log.daq.error(message[0])
         elif(prefix == 'DAQ'):
-            Log.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')
-        
+            Log.daq.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')       
         else:
-            Log.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
+            Log.daq.warning('Unknown message type received from DAQ. The prefix was ' + prefix)    
 
     def __handle_tsc_message(self, message: list):
         prefix = message[0]
@@ -193,15 +256,15 @@ class SerialMonitor:
         message.pop(0)
 
         if(prefix == 'stdout'):
-            Log.warning('Received stdout message from TSC')
+            Log.tsc.warning('Received stdout message from TSC')
         elif(prefix == 'stdinfo'):
-            Log.info(message[0])
+            Log.tsc.info(message[0])
         elif(prefix == 'stderr'):
-            Log.error(message[0])
+            Log.tsc.error(message[0])
         elif(prefix == 'TSC'):
-            print('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')     
+            Log.tsc.debug('Arduino Debug: Unexpected ID message from ' + prefix + '. Ignoring this message.')        
         else:
-            Log.warning('Unknown message type received from TSC. The prefix was ' + prefix)   
+            Log.tsc.warning('Unknown message type received from TSC. The prefix was ' + prefix)   
 
     def disconnect_arduinos(self):
         if(self.daq_arduino is not None):
@@ -245,6 +308,9 @@ class SerialMonitor:
             self.tsc_arduino.close()
             self.tsc_arduino = None
 
+        self.daq_monitor_loop_is_running = False
+        self.tsc_monitor_loop_is_running = False
+
     def auto_connect_arduinos(self):
         ports = self.__get_serial_ports()
 
@@ -277,23 +343,11 @@ class SerialMonitor:
                             self.controller_arduino = connection
                             
                         else:
-                            Log.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
+                            Log.python.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
                     else:
-                        Log.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
+                        Log.python.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
 
                     break
-
-        # TODO: Uncomment this when we're ready to work with two arduinos at once.
-        # If one arduino wasn't able to connect, disconnect the other.
-        # if self.DAQ_arduino is None:
-        #     Log.error('SerialMonitor: connect_arduinos(): Unable to connect DAQ Arduino, closing any open Arduino connections.')
-        #     self.disconnect_arduinos()
-
-        # elif self.controller_arduino is None:
-        #     Log.error('SerialMonitor: connect_arduinos(): Unable to connect Controller Arduino, closing any open Arduino connections.')
-        #     self.disconnect_arduinos()
-        # else:
-        #     self.arduinos_are_connected = True
 
     def on_window_exit(self):
         try:
@@ -308,34 +362,61 @@ class SerialMonitor:
             pass
         #self.disconnect_arduinos()
 
-# Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
-    def __get_serial_ports(self):
-        """ Lists serial port names
 
-            :raises EnvironmentError:
-                On unsupported or unknown platforms
-            :returns:
-                A list of the serial ports available on the system
-        """
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
 
-        # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            # this excludes your current terminal "/dev/tty"
-            ports = glob.glob('/dev/tty[A-Za-z]*')
-        elif sys.platform.startswith('darwin'):
-            ports = glob.glob('/dev/tty.*')
+    def set_developer_mode(self, in_developer_mode):
+
+        self.in_developer_mode = in_developer_mode     
+
+        if(in_developer_mode):
+            self.disconnect_arduinos()
+            self.is_fully_connected = True
+
+            self.model.daq_status_text = 'Developer Mode'
+            self.model.tsc_status_text = 'Developer Mode'
+
+            self.start_daq_monitor_loop()
+            self.start_tsc_monitor_loop()
         else:
-            Log.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
+            self.disconnect_arduinos()
+            self.is_fully_connected = False
 
-        result = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                result.append(port)
-            except (OSError, serial.SerialException):
-                pass
+            self.model.daq_status_text = 'Not Connected'
+            self.model.tsc_status_text = 'Not Connected'
+            
+        self.model.try_to_enable_start_button()
 
-        return result
+# Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+def __get_serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+
+    # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+
+    return result
+
+if __name__ == "__main__":
+    print(__get_serial_ports())

@@ -1,28 +1,34 @@
-
+from PyQt5 import QtWidgets
+from typing import List
 from PyQt5.QtGui import QFont
 from UI.QT5_Generated_UI import Ui_MainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 # from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
+from SettingsManager import Settings
 
 import pyqtgraph
 from PyQt5 import QtWidgets
-import os
-import Config
 import time
 
 class Window(QMainWindow):
     pass
 
 class UI:
-    def __init__(self, window):       
+    app: QtWidgets.QApplication = None
+
+    side_bar_hot_stand_is_lit = False
+    side_bar_heater_is_lit = False
+    side_bar_valve_open_is_lit = False
+
+    def __init__(self, window, settings: Settings):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
         self.pyqt5 = Ui_MainWindow()
         self.pyqt5.setupUi(window)
         # [END OF DO NOT EDIT]
-
+        
         self.tabs_widget = self.pyqt5.stacked_widget
         self.tabs = [self.pyqt5.diagnostics_tab, self.pyqt5.logs_tab, self.pyqt5.manual_control_tab, self.pyqt5.configuration_tab, self.pyqt5.run_tab, self.pyqt5.setup_tab]
         self.current_tab = self.pyqt5.setup_tab
@@ -37,8 +43,9 @@ class UI:
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
         self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
         self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
+        self.side_bar_state_text = self.pyqt5.side_bar_state_status
 
-        self.setup = Setup(self.pyqt5)
+        self.setup = Setup(self.pyqt5, settings.daq_port, settings.tsc_port)
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.manual = Manual(self.pyqt5)
@@ -56,13 +63,19 @@ class UI:
 
         self.current_tab = new_tab
 
+    def set_side_bar_state_text(self, text):
+        self.side_bar_state_text.setText(text)
+
     def set_hot_stand_status_light_is_lit(self, isLit: bool):
+        self.side_bar_hot_stand_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
     
     def set_valve_open_status_light_is_lit(self, isLit: bool):
+        self.side_bar_valve_open_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_valve_open_status, isLit)
     
     def set_heater_status_light_is_lit(self, isLit: bool):
+        self.side_bar_heater_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
 
     def set_abort_tab_clickable(self, is_active):
@@ -73,15 +86,33 @@ class UI:
 
         self.abort_tab.setEnabled(is_active)
 
+
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
+
+        self.plot1_inlet_check = pyqt5.diagnostics_plot1_inlet_field
+        self.plot1_midpoint_check = pyqt5.diagnostics_plot1_midpoint_field
+        self.plot1_outlet_check = pyqt5.diagnostics_plot1_outlet_field
+        self.plot1_heater_check = pyqt5.diagnostics_plot1_heater_field
+
+        self.plot2_inlet_check = pyqt5.diagnostics_plot2_inlet_field
+        self.plot2_midpoint_check = pyqt5.diagnostics_plot2_midpoint_field
+        self.plot2_outlet_check = pyqt5.diagnostics_plot2_outlet_field
+        self.plot2_supply_check = pyqt5.diagnostics_plot2_supply_field
+
+        self.plot1_inlet_check.setChecked(True)
+        self.plot1_midpoint_check.setChecked(True)
+        self.plot1_outlet_check.setChecked(True)
+        self.plot1_heater_check.setChecked(True)
+
+        self.plot2_inlet_check.setChecked(True)
+        self.plot2_midpoint_check.setChecked(True)
+        self.plot2_outlet_check.setChecked(True)
+        self.plot2_supply_check.setChecked(True)
+
         self.plot1 = pyqt5.diagnostics_plot1.getPlotItem()
         self.plot2 = pyqt5.diagnostics_plot2.getPlotItem()
 
-        # self.plot1.set_labels('Time (s)', 'Temperature (C)')
-        # self.plot2.set_labels('Time (s)', 'Pressure (Pa)')
-
-# TODO: Remove this call to update_vals
         self.plot1.plot([0],[0])
         self.plot2.plot([0],[0])
 
@@ -94,55 +125,96 @@ class Diagnostics:
         self.heater_state = pyqt5.diagnostics_r06_value
         self.heater_set_point = pyqt5.diagnostics_r07_value
 
-    def update_plots(self, diagnostics_dataframe):
-        self.plot1.update_vals(diagnostics_dataframe['column1'], diagnostics_dataframe['column2'])
+        # Plot Settings
+        line_width = 2
+        margin_left = 10
+        margin_top = 0
+        margin_right = 130
+        margin_bottom = 10
+        background_color = (255,255,255)
 
-    def set_test_stand_status(self, value: float):
-        self.test_stand_status.setText(str(value))
+        # Actual Plot - Plot1
+        self.plot1 = pyqt5.diagnostics_plot1
+        pyqt5.diagnostics_plot1.setXRange(-10, 0)
+        pyqt5.diagnostics_plot1.setBackground(background_color)
 
-    def set_valve_voltage(self, value: float):
-        self.valve_voltage.setText(str(value))
+        plot_item = pyqt5.diagnostics_plot1.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Temperature (C)')
+        plot_item.showGrid(x=True, y=True)
 
-    def set_mass_flow(self, value: float):
-        self.mass_flow.setText(str(value))
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-17,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
 
-    def set_heater_current(self, value: float):
-        self.heater_current.setText(str(value))
+        self.plot1_inlet = plot_item.plot(name = 'Inlet')
+        self.plot1_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot1_outlet = plot_item.plot(name = 'Outlet')
+        self.plot1_heater = plot_item.plot(name = 'Heat Sink')
 
-    def set_heater_duty_cycle(self, value: float):
-        self.heater_duty_cycle.setText(str(value))
+        self.plot1_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot1_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot1_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot1_heater.setPen(pyqtgraph.mkPen(color='c', width = line_width))
 
-    def set_heater_power(self, value: float):
-        self.heater_power.setText(str(value))
+        # Actual Plot - Plot2
+        self.plot2 = pyqt5.diagnostics_plot2
+        pyqt5.diagnostics_plot2.setXRange(-10, 0)
+        pyqt5.diagnostics_plot2.setBackground(background_color)
 
-    def set_heater_state(self, value: str):
-        self.heater_state.setText(value)
+        plot_item = pyqt5.diagnostics_plot2.getPlotItem()
+        plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
+        plot_item.setLabel('bottom', 'Time (s)')
+        plot_item.setLabel('left', 'Pressure (Pa)')
+        plot_item.showGrid(x=True, y=True)
 
-    def set_heater_set_point(self, value: float):
-        self.heater_set_point.setText(str(value))
+        legend = plot_item.addLegend()
+        legend.setParentItem(plot_item)
+        legend.setOffset((-17,50))
+        legend.setBrush(pyqtgraph.mkBrush(color=background_color))
+
+        self.plot2_inlet = plot_item.plot(name = 'Inlet')
+        self.plot2_midpoint = plot_item.plot(name = 'Midpoint')
+        self.plot2_outlet = plot_item.plot(name = 'Outlet')
+        self.plot2_supply = plot_item.plot(name = 'Supply')
+
+        self.plot2_inlet.setPen(pyqtgraph.mkPen(color='b', width = line_width))
+        self.plot2_midpoint.setPen(pyqtgraph.mkPen(color='r', width = line_width))
+        self.plot2_outlet.setPen(pyqtgraph.mkPen(color='g', width = line_width))
+        self.plot2_supply.setPen(pyqtgraph.mkPen(color='c', width = line_width))
 
 class Setup:
-    def __init__(self, pyqt5: Ui_MainWindow):
+    def __init__(self, pyqt5: Ui_MainWindow, daq_port: str, tsc_port:str):
         self.daq_status_label = pyqt5.setup_daq_status_label
         self.controller_status_label = pyqt5.setup_controller_status_label
 
         self.daq_port_field = pyqt5.setup_daq_port_field
-        self.daq_port_field.setText('COM8')
+        self.daq_port_field.setText(daq_port)
         self.controller_port_field = pyqt5.setup_controller_port_field
-        self.controller_port_field.setText('COM6')
+        self.controller_port_field.setText(tsc_port)
 
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button
 
-        self.setting_ui_frequency_field = pyqt5.setup_ui_frequency_field
-        self.apply_settings_button = pyqt5.setup_apply_settings_button
+        self.test_stand_behaviour_field = pyqt5.setup_teststand_behaviour_field
 
-        Stylize.button([self.auto_connect_button, self.manual_connect_button, self.apply_settings_button])
-        Stylize.set_button_active(self.auto_connect_button, False)
+        self.developer_mode_field = pyqt5.setup_developer_mode_field
+
+        Stylize.button([self.auto_connect_button, self.manual_connect_button])
+        Stylize.button([self.auto_connect_button])
+        self.auto_connect_button.setEnabled(False)
+
+    def set_initial_values_from_settings(self, selected_behaviour_field: int, in_developer_mode: bool):
+        self.test_stand_behaviour_field.setCurrentIndex(selected_behaviour_field)
+        self.developer_mode_field.setChecked(in_developer_mode)
 
 class Logs:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.python = pyqt5.logs_python_log
+        self.daq = pyqt5.logs_daq_log
+        self.tsc = pyqt5.logs_controller_log
 
     def update_python_log(self, file_path: str):
 
@@ -186,11 +258,11 @@ class Configuration:
         self.sequence_plus_button = pyqt5.configuration_sequence_plus
         self.sequence_minus_button = pyqt5.configuration_sequence_minus
 
-        self.status = pyqt5.configuration_status_label
         self.clear_button = pyqt5.configuration_clear_button
         self.save_button = pyqt5.configuration_save_button
+        self.send_to_run_page_button = pyqt5.config_send_to_run_page_button
 
-        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button]
+        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button, self.send_to_run_page_button]
         
         self.clear_all()
 
@@ -207,7 +279,7 @@ class Configuration:
         item.setText('')
         table.setVerticalHeaderItem(table.rowCount(), item)
 
-        combo_box_options = ['Mass Flow', 'Heater Current', 'Heater TC', 'Inlet TC', 'Midpoint TC', 'Outlet TC', 'Tank Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
+        combo_box_options = ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
         combo = QtWidgets.QComboBox()
 
         for option in combo_box_options:
@@ -236,10 +308,21 @@ class Configuration:
 
         table.removeRow(row_count - 1)
 
+    def set_sequence_table_columns(self, column_names):
+        table = self.sequence_table
+        
+        column_count = len(column_names)
+
+        table.setColumnCount(column_count)
+
+        for i in range(column_count):
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(column_names[i])
+            table.setHorizontalHeaderItem(i, item)
+
     def add_row_to_sequence_table(self):
         table = self.sequence_table
         row_count = table.rowCount()
-        column_count = table.columnCount()
 
         table.insertRow(row_count)
 
@@ -252,14 +335,10 @@ class Configuration:
 
         table.removeRow(row_count - 1)
 
-    def set_status_text(self, text: str):
-        self.status.setText(text)
-
     def clear_all(self):
         self.clear_blue_line_table()
         self.clear_sequence_table()
 
-        self.status.setText('')
         self.trial_name_field.setText('')
         self.description_field.setPlainText('')
 
@@ -284,6 +363,8 @@ class Configuration:
         self.add_row_to_sequence_table()
     
 class Run:
+    sequence_table_bold_row = -1
+
     def __init__(self, pyqt5: Ui_MainWindow):
         self.load_button = pyqt5.run_load_configuration_button
         self.start_button = pyqt5.run_start_button
@@ -317,6 +398,8 @@ class Run:
         self.plot2_tank_check = pyqt5.run_plot2_tank_check
 
         self.plot2_tank_check.setChecked(True)
+
+        
 
         # Checkboxes - Plot3
             # None
@@ -435,68 +518,58 @@ class Run:
         self.plot4_openFOAM.setPen(pyqtgraph.mkPen(color='g', width = line_width))
 
         Stylize.button([self.load_button])
-        Stylize.set_button_active(self.start_button, False)
-        self.start_button.setEnabled(False)
-        Stylize.set_pause_button_active(self.pause_button, False)
-        self.pause_button.setEnabled(False)
+        Stylize.start_button(self.start_button)
+        Stylize.end_button(self.pause_button)
         Stylize.table(self.sequence_table)
 
     def set_loaded_trial_text(self, text: str):
         self.loaded_trial_text.setText(text)
 
-    def set_sequence_table(self, config: Config.Config):
+    def set_sequence_table_columns(self, column_names):
+        table = self.sequence_table
+        
+        column_count = len(column_names)
+
+        table.setColumnCount(column_count)
+
+        for i in range(column_count):
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(column_names[i])
+            table.setHorizontalHeaderItem(i, item)
+
+    def set_sequence_table(self, sequence_values: List, end_time: float):
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
             table.removeRow(table.rowCount() - 1)
 
-
-        table.insertRow(table.rowCount())
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('')
-        table.setVerticalHeaderItem(table.rowCount()-1, item)
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('Timestep (s)')
-        item.setTextAlignment(4)
-        table.setItem(table.rowCount()-1, 0, item)
-
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('Heater Power (W)')
-        item.setTextAlignment(4)
-        table.setItem(table.rowCount()-1, 1, item)
-
-        for i in range(len(config.sequence_time_step)):
+        for i in range(len(sequence_values[0])):
             table.insertRow(table.rowCount())
-            
+
             item = QtWidgets.QTableWidgetItem()
             item.setText('')
             table.setVerticalHeaderItem(table.rowCount()-1, item)
 
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_time_step[i]))
-            table.setItem(table.rowCount()-1, 0, item)
+            for j in range(len(sequence_values)):
 
-            item = QtWidgets.QTableWidgetItem()
-            item.setText(str(config.sequence_power[i]))
-            table.setItem(table.rowCount()-1, 1, item)
-
+                item = QtWidgets.QTableWidgetItem()
+                item.setText(str(sequence_values[j][i]))
+                table.setItem(table.rowCount()-1, j, item)
+        
         table.insertRow(table.rowCount())
 
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('')
-        table.setVerticalHeaderItem(table.rowCount()-1, item)
+        for j in range(len(sequence_values)):
+            item  = QtWidgets.QTableWidgetItem()
 
-        item = QtWidgets.QTableWidgetItem()
-        item.setText(str(config.trial_end_timestep))
-        table.setItem(table.rowCount()-1, 0, item)
+            if(j == 0):
+                item.setText('End Trial at ' + str(end_time) + 's')
+            else:
+                item.setText('')
 
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('End Trial')
-        table.setItem(table.rowCount()-1, 1, item)
-
+            table.setItem(table.rowCount()-1, j, item)
+        
     def set_sequence_table_row_bold(self, row_int):
+
         table = self.sequence_table
 
         bold_font = QFont()
@@ -507,20 +580,19 @@ class Run:
         row_count = table.rowCount()
         column_count = table.columnCount()
 
+        self.sequence_table_bold_row = row_int
+
+        if(row_int == -1):
+            row_int = row_count-1
+
+        # print(row_count)
         for i in range(row_count):
-            for j in range(column_count):
+            for j in range(column_count-1):
+                
                 if(i == row_int):
-                    table.item(i,j).setFont(bold_font)
+                    table.item(i,j).setFont(bold_font)                 
                 else:
                     table.item(i,j).setFont(normal_font)
-
-    def set_start_button_clickable(self, is_clickable):
-        Stylize.set_start_button_active(self.start_button, is_clickable)
-        self.start_button.setEnabled(is_clickable)
-
-    def set_pause_button_clickable(self, is_clickable):
-        Stylize.set_pause_button_active(self.pause_button, is_clickable)
-        self.pause_button.setEnabled(is_clickable)
 
 class UpdateThread(QThread):
     update_signal = pyqtSignal()

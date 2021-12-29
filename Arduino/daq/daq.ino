@@ -18,9 +18,12 @@ Adafruit_MAX31855 TC3(TC_CLK, TC_3_CS, TC_DO);
 int error = 0;
 SfmConfig sfm3019;
 
-int pressurePin = A0;
+int inletPressurePin = A2;
+int tankPressurePin = A1;
+
 int pressureValue = 0;
-float pressurePSI= 0;
+float inletPressurePSI= 0;
+float tankPressurePSI = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -38,26 +41,30 @@ void setup() {
   } else {
     Serial.println("<stderr,Could not get SFM driver version>");
   }
+
   sensirion_i2c_init();
 
+
   /* Reset all I2C devices */
+//    Serial.println("hit1");
   error = sensirion_i2c_general_call_reset();
   if (error) {
     Serial.println("<stderr,SFM general call reset failed>");
   }
-
+//  Serial.println("hitt2");
   /* Wait for the SFM3019 to initialize */
   sensirion_sleep_usec(SFM3019_SOFT_RESET_TIME_US);
-
+//  Serial.println("hit3");
   while (sfm3019_probe()) {
     Serial.println("<stderr,SFM sensor probing failed>");
     sensirion_sleep_usec(100000);
   }
-
+//  Serial.println("hit4");
   uint32_t product_number = 0;
   uint8_t serial_number[8] = {};
   error = sfm_common_read_product_identifier(SFM3019_I2C_ADDRESS,
           &product_number, &serial_number);
+//    Serial.println("hit5");
   if (error) {
     Serial.println("<stderr,SFM failed to read product identifier>");
   } else {
@@ -69,6 +76,7 @@ void setup() {
     }
     Serial.println(">");
   }
+//    Serial.println("hit6s");
 
   sfm3019 = sfm3019_create();
 
@@ -98,12 +106,13 @@ void setup() {
 //    while (1) delay(10);
 //  }
 //  Serial.println("<stdinfo,Thermocouples initialized>");
+  
 }
 
 void loop() {
-
   // Call setup again if there were errors
   if (error) {
+    Serial.println("<stderr,SFM error: redoing setup>");
     sensirion_sleep_usec(100000);
     error = 0;
     setup();
@@ -112,7 +121,7 @@ void loop() {
   int16_t flow_raw;
   int16_t temperature_raw;
   uint16_t status;
-  error = sfm_common_read_measurement_raw(&sfm3019, &flow_raw,&temperature_raw, &status);
+  error = sfm_common_read_measurement_raw(&sfm3019, &flow_raw, &temperature_raw, &status);
 
   float flow;
   float flow_temperature;
@@ -127,6 +136,7 @@ void loop() {
       return;
     }
     flow_temperature = sfm_common_convert_temperature_float(temperature_raw);
+    
     Serial.print("<stdinfo, SFM status: ");
     Serial.print(status, HEX);
     Serial.println(">");
@@ -158,15 +168,17 @@ double it3 = 0;
 //  double it2 = TC2.readInternal();
 //  double it3 = TC3.readInternal();
 
-  pressureValue = analogRead(pressurePin);
-
+  pressureValue = analogRead(inletPressurePin);
   float pressureValueFloat = (float)pressureValue;
+
+  inletPressurePSI = (pressureValueFloat / 1024)*100;
   
-  pressurePSI = (pressureValueFloat / 1024)*100;
+  pressureValue = analogRead(tankPressurePin);
+  pressureValueFloat = (float)pressureValue;
+  
+  tankPressurePSI = (((pressureValueFloat/ 1024)*5)-1) *(200/4);
   
 
-  //String stringPressurePSI = String(pressurePSI, 6);
-  
   // Send data stream
   Serial.print("<stdout, ");
   Serial.print(flow);
@@ -185,7 +197,9 @@ double it3 = 0;
   Serial.print(", ");
   Serial.print(it3);
   Serial.print(", ");
-  Serial.print(pressurePSI, 7);
+  Serial.print(tankPressurePSI, 7);
+  Serial.print(", ");
+  Serial.print(inletPressurePSI, 7);
   Serial.println(">");
 
   delay(250);

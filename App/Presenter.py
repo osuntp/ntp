@@ -5,9 +5,8 @@ import SM
 from PyQt5 import QtWidgets
 from UI import UI
 from Log import Log
-import time
 import Config
-from UI.Stylize import Stylize
+from SettingsManager import SettingsManager
 
 class Presenter:
 
@@ -16,16 +15,17 @@ class Presenter:
     model: Model.Model = None
     serial_monitor: SM.SerialMonitor = None
     test_stand: TestStand.TestStand = None
-    test_stand_standby_state: TestStandStates.DemoStandbyState
-    test_stand_idle_state: TestStandStates.DemoIdleState
-    test_stand_auto_state: TestStandStates.DemoAutoState
+    test_stand_standby_state: TestStandStates.StandbyState
+    test_stand_trial_running_state: TestStandStates.TrialRunningState
+    test_stand_trial_aborted_state: TestStandStates.TrialAbortedState
+    test_stand_trial_ended_state: TestStandStates.TrialEndedState
+    test_stand_connecting_state: TestStandStates.ConnectingState
 
     def __init__(self):
         pass
     
     def setup(self):
         
-        # TODO: This isn't working in a for loop for some reason, might be because of the lambda expression? revisit
         self.ui.tabs[0].clicked.connect(lambda: self.tab_clicked(0))
         self.ui.tabs[1].clicked.connect(lambda: self.tab_clicked(1))
         self.ui.tabs[2].clicked.connect(lambda: self.tab_clicked(2))
@@ -35,6 +35,8 @@ class Presenter:
 
         # Setup
         self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
+        self.ui.setup.test_stand_behaviour_field.activated.connect(self.setup_behaviour_change_clicked)
+        self.ui.setup.developer_mode_field.clicked.connect(self.setup_developer_mode_clicked)
 
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
@@ -52,8 +54,7 @@ class Presenter:
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
         self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
-
-        
+        self.ui.configuration.send_to_run_page_button.clicked.connect(self.configuration_send_to_run_page_clicked)
 
         # Run
         self.ui.run.load_button.clicked.connect(self.run_load_clicked)
@@ -70,7 +71,6 @@ class Presenter:
         self.ui.run.plot3_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(3))
         self.ui.run.plot4_buffer_field.returnPressed.connect(lambda: self.run_plot_apply_buffer_clicked(4))
 
-
         # Start UI Update Loop
         self.__start_ui_update_loop()
 
@@ -81,103 +81,223 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
+        
+        if(self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position == 90):
+            self.ui.set_valve_open_status_light_is_lit(True)
+        elif(not self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position != 90):
+            self.ui.set_valve_open_status_light_is_lit(False)
 
-        self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
-        self.ui.setup.controller_status_label.setText(self.model.controller_status_text)
+        if(self.ui.side_bar_state_text != self.model.state_text):
+            self.ui.set_side_bar_state_text(self.model.state_text)
 
-        self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
+        self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
 
-        # Update Plot1
-        if(self.ui.run.plot1_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet TC')
-            self.ui.run.plot1_inlet.setData(x,y)
-        else:
-            self.ui.run.plot1_inlet.setData([0],[0])
+        page = self.ui.pyqt5.stacked_widget.currentIndex()
 
-        if(self.ui.run.plot1_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint TC')
-            self.ui.run.plot1_midpoint.setData(x,y)
-        else:
-            self.ui.run.plot1_midpoint.setData([0],[0])
+        # 5 - Setup
+        # 0 - Diagnostics
+        # 1 - Logs
+        # 2 - Manual
+        # 3 - Config
+        # 4 - Run
 
-        if(self.ui.run.plot1_outlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Outlet TC')
-            self.ui.run.plot1_outlet.setData(x,y)
-        else:
-            self.ui.run.plot1_outlet.setData([0],[0])
+        # Setup Page
+        if(page == 5):
+            self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
+            self.ui.setup.controller_status_label.setText(self.model.tsc_status_text)
 
-        if(self.ui.run.plot1_heat_sink_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Flow Temperature')
-            self.ui.run.plot1_heat_sink.setData(x,y)
-        else:
-            self.ui.run.plot1_heat_sink.setData([0],[0])
+            self.ui.setup.manual_connect_button.setEnabled(self.model.connect_arduinos_button_enabled)
 
-        # Update Plot2
-        if(self.ui.run.plot2_inlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Inlet Pressure')
-            self.ui.run.plot2_inlet.setData(x,y)
-        else:
-            self.ui.run.plot2_inlet.setData([0],[0])
+        # Diagnostics Page
+        if(page == 0):
 
-        if(self.ui.run.plot2_midpoint_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Midpoint Pressure')
-            self.ui.run.plot2_midpoint.setData(x,y)
-        else:
-            self.ui.run.plot2_midpoint.setData([0],[0])
+            self.ui.diagnostics.test_stand_status.setText(str(self.model.state_text))
 
-        if(self.ui.run.plot2_outlet_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Outlet Pressure')
-            self.ui.run.plot2_outlet.setData(x,y)
-        else:
-            self.ui.run.plot2_outlet.setData([0],[0])
+            self.ui.diagnostics.valve_voltage.setText(str(self.test_stand.valve_position))
+            self.ui.diagnostics.mass_flow.setText(str(self.test_stand.mass_flow))
+            self.ui.diagnostics.heater_current.setText(str(self.test_stand.heater_current))
+            self.ui.diagnostics.heater_duty_cycle.setText('NA')
+            self.ui.diagnostics.heater_power.setText(str(self.test_stand.heater_power))
+            self.ui.diagnostics.heater_state.setText(str(self.test_stand.heater_is_on))
+            self.ui.diagnostics.heater_set_point.setText('NA')
 
-        if(self.ui.run.plot2_tank_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Pressure')
-            self.ui.run.plot2_tank.setData(x,y)
-        else:
-            self.ui.run.plot2_tank.setData([0],[0])
+            # Update Plot1
+            if(self.ui.diagnostics.plot1_inlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Inlet Temperature')
+                self.ui.diagnostics.plot1_inlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_inlet.setData([0],[0])
 
-        # Update Plot3
-        x, y = self.model.get_run_plot_data('Mass Flow')
-        self.ui.run.plot3_mass_flow.setData(x,y)
+            if(self.ui.diagnostics.plot1_midpoint_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Midpoint Temperature')
+                self.ui.diagnostics.plot1_midpoint.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_midpoint.setData([0],[0])
 
-        # Update Plot4
-        if(self.ui.run.plot4_valve_position_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Valve Position')
-            self.ui.run.plot4_valve_position.setData(x,y)
-        else:
-            self.ui.run.plot4_valve_position.setData([0],[0])
+            if(self.ui.diagnostics.plot1_outlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Outlet Temperature')
+                self.ui.diagnostics.plot1_outlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_outlet.setData([0],[0])
 
-        if(self.ui.run.plot4_heater_duty_check.isChecked()):
-            x, y = self.model.get_run_plot_data('Heater Status')
-            self.ui.run.plot4_heater_duty.setData(x,y)
-        else:
-            self.ui.run.plot4_heater_duty.setData([0],[0])
+            if(self.ui.diagnostics.plot1_heater_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Heater Temperature')
+                self.ui.diagnostics.plot1_heater.setData(x,y)
+            else:
+                self.ui.diagnostics.plot1_heater.setData([0],[0])
 
-        if(self.ui.run.plot4_openfoam_check.isChecked()):
-            x, y = self.model.get_run_plot_data('OpenFOAM Progress')
-            self.ui.run.plot4_openFOAM.setData(x,y)
-        else:
-            self.ui.run.plot4_openFOAM.setData([0],[0])
+            # Update Plot2
+            if(self.ui.diagnostics.plot2_inlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Inlet Pressure')
+                self.ui.diagnostics.plot2_inlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_inlet.setData([0],[0])
 
-        self.ui.run.start_button.setText(self.model.trial_button_text)
+            if(self.ui.diagnostics.plot2_midpoint_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Midpoint Pressure')
+                self.ui.diagnostics.plot2_midpoint.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_midpoint.setData([0],[0])
 
-        # If Trial is running
-        if(self.model.trial_is_running):
-            next_index = self.model.current_trial_time_stamp_index + 1
+            if(self.ui.diagnostics.plot2_outlet_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Outlet Pressure')
+                self.ui.diagnostics.plot2_outlet.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_outlet.setData([0],[0])
+
+            if(self.ui.diagnostics.plot2_supply_check.isChecked()):
+                x, y = self.model.get_diagnostics_plot_data('Supply Pressure')
+                self.ui.diagnostics.plot2_supply.setData(x,y)
+            else:
+                self.ui.diagnostics.plot2_supply.setData([0],[0])
             
-            if next_index <= (len(self.model.loaded_config.sequence_time_step) - 1):
-                if(self.model.trial_time > self.model.loaded_config.sequence_time_step[next_index]):
-                    self.model.current_trial_time_stamp_index = next_index
-                    self.ui.run.set_sequence_table_row_bold(next_index+1)
-        elif(self.model.trial_is_complete):
-            self.ui.run.set_pause_button_clickable(False)
+        
+        # Logs Page
+        if(page == 1):
+            # Update Python Log
+            while(len(Log.python.new_lines) > 0.5):
+                self.ui.logs.python.append(Log.python.new_lines[0])
 
-        self.ui.logs.update_python_log(Log.file_path)
+                Log.python.new_lines.pop(0)
 
-        # Update manual control page
-        # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
-        # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
+            # Update DAQ Log
+            while(len(Log.daq.new_lines) > 0.5):
+                self.ui.logs.daq.append(Log.daq.new_lines[0])
+
+                Log.daq.new_lines.pop(0)
+
+            # Update TSC Log
+            while(len(Log.tsc.new_lines) > 0.5):
+                self.ui.logs.tsc.append(Log.tsc.new_lines[0])
+
+                Log.tsc.new_lines.pop(0)
+
+        # Manual Page
+        if(page == 2):
+            self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
+
+            # TODO: Update manual control page
+            # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
+            # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
+
+        # Configuration Page
+        if(page == 3):
+            pass
+
+        # Run Page
+        if(page == 4):
+
+            if(self.model.loaded_config_trial_name != self.ui.run.loaded_trial_text.text()):
+                self.ui.run.loaded_trial_text.setText(self.model.loaded_config_trial_name)
+
+            self.ui.run.start_button.setText(self.model.start_button_text)
+
+            if(self.model.start_button_enabled != self.ui.run.start_button.isEnabled()):
+                self.ui.run.start_button.setEnabled(self.model.start_button_enabled)
+
+            if(self.model.stop_button_enabled != self.ui.run.pause_button.isEnabled()):
+                self.ui.run.pause_button.setEnabled(self.model.stop_button_enabled)
+
+            if(self.model.load_button_enabled != self.ui.run.load_button.isEnabled()):
+                self.ui.run.load_button.setEnabled(self.model.load_button_enabled)
+
+            if(self.model.run_sequence_bolded_row != self.ui.run.sequence_table_bold_row):
+                
+                self.ui.run.set_sequence_table_row_bold(self.model.run_sequence_bolded_row)
+
+            # Update Plot1
+            if(self.ui.run.plot1_inlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Inlet Temperature', self.model.plot1_buffer)
+                self.ui.run.plot1_inlet.setData(x,y)
+            else:
+                self.ui.run.plot1_inlet.setData([0],[0])
+
+            if(self.ui.run.plot1_midpoint_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Midpoint Temperature', self.model.plot1_buffer)
+                self.ui.run.plot1_midpoint.setData(x,y)
+            else:
+                self.ui.run.plot1_midpoint.setData([0],[0])
+
+            if(self.ui.run.plot1_outlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Outlet Temperature', self.model.plot1_buffer)
+                self.ui.run.plot1_outlet.setData(x,y)
+            else:
+                self.ui.run.plot1_outlet.setData([0],[0])
+
+            if(self.ui.run.plot1_heat_sink_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Flow Temperature', self.model.plot1_buffer)
+                self.ui.run.plot1_heat_sink.setData(x,y)
+            else:
+                self.ui.run.plot1_heat_sink.setData([0],[0])
+
+            # Update Plot2
+            if(self.ui.run.plot2_inlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Inlet Pressure', self.model.plot2_buffer)
+                self.ui.run.plot2_inlet.setData(x,y)
+            else:
+                self.ui.run.plot2_inlet.setData([0],[0])
+
+            if(self.ui.run.plot2_midpoint_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Midpoint Pressure', self.model.plot2_buffer)
+                self.ui.run.plot2_midpoint.setData(x,y)
+            else:
+                self.ui.run.plot2_midpoint.setData([0],[0])
+
+            if(self.ui.run.plot2_outlet_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Outlet Pressure', self.model.plot2_buffer)
+                self.ui.run.plot2_outlet.setData(x,y)
+            else:
+                self.ui.run.plot2_outlet.setData([0],[0])
+
+            if(self.ui.run.plot2_tank_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Supply Pressure', self.model.plot2_buffer)
+                self.ui.run.plot2_tank.setData(x,y)
+            else:
+                self.ui.run.plot2_tank.setData([0],[0])
+
+            # Update Plot3
+            x, y = self.model.get_run_plot_data('Mass Flow', self.model.plot3_buffer)
+            self.ui.run.plot3_mass_flow.setData(x,y)
+
+            # Update Plot4
+            if(self.ui.run.plot4_valve_position_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Valve Position', self.model.plot4_buffer)
+                self.ui.run.plot4_valve_position.setData(x,y)
+            else:
+                self.ui.run.plot4_valve_position.setData([0],[0])
+
+            if(self.ui.run.plot4_heater_duty_check.isChecked()):
+                x, y = self.model.get_run_plot_data('Heater Status', self.model.plot4_buffer)
+                self.ui.run.plot4_heater_duty.setData(x,y)
+            else:
+                self.ui.run.plot4_heater_duty.setData([0],[0])
+
+            if(self.ui.run.plot4_openfoam_check.isChecked()):
+                # x, y = self.model.get_run_plot_data('OpenFOAM Progress', self.model.plot4_buffer)
+                # self.ui.run.plot4_openFOAM.setData(x,y)
+                pass
+            else:
+                self.ui.run.plot4_openFOAM.setData([0],[0])
 
         # Update status lights on left columns
         # if any temp is above 80 deg. F, "Hot Stand" should be on
@@ -190,48 +310,37 @@ class Presenter:
 
         self.ui.set_current_tab(tab_index)
 
-    # TODO: Define abort procedure
     def abort_clicked(self):
-        if(self.model.trial_is_paused or self.model.trial_is_running):
-
-            Log.info('ABORTING CURRENT TRIAL')
-            Log.info('Saving ')
-            self.ui.run.set_start_button_clickable(False)
-            self.ui.run.set_pause_button_clickable(False)
-            self.ui.set_abort_tab_clickable(False)
-
-            self.test_stand.switch_state(self.test_stand_standby_state)
-            self.model.trial_button_text = 'Aborting. '
-            self.ui.run.start_button.setText('Aborting. ')
-            self.app.processEvents()
-            time.sleep(0.5)
-            self.model.trial_button_text = 'Aborting. .'
-            self.ui.run.start_button.setText('Aborting. .')
-            self.app.processEvents()
-            time.sleep(0.5)            
-            self.model.trial_button_text = 'Aborting. . .'
-            self.ui.run.start_button.setText('Aborting. . .')
-            self.app.processEvents()
-            time.sleep(0.5)
-            
-            self.ui.run.set_start_button_clickable(True)
-            self.ui.set_abort_tab_clickable(True)
-            self.model.trial_button_text = 'Start Trial'
-            self.ui.run.set_sequence_table_row_bold(-1)
-            self.model.save_trial_data(True)
+            self.test_stand.switch_state(self.test_stand_trial_aborted_state)
 
 # SETUP PAGE LOGIC
     def setup_manual_connect_clicked(self): 
         daq_port = self.ui.setup.daq_port_field.text()
-        controller_port = self.ui.setup.controller_port_field.text()
-        self.ui.setup.controller_status_label.setText('Attempting to Connect...')
-        self.ui.setup.daq_status_label.setText('Attempting to Connect...')
-        Stylize.set_button_active(self.ui.setup.manual_connect_button, False)
-        self.ui.setup.manual_connect_button.setDisabled(True)
-        self.app.processEvents()
-        self.serial_monitor.connect_arduinos(daq_port, controller_port)
-        Stylize.set_button_active(self.ui.setup.manual_connect_button, True)
-        self.ui.setup.manual_connect_button.setDisabled(False)
+        tsc_port = self.ui.setup.controller_port_field.text()
+
+        SettingsManager.save_arduino_ports(daq_port, tsc_port)
+
+        self.test_stand_connecting_state.daq_port = daq_port
+        self.test_stand_connecting_state.tsc_port = tsc_port
+
+        self.test_stand.switch_state(self.test_stand_connecting_state)
+
+    def setup_behaviour_change_clicked(self):
+        i = self.ui.setup.test_stand_behaviour_field.currentIndex()
+
+        self.model.config_is_loaded = False
+        self.model.start_button_enabled = False
+
+        self.test_stand.set_profile(i)
+        SettingsManager.save_profile_index(i)
+
+    def setup_developer_mode_clicked(self):
+
+        is_checked = self.ui.setup.developer_mode_field.isChecked()
+        self.serial_monitor.set_developer_mode(is_checked)
+        SettingsManager.save_developer_mode(is_checked)
+
+        self.model.connect_arduinos_button_enabled = not is_checked
 
 # MANUAL PAGE LOGIC
     def manual_send_valve_command_clicked(self):
@@ -259,98 +368,72 @@ class Presenter:
         self.ui.configuration.clear_all()
 
     def configuration_save_clicked(self):
-        self.config_validation_thread = Config.ValidationThread(self.ui)
+        file_name = Config.get_save_file_name_from_user()
 
-        self.config_validation_thread.validation_message.connect(self.on_configuration_validation_message)
-        self.config_validation_thread.validation_is_complete.connect(self.on_configuration_validation_is_complete)
+        if(file_name == ''):
+            return
 
-        self.config_validation_thread.start()
-
-    def on_configuration_validation_message(self, message):
-        self.ui.configuration.set_status_text(message)
-
-    def on_configuration_validation_is_complete(self, validation_was_successful):
-        if(validation_was_successful):
-            file_name = Config.get_save_file_name_from_user()
-
-            if(file_name == ''):
-                return
-
-            trial_name = self.ui.configuration.trial_name_field.text()
-            description = self.ui.configuration.description_field.toPlainText()
-            blue_lines = self.ui.configuration.blue_lines_table
-            test_sequence = self.ui.configuration.sequence_table
-            trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
-            
-            Config.create_file(file_name, trial_name, description, blue_lines, test_sequence, trial_end_timestep)
-
-
-
-# RUN PAGE LOGIC
-    # def run_trial_ended(self):
-    #     if self.model.trial_is_running:
-    #         self.ui.run.set_start_button_clickable(False)
-    #         self.ui.run.set_pause_button_clickable(False)
-    #         self.ui.set_abort_tab_clickable(False)
-
-    #         self.model.trial_button_text = 'Trial Ended.'
-    #         self.ui.run.start_button.setText('Trial Ended.')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-    #         self.model.trial_button_text = 'Trial Ended. .'
-    #         self.ui.run.start_button.setText('Trial Ended. .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)            
-    #         self.model.trial_button_text = 'Trial Ended. . .'
-    #         self.ui.run.start_button.setText('Trial Ended. . .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-
-    #         self.model.trial_button_text = 'Saving Data.'
-    #         self.ui.run.start_button.setText('Saving Data.')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-    #         self.model.trial_button_text = 'Saving Data. .'
-    #         self.ui.run.start_button.setText('Saving Data. .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)            
-    #         self.model.trial_button_text = 'Saving Data. . .'
-    #         self.ui.run.start_button.setText('Saving Data. . .')
-    #         self.app.processEvents()
-    #         time.sleep(0.5)
-
-    #         self.model.trial_button_text = 'Start Trial'
-    #         self.ui.run.set_start_button_clickable(True)
-
-    def run_start_clicked(self):
-        if not(self.model.trial_is_paused):
-            self.ui.run.set_sequence_table_row_bold(1)
-            Log.info('Trial has started.')
-        else:
-            Log.info('Trial has resumed.')
+        profile_name = self.test_stand_trial_running_state.current_profile.name
+        trial_name = self.ui.configuration.trial_name_field.text()
+        description = self.ui.configuration.description_field.toPlainText()
+        blue_lines = self.ui.configuration.blue_lines_table
+        num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.sequence_columns)
+        test_sequence = self.ui.configuration.sequence_table
+        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
         
-        self.test_stand.switch_state(self.test_stand_auto_state)
-        self.ui.run.set_start_button_clickable(False)
-        self.ui.run.set_pause_button_clickable(True)
+        Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
+
+    def configuration_send_to_run_page_clicked(self):
+        profile_name = self.test_stand_trial_running_state.current_profile.name
+        trial_name = self.ui.configuration.trial_name_field.text()
+        description = self.ui.configuration.description_field.toPlainText()
+        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
+
+        blue_lines_time_step = []
+        blue_lines_sensor_type = []
+        blue_lines_limit_type = []
+        blue_lines_value = []
+
+        table = self.ui.configuration.blue_lines_table
+
+        for i in range (table.rowCount()-1):
+            blue_lines_time_step.append(float(table.item(i, 0).text()))
+            blue_lines_sensor_type.append(table.item(i, 1).text())
+            blue_lines_limit_type.append(table.item(i,2).text())
+            blue_lines_value.append(float(table.item(i,3).text()))
+
+        sequence_values = []
+        table = self.ui.configuration.sequence_table
+
+        for i in range(table.columnCount()):
+            value_list = []
+
+            for j in range(table.rowCount()):
+                
+                value_list.append(table.item(j,i).text())
+
+            print(value_list)
+            sequence_values.append(value_list)
+
+        config = Config.Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
+
+        self.model.set_config(config)
+
+    def run_start_clicked(self):         
+        self.test_stand.switch_state(self.test_stand_trial_running_state)
 
     def run_paused_clicked(self):
-        Log.info('Trial has paused.')
-        self.test_stand.switch_state(self.test_stand_idle_state)    
-        self.ui.run.set_start_button_clickable(True)
-        self.ui.run.set_pause_button_clickable(False)
+        self.test_stand.switch_state(self.test_stand_trial_ended_state)    
 
     def run_load_clicked(self):
         file_name = Config.select_file()
         
         if(file_name == ''):
             return
+      
+        config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
 
-        Log.info('Trial configuration has been loaded.')
-        config: Config.Config = Config.open_file(file_name)
-        self.model.loaded_config = config
-        self.ui.run.set_loaded_trial_text(config.trial_name)
-        self.ui.run.set_start_button_clickable(True)
-        self.ui.run.set_sequence_table(config)
+        self.model.set_config(config)       
     
     def run_plot_apply_buffer_clicked(self, plot_index):
         try:
@@ -367,6 +450,7 @@ class Presenter:
                     self.ui.run.plot1_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot1_buffer = value
                 self.ui.run.plot1.setXRange(-1 * value, 0)
             elif(plot_index == 2):
                 value = float(self.ui.run.plot2_buffer_field.text())
@@ -377,6 +461,7 @@ class Presenter:
                     self.ui.run.plot2_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot2_buffer = value
                 self.ui.run.plot2.setXRange(-1 * value, 0)
             elif(plot_index == 3):
                 value = float(self.ui.run.plot3_buffer_field.text())
@@ -387,6 +472,7 @@ class Presenter:
                     self.ui.run.plot3_buffer_field.setText(str(min_value))
                     value = min_value
                 
+                self.model.plot3_buffer = value
                 self.ui.run.plot3.setXRange(-1 * value, 0)
             elif(plot_index == 4):
                 value = float(self.ui.run.plot4_buffer_field.text())
@@ -397,6 +483,7 @@ class Presenter:
                     self.ui.run.plot4_buffer_field.setText(str(min_value))
                     value = min_value
 
+                self.model.plot4_buffer = value
                 self.ui.run.plot4.setXRange(-1 * value, 0)
         except ValueError:
             return

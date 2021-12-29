@@ -1,88 +1,191 @@
-import logging
-from UI.UI import UI
 import os
+import datetime
+
+class PythonLog:
+
+    new_lines = []
+
+    name = 'APP'
+
+    def info(self, message):
+        message_type = 'INFO'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+        
+    def debug(self, message):
+        message_type = 'DEBUG'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def warning(self, message):
+        message_type = 'WARNING'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def error(self, message):
+        message_type = 'ERROR'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+        
+class DAQLog:
+
+    new_lines = []
+
+    name = 'DAQ'
+
+    def info(self, message):
+        message_type = 'INFO'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def debug(self, message):
+        message_type = 'DEBUG'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def warning(self, message):
+        message_type = 'WARNING'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def error(self, message):
+        message_type = 'ERROR'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+class TSCLog:
+
+    new_lines = []
+
+    name = 'TSC'
+
+    def info(self, message):
+        message_type = 'INFO'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def debug(self, message):
+        message_type = 'DEBUG'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def warning(self, message):
+        message_type = 'WARNING'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
+
+    def error(self, message):
+        message_type = 'ERROR'
+
+        ui_line = Log.get_ui_line(message_type, message)
+        file_line = Log.get_file_line(self.name, message_type, message)
+
+        self.new_lines.append(ui_line)
+        Log.add_to_file(file_line)
 
 class Log:
-    ui: UI = None
-    file_path = None
+    log_name = '.log'
+    folder_name = 'Logs/'
+    file_path = ''
+
+    python: PythonLog = None
 
     @classmethod
-    def create(cls, log_name: str='NTP_log', file_name: str='app.log', file_format: str='%(asctime)s : %(process)d : %(levelname)s : %(message)s'):
+    def create(cls):
+        cls.python = PythonLog()
+        cls.daq = DAQLog()
+        cls.tsc = TSCLog()
 
-        folder_name = 'Logs/'
+        isdir = os.path.isdir(cls.folder_name)
 
-        isdir = os.path.isdir(folder_name)
+        if (not isdir):
+            os.mkdir(cls.folder_name)
 
-        if not (isdir):
-            os.mkdir(folder_name)
+        date = datetime.date.today()
 
-        
-        cls.file_path = folder_name + file_name
+        year = str(date.year)
+        month = str(date.month)
+        day = str(date.day)
 
-        # Create separate logger from ROOT Logger
-        cls.logger = logging.getLogger(log_name)
-        cls.logger.setLevel(logging.DEBUG)
-        
-        # Specify custom handler
-        handler = logging.FileHandler(cls.file_path)
-        handler.setLevel(logging.DEBUG)
+        current_time = datetime.datetime.now()
+        current_time = current_time.strftime("%H%M%S")
 
-        # Specify custom formatter
-        formatter = logging.Formatter(file_format)
+        cls.file_path = cls.folder_name + year + '_' + month + '_' + day + '_' + current_time + cls.log_name
 
-        handler.setFormatter(formatter)
-
-        # cls.logger is now ready to be used
-        cls.logger.addHandler(handler)
+        with open(cls.file_path, 'a') as f:
+            f.write('')
 
     @classmethod
-    def info(cls, message: str):
-        try:
-            cls.logger.info(message)
-        except AttributeError:
-            cls.__handle_attribute_error()
-            cls.logger.info(message)
-
-        cls.__update_log_ui()
+    def add_to_file(cls, new_line):
+        with open(cls.file_path, 'a') as f:
+            f.write(new_line)
 
     @classmethod
-    def debug(cls, message: str):
-        try:
-            cls.logger.debug(message)
-        except AttributeError:
-            cls.__handle_attribute_error()
-            cls.logger.debug(message)
+    def get_ui_line(cls, message_type, message):
+        now = datetime.datetime.now()
+        time = now.strftime('%H:%M:%S.%f')
 
-        cls.__update_log_ui()
+        ui_line = time + ' : ' + message_type + ' : ' + message + '\n'
+        return ui_line
 
     @classmethod
-    def warning(cls, message: str):
-        try:
-            cls.logger.warning(message)
-        except AttributeError:
-            cls.__handle_attribute_error()
-            cls.logger.warning(message)
+    def get_file_line(cls, log_name, message_type, message):
+        now = datetime.datetime.now()
+        date = now.strftime('%Y-%m-%d')
+        time = now.strftime('%H:%M:%S.%f')
 
-        cls.__update_log_ui()
+        file_line = log_name + ' : ' + date + ' : ' + time + ' : ' + message_type + ' : ' + message + '\n'
+        return file_line
 
-    @classmethod
-    def error(cls, message: str):
-        try:
-            cls.logger.error(message)
-        except AttributeError:
-            cls.__handle_attribute_error()
-            cls.logger.error(message)
+if __name__ == '__main__':
+    Log.create()
+    Log.python.info('test')
 
-        cls.__update_log_ui()
+    print(Log.python.new_lines)
+    Log.python.info('YAAA')
 
-    @classmethod
-    def __update_log_ui(cls):
-        pass
-        # if(cls.ui is None):
-        #     return
-
-        # cls.ui.logs.update_python_log(cls.file_path)
-    @classmethod
-    def __handle_attribute_error(cls):
-        cls.create()
-        cls.error('Log.py: There was an AttributeError, the logger had not been created. Creating new Logger with default values.')
+    print(Log.python.new_lines)
