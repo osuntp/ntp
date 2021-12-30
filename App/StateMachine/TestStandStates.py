@@ -57,14 +57,14 @@ class ConnectingState():
         self.model.start_button_enabled = False
         self.model.stop_button_enabled = False
         self.model.load_button_enabled = True
-        self.model.developer_checkbox_enabled = False
+        self.model.developer_checkbox_enabled = True
         self.model.connect_arduinos_button_enabled = False
 
     def tick(self):
+        
         time_passed = time.time() - self.start_time
 
-        if(time_passed > 0):
-            text = 'Connecting.'
+        text = 'Connecting.'
 
         if(time_passed > 0.5):
             text = 'Connecting. .'
@@ -73,16 +73,30 @@ class ConnectingState():
             text = 'Connecting. . .'
 
         if(time_passed > 1.5):
-            self.serial_monitor.connect_arduinos(self.daq_port, self.tsc_port)
+            self.start_time = time.time()
+
+        if(self.serial_monitor.daq_arduino is None):
+            self.model.daq_status_text = text
+        else:
+            self.model.daq_status_text = 'Connected'
+
+        if(self.serial_monitor.tsc_arduino is None):
+            self.model.tsc_status_text = text
+        else:
+            self.model.tsc_status_text = 'Connected'
+
+        if(self.serial_monitor.is_fully_connected):
             self.test_stand.switch_state(self.standby_state)
         else:
-            self.model.daq_status_text = text
-            self.model.tsc_status_text = text
+            self.serial_monitor.try_to_connect_arduinos()
 
     def exit_state(self):
-        self.ui.setup.manual_connect_button.setEnabled(True)
-        self.ui.setup.developer_mode_field.setEnabled(True)
-        self.model.connect_arduinos_button_enabled = True
+        if(self.serial_monitor.in_developer_mode):
+            self.model.tsc_status_text = 'In Developer Mode'
+            self.model.daq_status_text = 'In Developer Mode'
+        else:
+            self.model.tsc_status_text = 'Connected'
+            self.model.daq_status_text = 'Connected'
         
 class TrialEndedState():
 

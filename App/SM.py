@@ -11,7 +11,6 @@ import time
 import threading
 import LD
 from enum import Enum
-from SettingsManager import SettingsManager
 
 class Arduino(Enum):
     DAQ = 1
@@ -36,7 +35,6 @@ class DeveloperArduinos:
 
     @classmethod
     def get_daq_message(cls, num_of_daq_values):
-
         message = '<stdout, '
 
         value = round(random.random(), 2)
@@ -58,6 +56,8 @@ class SerialMonitor:
     controller_id = 'controller'
     daq_arduino = None
     tsc_arduino = None
+    daq_port = ''
+    tsc_port = ''
     baudrate = 9600
     daq_buffer = ''
     tsc_buffer = ''
@@ -69,6 +69,8 @@ class SerialMonitor:
     connections = []
 
     model: Model = None
+    test_stand = None
+    test_stand_connecting_state = None
 
     def __init__(self):
         self.ports = self.__get_serial_ports()
@@ -100,91 +102,43 @@ class SerialMonitor:
             return
 
         for connection in self.connections:
-            in_waiting = connection.in_waiting
+            if not ((connection.port == self.tsc_port) or (connection.port == self.daq_port)):
 
-            if(in_waiting > 0):
-                
+                in_waiting = connection.in_waiting
 
-            
+                if(in_waiting > 0):
+                    self.buffer += str(connection.read(in_waiting).decode('utf-8'))
 
-                    
+                    waiting_for_response = True
+                    while(waiting_for_response):
+                        if '\n' in self.buffer:
+                            raw_message_line, leftover = self.buffer.split('\n', 1)
 
-
-
-
-        # CONNECT DAQ
-        try:
-            if(self.daq_arduino is None):
-                self.daq_arduino = serial.Serial(port=daq_port, baudrate = self.baudrate, write_timeout = 0)
-                
-                waiting_for_response = True
-
-                time_out = time.time() + 2
-
-                while(waiting_for_response):
-
-                    in_waiting = self.daq_arduino.in_waiting
-                    
-                    if(in_waiting > 0):
-                        self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
-
-                        while '\n' in self.daq_buffer: #split data line by line and store it in var
-                            raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
                             clean_message = LD.clean(raw_message_line)
 
                             if(clean_message[0] == 'DAQ'):
-                                self.model.daq_status_text = 'Connected'
+                                self.daq_buffer += leftover
+                                self.buffer = ''
+                                self.daq_port = connection.port
+                                self.daq_arduino = connection
                                 waiting_for_response = False
-                                self.start_daq_monitor_loop()
 
-                    if(time.time() > time_out):
-                        self.model.daq_status_text = 'Connection Timed Out'
-                        self.daq_arduino.close()
-                        self.daq_arduino = None
-                        waiting_for_response = False
-
-                    time.sleep(0.1)
-        except SerialException:
-            self.model.daq_status_text = 'Invalid Port'
-
-        # CONNECT CONTROLLER
-        try:
-
-            if(self.tsc_arduino is None):
-                self.tsc_arduino = serial.Serial(port=tsc_port, baudrate = self.baudrate, write_timeout = 0)
-
-                time_out = time.time() + 2
-                waiting_for_response = True
-
-                while(waiting_for_response):
-                    in_waiting = self.tsc_arduino.in_waiting
-
-                    if(in_waiting > 0):
-                        self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
-
-                        while '\n' in self.tsc_buffer:
-                            raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n',1)
-                            clean_message = LD.clean(raw_message_line)
-
-                            if(clean_message[0] == 'TSC'):
-                                self.model.tsc_status_text = 'Connected'
+                            elif(clean_message[0] == 'TSC'):
+                                self.tsc_buffer += leftover
+                                self.buffer = ''
+                                self.tsc_port = connection.port
+                                self.tsc_arduino = connection
                                 waiting_for_response = False
-                                self.start_tsc_monitor_loop()
-                    time.sleep(0.1)
 
-                    if(time.time() > time_out):
-                        self.model.tsc_status_text = 'Connection Timed Out'
-                        self.tsc_arduino.close()
-                        self.tsc_arduino = None
-                        waiting_for_response = False
-        except SerialException:
-            self.model.tsc_status_text = 'Invalid Port'
+                            else:
+                                print('unknown message received while trying to receive connection messages. the message was: ')
+                                print(clean_message)
 
-        self.is_fully_connected = self.tsc_arduino is not None and self.daq_arduino is not None
+                            if((self.daq_arduino is not None) and self.tsc_arduino is not None):
+                                self.is_fully_connected = True
 
         if(self.is_fully_connected):
             self.model.try_to_enable_start_button()
-            SettingsManager.save_arduino_ports(daq_port, tsc_port)
 
     def start_daq_monitor_loop(self):
         self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)
@@ -210,7 +164,6 @@ class SerialMonitor:
         self.tsc_monitor_loop_is_running = True
 
         while(self.tsc_monitor_loop_is_running):
-
             self.read_from_tsc()
 
             time.sleep(0.01)
@@ -369,40 +322,39 @@ class SerialMonitor:
 
             self.model.daq_status_text = 'Not Connected'
             self.model.tsc_status_text = 'Not Connected'
+
+            self.test_stand.switch_state(self.test_stand_connecting_state)
             
         self.model.try_to_enable_start_button()
 
-# Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
-def __get_serial_ports():
-    """ Lists serial port names
+    # Modified From: https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+    def __get_serial_ports(self):
+        """ Lists serial port names
 
-        :raises EnvironmentError:
-            On unsupported or unknown platforms
-        :returns:
-            A list of the serial ports available on the system
-    """
-    if sys.platform.startswith('win'):
-        ports = ['COM%s' % (i + 1) for i in range(256)]
+            :raises EnvironmentError:
+                On unsupported or unknown platforms
+            :returns:
+                A list of the serial ports available on the system
+        """
+        if sys.platform.startswith('win'):
+            ports = ['COM%s' % (i + 1) for i in range(256)]
 
-    # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        # this excludes your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
-    else:
-        Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
+        # Not sure how glob works, assuming this wont be an issue since we're using windows. Will revisit if we want to release for other platforms.
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            # this excludes your current terminal "/dev/tty"
+            ports = glob.glob('/dev/tty[A-Za-z]*')
+        elif sys.platform.startswith('darwin'):
+            ports = glob.glob('/dev/tty.*')
+        else:
+            Log.python.error('SerialMonitor: __get_serial_ports(): Tried to open ports on unsupported platform.')
 
-    result = []
-    for port in ports:
-        try:
-            s = serial.Serial(port)
-            s.close()
-            result.append(port)
-        except (OSError, serial.SerialException):
-            pass
+        result = []
+        for port in ports:
+            try:
+                s = serial.Serial(port)
+                s.close()
+                result.append(port)
+            except (OSError, serial.SerialException):
+                pass
 
-    return result
-
-if __name__ == "__main__":
-    print(__get_serial_ports())
+        return result

@@ -67,7 +67,6 @@ if __name__ == "__main__":
     model.serial_monitor = serial_monitor
     model.ui = ui
 
-
     test_stand.ui = ui
     test_stand.serial_monitor = serial_monitor
     test_stand.trial_running_state = trial_running_state
@@ -107,19 +106,19 @@ if __name__ == "__main__":
     presenter.app = app
 
     serial_monitor.model = model
+    serial_monitor.test_stand = test_stand
+    serial_monitor.test_stand_connecting_state = connecting_state
 
     # Setup
     app.aboutToQuit.connect(serial_monitor.on_window_exit)
     # app.aboutToQuit.connect(model.save_trial_data)
     app.aboutToQuit.connect(test_stand.turn_off_state_machine)
-    test_stand.setup(standby_state)
+    test_stand.setup(connecting_state)
     presenter.setup()
     test_stand.set_profile(settings.profile_index)
 
     if(settings.developer_mode):
         presenter.setup_developer_mode_clicked()
-    else:
-        presenter.setup_manual_connect_clicked()
 
     window.show()
     sys.exit(app.exec_())
