@@ -61,11 +61,24 @@ class SerialMonitor:
     baudrate = 9600
     daq_buffer = ''
     tsc_buffer = ''
+    buffer = ''
     is_fully_connected = False
 
     in_developer_mode = False
+    ports = []
+    connections = []
 
     model: Model = None
+
+    def __init__(self):
+        self.ports = self.__get_serial_ports()
+
+        for port in self.ports:
+            try:
+                connection = serial.Serial(port=port, baudrate = self.baudrate, write_timeout = 0)
+                self.connections.append(connection)
+            except SerialException:
+                print('A port was detected that was invalid with SerialException')
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
@@ -81,10 +94,23 @@ class SerialMonitor:
         elif(arduino == Arduino.DAQ):
             self.daq_arduino.write(message.encode('utf-8'))
 
-    def connect_arduinos(self, daq_port: str, tsc_port:str):
+    def try_to_connect_arduinos(self):
         
         if(self.in_developer_mode):
             return
+
+        for connection in self.connections:
+            in_waiting = connection.in_waiting
+
+            if(in_waiting > 0):
+                
+
+            
+
+                    
+
+
+
 
         # CONNECT DAQ
         try:
@@ -311,44 +337,6 @@ class SerialMonitor:
         self.daq_monitor_loop_is_running = False
         self.tsc_monitor_loop_is_running = False
 
-    def auto_connect_arduinos(self):
-        ports = self.__get_serial_ports()
-
-        for port in ports:
-            print(str(port))
-            connection = serial.Serial(port=port, baudrate=self.baudrate)
-
-            timeout = time.time() + 5
-
-            # Wait for arduino's ID signal or a time out
-            while time.time() < timeout:
-
-                time.sleep(0.1)
-                    
-                # If ID line has been sent from Arduino
-                if (connection.in_waiting > 0):
-                    message = connection.readline().decode('utf-8')
-
-                    clean_message = LD.clean(message)
-                    prefix = clean_message[0]
-
-                    if(prefix == 'id'):
-
-                        arduino_id = clean_message[1]
-
-                        if(arduino_id == self.daq_id):
-                            self.daq_arduino = connection
-
-                        elif(arduino_id == self.controller_id):
-                            self.controller_arduino = connection
-                            
-                        else:
-                            Log.python.error('SerialMonitor: connect_arduinos(): arduino_id does not match either possible arduino ids')
-                    else:
-                        Log.python.error('SerialMonitor: connect_arduinos(): Expected ID prefix from arduino message. Instead received this prefix: ' + str(prefix))
-
-                    break
-
     def on_window_exit(self):
         try:
             self.daq_monitor_loop_is_running = False
@@ -361,8 +349,6 @@ class SerialMonitor:
         except AttributeError:
             pass
         #self.disconnect_arduinos()
-
-
 
     def set_developer_mode(self, in_developer_mode):
 
