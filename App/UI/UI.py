@@ -41,9 +41,28 @@ class UI:
         self.set_current_tab(5)
 
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
-        self.side_bar_heater_status = self.pyqt5.side_bar_heater_status
-        self.side_bar_valve_open_status = self.pyqt5.side_bar_valve_open_status
         self.side_bar_state_text = self.pyqt5.side_bar_state_status
+
+        self.sidebar_massflow = self.pyqt5.sidebar_mass_flow
+        self.sidebar_valveposition = self.pyqt5.sidebar_valve_position
+
+        self.sidebar_heaterpower = self.pyqt5.sidebar_heater_power
+        self.sidebar_heaterstatus = self.pyqt5.sidebar_heater_status
+        self.sidebar_heatercurrent = self.pyqt5.sidebar_heater_current
+        self.sidebar_heatertemp = self.pyqt5.sidebar_heater_temp
+
+        self.sidebar_supplytemp = self.pyqt5.sidebar_supply_temp
+        self.sidebar_inlettemp = self.pyqt5.sidebar_inlet_temp
+        self.sidebar_midtemp = self.pyqt5.sidebar_midpoint_temp
+        self.sidebar_outlettemp = self.pyqt5.sidebar_outlet_temp
+        
+        self.sidebar_supplypress = self.pyqt5.sidebar_supply_press
+        self.sidebar_inletpress = self.pyqt5.sidebar_inlet_press
+        self.sidebar_midpress = self.pyqt5.sidebar_midpoint_press
+        self.sidebar_outletpress = self.pyqt5.sidebar_outlet_press
+
+        self.sidebar_other_name = [self.pyqt5.sidebar_other1_name, self.pyqt5.sidebar_other2_name, self.pyqt5.sidebar_other3_name, self.pyqt5.sidebar_other4_name, self.pyqt5.sidebar_other5_name]
+        self.sidebar_other = [self.pyqt5.sidebar_other1, self.pyqt5.sidebar_other2, self.pyqt5.sidebar_other3, self.pyqt5.sidebar_other4, self.pyqt5.sidebar_other5]
 
         self.setup = Setup(self.pyqt5, settings.daq_port, settings.tsc_port)
         self.diagnostics = Diagnostics(self.pyqt5)
@@ -51,7 +70,6 @@ class UI:
         self.manual = Manual(self.pyqt5)
         self.configuration = Configuration(self.pyqt5)
         self.run = Run(self.pyqt5)
-        
 
     def set_current_tab(self, tab_index):
         new_tab = self.tabs[tab_index]
@@ -69,14 +87,6 @@ class UI:
     def set_hot_stand_status_light_is_lit(self, isLit: bool):
         self.side_bar_hot_stand_is_lit = isLit
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
-    
-    def set_valve_open_status_light_is_lit(self, isLit: bool):
-        self.side_bar_valve_open_is_lit = isLit
-        Stylize.set_status_light_is_lit(self.side_bar_valve_open_status, isLit)
-    
-    def set_heater_status_light_is_lit(self, isLit: bool):
-        self.side_bar_heater_is_lit = isLit
-        Stylize.set_status_light_is_lit(self.side_bar_heater_status, isLit)
 
     def set_abort_tab_clickable(self, is_active):
         if(is_active):

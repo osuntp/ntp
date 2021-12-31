@@ -114,8 +114,7 @@ if __name__ == "__main__":
     # app.aboutToQuit.connect(model.save_trial_data)
     app.aboutToQuit.connect(test_stand.turn_off_state_machine)
     test_stand.setup(connecting_state)
-    presenter.setup()
-    test_stand.set_profile(settings.profile_index)
+    presenter.setup(settings.profile_index)
 
     if(settings.developer_mode):
         presenter.setup_developer_mode_clicked()

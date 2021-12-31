@@ -1,5 +1,6 @@
 from StateMachine.TestStand import TestStand
 import time
+import random
 
 class TestStandBehaviour:
 
@@ -70,7 +71,6 @@ class TestStandBehaviour:
 
             new_valve_position = valve_position + self.delta_valve_position
 
-
             if(new_valve_position > 90):
                 new_valve_position = 90
 
@@ -80,6 +80,14 @@ class TestStandBehaviour:
         pass
 
 # EDIT BELOW BUT DO NOT REMOVE
+    sidebar_values = [
+        'Test 1',
+        'Test 2'
+    ]
+
+    def get_sidebar_values(self):
+        return [random.random(), random.random()]
+
     sequence_columns = [
         'Timestep (s)', 
         'Power (W)', 

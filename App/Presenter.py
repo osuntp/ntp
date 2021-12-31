@@ -24,8 +24,7 @@ class Presenter:
     def __init__(self):
         pass
     
-    def setup(self):
-        
+    def setup(self, profile_index):      
         self.ui.tabs[0].clicked.connect(lambda: self.tab_clicked(0))
         self.ui.tabs[1].clicked.connect(lambda: self.tab_clicked(1))
         self.ui.tabs[2].clicked.connect(lambda: self.tab_clicked(2))
@@ -37,6 +36,8 @@ class Presenter:
         self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
         self.ui.setup.test_stand_behaviour_field.activated.connect(self.setup_behaviour_change_clicked)
         self.ui.setup.developer_mode_field.clicked.connect(self.setup_developer_mode_clicked)
+        self.ui.setup.test_stand_behaviour_field.setCurrentIndex = profile_index
+        self.setup_behaviour_change_clicked()
 
         # Abort
         self.ui.abort_tab.clicked.connect(self.abort_clicked)
@@ -81,17 +82,43 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-        
-        if(self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position == 90):
-            self.ui.set_valve_open_status_light_is_lit(True)
-        elif(not self.ui.side_bar_valve_open_is_lit and self.test_stand.valve_position != 90):
-            self.ui.set_valve_open_status_light_is_lit(False)
-
-        if(self.ui.side_bar_state_text != self.model.state_text):
-            self.ui.set_side_bar_state_text(self.model.state_text)
 
         self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
 
+        # Sidebar
+        if(self.ui.side_bar_state_text != self.model.state_text):
+            self.ui.set_side_bar_state_text(self.model.state_text)
+
+        self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
+        self.ui.sidebar_valveposition.setText(str(self.test_stand.valve_position))   
+
+        self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater_power))
+        if(self.test_stand.heater_is_on):
+            text = 'On'
+        else:
+            text = 'Off'
+        self.ui.sidebar_heaterstatus.setText(text)
+        self.ui.sidebar_heatercurrent.setText(str(self.test_stand.heater_current))
+        self.ui.sidebar_heatertemp.setText(str(self.test_stand.heater_temp))
+
+        self.ui.sidebar_inlettemp.setText(str(self.test_stand.inlet_temp))
+        self.ui.sidebar_supplytemp.setText(str(self.test_stand.flow_temp))
+        self.ui.sidebar_midtemp.setText(str(self.test_stand.mid_temp))
+        self.ui.sidebar_outlettemp.setText(str(self.test_stand.outlet_temp))
+
+        self.ui.sidebar_supplypress.setText(str(self.test_stand.supply_press))
+        self.ui.sidebar_inletpress.setText(str(self.test_stand.inlet_press))
+        self.ui.sidebar_midpress.setText(str(self.test_stand.mid_press))
+        self.ui.sidebar_outletpress.setText(str(self.test_stand.outlet_press))
+
+        other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+
+        for i in range(len(other_values)):
+            if i > 4.5:
+                break
+
+            self.ui.sidebar_other[i].setText(str(other_values[i]))
+            
         page = self.ui.pyqt5.stacked_widget.currentIndex()
 
         # 5 - Setup
@@ -333,6 +360,20 @@ class Presenter:
 
         self.test_stand.set_profile(i)
         SettingsManager.save_profile_index(i)
+
+        values = self.test_stand_trial_running_state.current_profile.sidebar_values
+
+        for label in self.ui.sidebar_other_name:
+            label.setText('')
+
+        for label in self.ui.sidebar_other:
+            label.setText('')
+
+        for i in range(len(values)):
+            if(i > 4.5):
+                return
+            self.ui.sidebar_other_name[i].setText(values[i])
+            
 
     def setup_developer_mode_clicked(self):
 
