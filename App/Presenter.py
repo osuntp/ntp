@@ -86,8 +86,9 @@ class Presenter:
         self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
 
         # Sidebar
-        if(self.ui.side_bar_state_text != self.model.state_text):
-            self.ui.set_side_bar_state_text(self.model.state_text)
+        self.ui.side_bar_state_text.setText(self.model.state_text)
+        self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
+        self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
 
         self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
         self.ui.sidebar_valveposition.setText(str(self.test_stand.valve_position))   

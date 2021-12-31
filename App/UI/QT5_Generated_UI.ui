@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1438</width>
+    <width>1470</width>
     <height>780</height>
    </rect>
   </property>
@@ -334,14 +334,30 @@ color: rgb(255, 255, 255);</string>
          <number>0</number>
         </property>
         <item>
-         <spacer name="verticalSpacer_4">
+         <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>10</width>
+            <width>20</width>
             <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_33">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>15</height>
            </size>
           </property>
          </spacer>
@@ -366,7 +382,7 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QWidget" name="side_bar_hot_stand_status" native="true">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -379,8 +395,8 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>70</width>
-              <height>70</height>
+              <width>71</width>
+              <height>71</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -423,14 +439,142 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
+         <spacer name="verticalSpacer_34">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>15</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_43">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Arduinos</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item row="1" column="1">
+           <widget class="QLabel" name="sidebar_tsc_status">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Connecting.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_34">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>DAQ:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_39">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>TSC:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="sidebar_daq_status">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Connecting.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
@@ -470,7 +614,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="font">
@@ -492,7 +636,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -511,7 +655,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -530,7 +674,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="font">
@@ -548,6 +692,19 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="label_37">
@@ -581,6 +738,12 @@ color: rgb(255, 255, 255);</string>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_38">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Power:</string>
             </property>
@@ -591,7 +754,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -607,6 +770,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_42">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Current:</string>
             </property>
@@ -617,7 +786,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -633,6 +802,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_40">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Status:</string>
             </property>
@@ -643,7 +818,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -662,7 +837,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -675,7 +850,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -690,6 +865,19 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_23">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="label_47">
@@ -726,7 +914,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -742,6 +930,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_52">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Midpoint:</string>
             </property>
@@ -749,6 +943,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_50">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Inlet:</string>
             </property>
@@ -759,7 +959,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -778,7 +978,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -791,7 +991,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -807,6 +1007,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_54">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Outlet:</string>
             </property>
@@ -817,7 +1023,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -832,6 +1038,19 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_24">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="label_57">
@@ -865,6 +1084,12 @@ color: rgb(255, 255, 255);</string>
           </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label_61">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Inlet:</string>
             </property>
@@ -875,7 +1100,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -888,7 +1113,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -907,7 +1132,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -923,6 +1148,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_63">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Midpoint:</string>
             </property>
@@ -933,7 +1164,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -949,6 +1180,12 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_65">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
             <property name="text">
              <string>Outlet:</string>
             </property>
@@ -959,7 +1196,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -974,6 +1211,19 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_31">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="label_69">
@@ -1007,7 +1257,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -1026,7 +1276,26 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>1234</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLabel" name="sidebar_other5">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -1045,7 +1314,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -1058,7 +1327,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -1071,7 +1340,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -1085,12 +1354,25 @@ color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="sidebar_other5_name">
+            <property name="minimumSize">
+             <size>
+              <width>77</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Other5:</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="sidebar_other1_name">
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -1103,7 +1385,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>40</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -1122,7 +1404,7 @@ color: rgb(255, 255, 255);</string>
             <property name="minimumSize">
              <size>
               <width>77</width>
-              <height>0</height>
+              <height>13</height>
              </size>
             </property>
             <property name="text">
@@ -1130,83 +1412,76 @@ color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="sidebar_other5_name">
-            <property name="minimumSize">
-             <size>
-              <width>77</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Other5:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLabel" name="sidebar_other5">
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>1234</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_2">
+         <spacer name="verticalSpacer_32">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>STAND STATE:</string>
+          <property name="topMargin">
+           <number>15</number>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="side_bar_state_status">
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>STANDBY</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Stand State:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="side_bar_state_status">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>13</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>STANDBY</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <spacer name="verticalSpacer_6">

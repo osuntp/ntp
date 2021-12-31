@@ -40,6 +40,9 @@ class UI:
         self.current_tab = self.tabs[1]
         self.set_current_tab(5)
 
+        self.sidebar_daqstatus = self.pyqt5.sidebar_daq_status
+        self.sidebar_tscstatus = self.pyqt5.sidebar_tsc_status
+
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
         self.side_bar_state_text = self.pyqt5.side_bar_state_status
 

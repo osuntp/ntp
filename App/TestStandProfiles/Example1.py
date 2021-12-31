@@ -82,11 +82,12 @@ class TestStandBehaviour:
 # EDIT BELOW BUT DO NOT REMOVE
     sidebar_values = [
         'Test 1',
-        'Test 2'
+        'Test 2',
+        'Test 3',
     ]
 
     def get_sidebar_values(self):
-        return [random.random(), random.random()]
+        return [random.random(), random.random(), random.random()]
 
     sequence_columns = [
         'Timestep (s)', 
