@@ -92,13 +92,7 @@ class UI:
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
 
     def set_abort_tab_clickable(self, is_active):
-        if(is_active):
-            Stylize.abort(self.abort_tab)
-        else:
-            Stylize.set_button_active(self.abort_tab, False)
-
         self.abort_tab.setEnabled(is_active)
-
 
 class Diagnostics:
     def __init__(self, pyqt5:Ui_MainWindow):
@@ -272,10 +266,11 @@ class Configuration:
         self.sequence_minus_button = pyqt5.configuration_sequence_minus
 
         self.clear_button = pyqt5.configuration_clear_button
+        self.load_button = pyqt5.configuration_load_button
         self.save_button = pyqt5.configuration_save_button
         self.send_to_run_page_button = pyqt5.config_send_to_run_page_button
 
-        buttons = [self.save_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button, self.send_to_run_page_button]
+        buttons = [self.save_button, self.load_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button, self.send_to_run_page_button]
         
         self.clear_all()
 

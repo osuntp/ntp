@@ -54,6 +54,7 @@ class Presenter:
         self.ui.configuration.sequence_minus_button.clicked.connect(self.configuration_sequence_minus_clicked)
 
         self.ui.configuration.save_button.clicked.connect(self.configuration_save_clicked)
+        self.ui.configuration.load_button.clicked.connect(self.configuration_load_clicked)
         self.ui.configuration.clear_button.clicked.connect(self.configuration_clear_clicked)
         self.ui.configuration.send_to_run_page_button.clicked.connect(self.configuration_send_to_run_page_clicked)
 
@@ -86,39 +87,74 @@ class Presenter:
         self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
 
         # Sidebar
-        self.ui.side_bar_state_text.setText(self.model.state_text)
-        self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
-        self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
+        if(self.test_stand.current_state != self.test_stand_connecting_state):
+            self.ui.side_bar_state_text.setText(self.model.state_text)
+            self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
+            self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
 
-        self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
-        self.ui.sidebar_valveposition.setText(str(self.test_stand.valve_position))   
+            self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
+            self.ui.sidebar_valveposition.setText(str(self.test_stand.valve_position))   
 
-        self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater_power))
-        if(self.test_stand.heater_is_on):
-            text = 'On'
+            self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater_power))
+            if(self.test_stand.heater_is_on):
+                text = 'On'
+            else:
+                text = 'Off'
+            self.ui.sidebar_heaterstatus.setText(text)
+            self.ui.sidebar_heatercurrent.setText(str(self.test_stand.heater_current))
+            self.ui.sidebar_heatertemp.setText(str(self.test_stand.heater_temp))
+
+            self.ui.sidebar_inlettemp.setText(str(self.test_stand.inlet_temp))
+            self.ui.sidebar_supplytemp.setText(str(self.test_stand.flow_temp))
+            self.ui.sidebar_midtemp.setText(str(self.test_stand.mid_temp))
+            self.ui.sidebar_outlettemp.setText(str(self.test_stand.outlet_temp))
+
+            self.ui.sidebar_supplypress.setText(str(self.test_stand.supply_press))
+            self.ui.sidebar_inletpress.setText(str(self.test_stand.inlet_press))
+            self.ui.sidebar_midpress.setText(str(self.test_stand.mid_press))
+            self.ui.sidebar_outletpress.setText(str(self.test_stand.outlet_press))
+
+            other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+
+            for i in range(len(other_values)):
+                if i > 4.5:
+                    break
+
+                self.ui.sidebar_other[i].setText(str(other_values[i]))
         else:
-            text = 'Off'
-        self.ui.sidebar_heaterstatus.setText(text)
-        self.ui.sidebar_heatercurrent.setText(str(self.test_stand.heater_current))
-        self.ui.sidebar_heatertemp.setText(str(self.test_stand.heater_temp))
+            self.ui.side_bar_state_text.setText(self.model.state_text)
+            self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
+            self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
 
-        self.ui.sidebar_inlettemp.setText(str(self.test_stand.inlet_temp))
-        self.ui.sidebar_supplytemp.setText(str(self.test_stand.flow_temp))
-        self.ui.sidebar_midtemp.setText(str(self.test_stand.mid_temp))
-        self.ui.sidebar_outlettemp.setText(str(self.test_stand.outlet_temp))
+            self.ui.sidebar_massflow.setText('NA')
+            self.ui.sidebar_valveposition.setText('NA')   
 
-        self.ui.sidebar_supplypress.setText(str(self.test_stand.supply_press))
-        self.ui.sidebar_inletpress.setText(str(self.test_stand.inlet_press))
-        self.ui.sidebar_midpress.setText(str(self.test_stand.mid_press))
-        self.ui.sidebar_outletpress.setText(str(self.test_stand.outlet_press))
+            self.ui.sidebar_heaterpower.setText('NA')
+            if(self.test_stand.heater_is_on):
+                text = 'On'
+            else:
+                text = 'Off'
+            self.ui.sidebar_heaterstatus.setText('NA')
+            self.ui.sidebar_heatercurrent.setText('NA')
+            self.ui.sidebar_heatertemp.setText('NA')
 
-        other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+            self.ui.sidebar_inlettemp.setText('NA')
+            self.ui.sidebar_supplytemp.setText('NA')
+            self.ui.sidebar_midtemp.setText('NA')
+            self.ui.sidebar_outlettemp.setText('NA')
 
-        for i in range(len(other_values)):
-            if i > 4.5:
-                break
+            self.ui.sidebar_supplypress.setText('NA')
+            self.ui.sidebar_inletpress.setText('NA')
+            self.ui.sidebar_midpress.setText('NA')
+            self.ui.sidebar_outletpress.setText('NA')
 
-            self.ui.sidebar_other[i].setText(str(other_values[i]))
+            other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+
+            for i in range(len(other_values)):
+                if i > 4.5:
+                    break
+
+                self.ui.sidebar_other[i].setText('NA')
             
         page = self.ui.pyqt5.stacked_widget.currentIndex()
 
@@ -424,6 +460,9 @@ class Presenter:
         trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
         
         Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
+    
+    def configuration_load_clicked(self):
+        print('load was clicked. implementation to come')
 
     def configuration_send_to_run_page_clicked(self):
         profile_name = self.test_stand_trial_running_state.current_profile.name

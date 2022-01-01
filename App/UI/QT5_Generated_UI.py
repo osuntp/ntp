@@ -1322,6 +1322,16 @@ class Ui_MainWindow(object):
 "border:2px solid black;")
         self.configuration_clear_button.setObjectName("configuration_clear_button")
         self.horizontalLayout_6.addWidget(self.configuration_clear_button)
+        self.configuration_load_button = QtWidgets.QPushButton(self.configuration_page)
+        self.configuration_load_button.setMinimumSize(QtCore.QSize(180, 50))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.configuration_load_button.setFont(font)
+        self.configuration_load_button.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(39, 59, 94);\n"
+"border:2px solid black;")
+        self.configuration_load_button.setObjectName("configuration_load_button")
+        self.horizontalLayout_6.addWidget(self.configuration_load_button)
         self.configuration_save_button = QtWidgets.QPushButton(self.configuration_page)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -2116,7 +2126,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2247,6 +2257,7 @@ class Ui_MainWindow(object):
         self.configuration_sequence_minus.setText(_translate("MainWindow", "-"))
         self.label_26.setText(_translate("MainWindow", "Trial End Timestep (s)"))
         self.configuration_clear_button.setText(_translate("MainWindow", "Clear"))
+        self.configuration_load_button.setText(_translate("MainWindow", "Load"))
         self.configuration_save_button.setText(_translate("MainWindow", "Save"))
         self.config_send_to_run_page_button.setText(_translate("MainWindow", "Send to Run Page"))
         self.run_start_button.setText(_translate("MainWindow", "Start Trial"))
