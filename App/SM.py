@@ -56,8 +56,6 @@ class SerialMonitor:
     controller_id = 'controller'
     daq_arduino = None
     tsc_arduino = None
-    daq_port = ''
-    tsc_port = ''
     baudrate = 9600
     daq_buffer = ''
     tsc_buffer = ''
@@ -65,22 +63,29 @@ class SerialMonitor:
     is_fully_connected = False
 
     in_developer_mode = False
-    ports = []
-    connections = []
+    unmatched_connections = []
 
     model: Model = None
     test_stand = None
     test_stand_connecting_state = None
 
     def __init__(self):
-        self.ports = self.__get_serial_ports()
+        self.update_serial_connections()
 
-        for port in self.ports:
+    def update_serial_connections(self):
+
+        for connection in self.unmatched_connections:
             try:
-                connection = serial.Serial(port=port, baudrate = self.baudrate, write_timeout = 0)
-                self.connections.append(connection)
+                connection.in_waiting
             except SerialException:
-                print('A port was detected that was invalid with SerialException')
+                connection.close()
+                self.unmatched_connections.remove(connection)
+            
+        ports = self.__get_serial_ports()
+
+        for port in ports:
+            connection = serial.Serial(port=port, baudrate = self.baudrate, write_timeout = 0)
+            self.unmatched_connections.append(connection)
 
     def set_baudrate(self, baudrate):
         self.baudrate = baudrate
@@ -101,9 +106,10 @@ class SerialMonitor:
         if(self.in_developer_mode):
             return
 
-        for connection in self.connections:
-            if not ((connection.port == self.tsc_port) or (connection.port == self.daq_port)):
-
+        self.update_serial_connections()
+        
+        for connection in self.unmatched_connections:
+            try:
                 in_waiting = connection.in_waiting
 
                 if(in_waiting > 0):
@@ -121,21 +127,31 @@ class SerialMonitor:
                                 self.buffer = ''
                                 self.daq_port = connection.port
                                 self.daq_arduino = connection
+                                self.unmatched_connections.remove(connection)
                                 waiting_for_response = False
+
+                                self.start_daq_monitor_loop()
 
                             elif(clean_message[0] == 'TSC'):
                                 self.tsc_buffer += leftover
                                 self.buffer = ''
                                 self.tsc_port = connection.port
                                 self.tsc_arduino = connection
+                                self.unmatched_connections.remove(connection)
                                 waiting_for_response = False
+
+                                self.start_tsc_monitor_loop()
 
                             else:
                                 print('unknown message received while trying to receive connection messages. the message was: ')
                                 print(clean_message)
 
                             if((self.daq_arduino is not None) and self.tsc_arduino is not None):
+                                print('is fully connected')
                                 self.is_fully_connected = True
+
+            except SerialException:
+                self.update_serial_connections
 
         if(self.is_fully_connected):
             self.model.try_to_enable_start_button()
@@ -144,8 +160,25 @@ class SerialMonitor:
         self.data_collection_thread = threading.Thread(target = self.daq_monitor_loop)
         self.data_collection_thread.start()
 
-    def daq_monitor_loop(self):
+    def close_daq(self):
+        self.daq_monitor_loop_is_running = False
 
+        if(self.daq_arduino is None):
+            return
+
+        self.daq_arduino.close()
+        self.daq_arduino = None
+    
+    def close_tsc(self):
+        self.tsc_monitor_loop_is_running = False
+
+        if(self.tsc_arduino is None):
+            return
+
+        self.tsc_arduino.close()
+        self.tsc_arduino = None
+
+    def daq_monitor_loop(self):
         self.daq_monitor_loop_is_running = True
 
         while(self.daq_monitor_loop_is_running):
@@ -153,8 +186,6 @@ class SerialMonitor:
             self.read_from_daq()
 
             time.sleep(0.01)
-
-        print('data collection loop exiting')
 
     def start_tsc_monitor_loop(self):
         self.tsc_monitor_thread= threading.Thread(target = self.tsc_monitor_loop)
@@ -172,7 +203,11 @@ class SerialMonitor:
         if(self.tsc_arduino is None):
             return
 
-        in_waiting = self.tsc_arduino.in_waiting
+        try:
+            in_waiting = self.tsc_arduino.in_waiting
+        except SerialException:
+            self.close_tsc()
+            return
         
         if(in_waiting > 0):
             # Add everything from serial to daq_buffer
@@ -185,7 +220,6 @@ class SerialMonitor:
                 self.__handle_tsc_message(clean_message)
 
     def read_from_daq(self):
-
         if(self.in_developer_mode):
             
             if(DeveloperArduinos.new_daq_message_available()):
@@ -201,7 +235,12 @@ class SerialMonitor:
         if(self.daq_arduino is None):
             return
 
-        in_waiting = self.daq_arduino.in_waiting
+        try:
+            in_waiting = self.daq_arduino.in_waiting
+        except SerialException:
+            self.close_daq()
+            return
+        
         if(in_waiting > 0):
 
             # Add everything from serial to daq_buffer
