@@ -178,12 +178,23 @@ double it3 = 0;
   
   tankPressurePSI = (((pressureValueFloat/ 1024)*5)-1) *(200/4);
   
-
+  float heater_current = 0;
+  float heater_temp = 0;
+  float heater_it = 0;
+  float mid_press = 0;
+  float outlet_press = 0;
+  
   // Send data stream
   Serial.print("<stdout, ");
   Serial.print(flow);
   Serial.print(", ");
   Serial.print(flow_temperature);
+  Serial.print(", ");
+  Serial.print(heater_current);
+  Serial.print(", ");
+  Serial.print(heater_temp);
+  Serial.print(", ");
+  Serial.print(heater_it);
   Serial.print(", ");
   Serial.print(c1);
   Serial.print(", ");
@@ -200,6 +211,10 @@ double it3 = 0;
   Serial.print(tankPressurePSI, 7);
   Serial.print(", ");
   Serial.print(inletPressurePSI, 7);
+  Serial.print(", ");
+  Serial.print(mid_press);
+  Serial.print(", ");
+  Serial.print(outlet_press);
   Serial.println(">");
 
   delay(250);
