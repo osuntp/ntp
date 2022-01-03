@@ -162,6 +162,8 @@ class SerialMonitor:
 
     def close_daq(self):
         self.daq_monitor_loop_is_running = False
+        self.is_fully_connected = False
+        self.daq_buffer = ''
 
         if(self.daq_arduino is None):
             return
@@ -171,7 +173,8 @@ class SerialMonitor:
     
     def close_tsc(self):
         self.tsc_monitor_loop_is_running = False
-
+        self.is_fully_connected = False
+        self.tsc_buffer = ''
         if(self.tsc_arduino is None):
             return
 
@@ -207,11 +210,27 @@ class SerialMonitor:
             in_waiting = self.tsc_arduino.in_waiting
         except SerialException:
             self.close_tsc()
+
+            if(self.model.trial_is_running):
+                self.model.save_trial_data(is_aborted_trial=True)
+                Log.python.error('Connection to TSC was lost while trial was running. Switching to connecting state.')
+
+            self.test_stand.switch_state(self.test_stand_connecting_state)
             return
         
         if(in_waiting > 0):
             # Add everything from serial to daq_buffer
-            self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
+            try:
+                self.tsc_buffer += self.tsc_arduino.read(in_waiting).decode('utf-8')
+            except SerialException:
+                self.close_tsc()
+
+                if(self.model.trial_is_running):
+                    self.model.save_trial_data(is_aborted_trial=True)
+                    Log.python.error('Connection to TSC was lost while trial was running. Switching to connecting state.')
+
+                self.test_stand.switch_state(self.test_stand_connecting_state)
+                return
 
             while '\n' in self.tsc_buffer: #split data line by line and store it in var
                 raw_message_line, self.tsc_buffer = self.tsc_buffer.split('\n', 1)
@@ -239,12 +258,28 @@ class SerialMonitor:
             in_waiting = self.daq_arduino.in_waiting
         except SerialException:
             self.close_daq()
+
+            if(self.model.trial_is_running):
+                self.model.save_trial_data(is_aborted_trial=True)
+                Log.python.error('Connection to TSC was lost while trial was running. Switching to connecting state.')
+
+            self.test_stand.switch_state(self.test_stand_connecting_state)
             return
         
         if(in_waiting > 0):
 
             # Add everything from serial to daq_buffer
-            self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+            try:
+                self.daq_buffer += self.daq_arduino.read(in_waiting).decode('utf-8')
+            except SerialException:
+                self.close_daq()
+
+                if(self.model.trial_is_running):
+                    self.model.save_trial_data(is_aborted_trial=True)
+                    Log.python.error('Connection to TSC was lost while trial was running. Switching to connecting state.')
+
+                self.test_stand.switch_state(self.test_stand_connecting_state)
+                return
 
             while '\n' in self.daq_buffer: #split data line by line and store it in var
                 raw_message_line, self.daq_buffer = self.daq_buffer.split('\n', 1)
@@ -346,8 +381,11 @@ class SerialMonitor:
 
         self.in_developer_mode = in_developer_mode     
 
+        self.close_daq()
+        self.close_tsc()
+
         if(in_developer_mode):
-            self.disconnect_arduinos()
+            
             self.is_fully_connected = True
 
             self.model.daq_status_text = 'Developer Mode'
@@ -356,7 +394,6 @@ class SerialMonitor:
             self.start_daq_monitor_loop()
             self.start_tsc_monitor_loop()
         else:
-            self.disconnect_arduinos()
             self.is_fully_connected = False
 
             self.model.daq_status_text = 'Not Connected'
