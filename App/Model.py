@@ -65,7 +65,7 @@ class Model:
         message.append(self.test_stand.valve_position)
         message.append(self.test_stand.heater_is_on)
         
-        print(message)
+        # print(message)
 
         # 0 - Time 
         # 1 - Mass Flow
@@ -174,7 +174,6 @@ class Model:
 
         if(config_is_valid):
             Log.python.info('Trial configuration has been loaded to run page.')
-
 
             self.config_is_loaded = True
             self.loaded_config_trial_name = config.trial_name

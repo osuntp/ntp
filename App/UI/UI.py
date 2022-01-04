@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 from typing import List
 from PyQt5.QtGui import QFont
+from Config import Config
 from UI.QT5_Generated_UI import Ui_MainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
@@ -22,7 +23,7 @@ class UI:
     side_bar_heater_is_lit = False
     side_bar_valve_open_is_lit = False
 
-    def __init__(self, window, settings: Settings):       
+    def __init__(self, window):       
 
         # [DO NOT EDIT]: this method is created by pyuic5.exe:
         self.pyqt5 = Ui_MainWindow()
@@ -67,7 +68,7 @@ class UI:
         self.sidebar_other_name = [self.pyqt5.sidebar_other1_name, self.pyqt5.sidebar_other2_name, self.pyqt5.sidebar_other3_name, self.pyqt5.sidebar_other4_name, self.pyqt5.sidebar_other5_name]
         self.sidebar_other = [self.pyqt5.sidebar_other1, self.pyqt5.sidebar_other2, self.pyqt5.sidebar_other3, self.pyqt5.sidebar_other4, self.pyqt5.sidebar_other5]
 
-        self.setup = Setup(self.pyqt5, settings.daq_port, settings.tsc_port)
+        self.setup = Setup(self.pyqt5)
         self.diagnostics = Diagnostics(self.pyqt5)
         self.logs = Logs(self.pyqt5)
         self.manual = Manual(self.pyqt5)
@@ -193,14 +194,12 @@ class Diagnostics:
         self.plot2_supply.setPen(pyqtgraph.mkPen(color='c', width = line_width))
 
 class Setup:
-    def __init__(self, pyqt5: Ui_MainWindow, daq_port: str, tsc_port:str):
+    def __init__(self, pyqt5: Ui_MainWindow):
         self.daq_status_label = pyqt5.setup_daq_status_label
         self.controller_status_label = pyqt5.setup_controller_status_label
 
         self.daq_port_field = pyqt5.setup_daq_port_field
-        self.daq_port_field.setText(daq_port)
         self.controller_port_field = pyqt5.setup_controller_port_field
-        self.controller_port_field.setText(tsc_port)
 
         self.auto_connect_button = pyqt5.setup_autoconnect_button
         self.manual_connect_button = pyqt5.setup_manualconnect_button
@@ -343,6 +342,64 @@ class Configuration:
 
         table.removeRow(row_count - 1)
 
+    def load_values(self, config:Config):
+        self.clear_all()
+
+        self.trial_name_field.setText(config.trial_name)
+        self.description_field.setPlainText(config.description)
+
+        blue_lines_row_count = len(config.blue_lines_time_step)
+
+        table = self.blue_lines_table
+
+        table.removeRow(0)
+
+        for i in range(blue_lines_row_count):
+            table.insertRow(table.rowCount())
+
+            text = str(config.blue_lines_time_step[i])
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(text)
+            table.setItem(table.rowCount()-1, 0, item)
+
+            combo_box_options = ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
+            combo = QtWidgets.QComboBox()
+
+            for option in combo_box_options:
+                combo.addItem(option)
+            combo.setCurrentIndex(combo_box_options.index(config.blue_lines_sensor_type[i]))
+            table.setCellWidget(table.rowCount()-1, 1, combo)
+
+            combo_box_options = ['Min', 'Max']            
+            combo = QtWidgets.QComboBox()
+
+            for option in combo_box_options:
+                combo.addItem(option)
+            combo.setCurrentIndex(combo_box_options.index(config.blue_lines_limit_type[i]))
+            table.setCellWidget(table.rowCount()-1, 2, combo)
+
+            text = str(config.blue_lines_value[i])
+            item = QtWidgets.QTableWidgetItem()
+            item.setText(text)
+            table.setItem(table.rowCount()-1, 3, item)
+
+        sequence_row_count = len(config.sequence_values[0])
+
+        table = self.sequence_table
+        table.removeRow(0)
+
+        for i in range(sequence_row_count):
+            
+            table.insertRow(table.rowCount())
+
+            for j in range(len(config.sequence_values)):
+                text = str(config.sequence_values[j][i])
+                item = QtWidgets.QTableWidgetItem()
+                item.setText(text)
+                table.setItem(table.rowCount()-1, j, item)
+
+        self.trial_end_timestep_field.setText(str(config.trial_end_timestep))
+
     def clear_all(self):
         self.clear_blue_line_table()
         self.clear_sequence_table()
@@ -406,8 +463,6 @@ class Run:
         self.plot2_tank_check = pyqt5.run_plot2_tank_check
 
         self.plot2_tank_check.setChecked(True)
-
-        
 
         # Checkboxes - Plot3
             # None

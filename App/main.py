@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Create Objects
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
-    ui = UI(window, settings)
+    ui = UI(window)
     presenter = Presenter()
     model = Model()
     serial_monitor = SerialMonitor()

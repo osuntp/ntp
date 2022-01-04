@@ -5,8 +5,6 @@ from dataclasses import dataclass
 @dataclass
 class Settings:
     profile_index: str
-    daq_port: str
-    tsc_port: str
     developer_mode: bool
 
 
@@ -25,10 +23,7 @@ class SettingsManager:
         settings.add_section('main')
 
         settings.set('main', 'profile_index', str(cls.profile_index))
-        settings.set('main', 'daq_port', str(cls.daq_port))
-        settings.set('main', 'tsc_port', str(cls.tsc_port))
         settings.set('main', 'developer_mode', str(cls.developer_mode))
-
 
         file_name = 'Settings.ini'
 
@@ -42,28 +37,16 @@ class SettingsManager:
         
         try:
             profile_index = int(parser.get('main', 'profile_index'))
-            daq_port = str(parser.get('main', 'daq_port'))
-            tsc_port = str(parser.get('main', 'tsc_port'))
             developer_mode = ('True' == parser.get('main', 'developer_mode'))
                    
         except configparser.NoSectionError:
             profile_index = cls.profile_index
-            daq_port = cls.daq_port
-            tsc_port = cls.tsc_port
             developer_mode = cls.developer_mode
 
         
-        settings = Settings(profile_index, daq_port, tsc_port, developer_mode)
+        settings = Settings(profile_index, developer_mode)
 
         return settings
-
-
-    @classmethod
-    def save_arduino_ports(cls, daq_port, tsc_port):
-        cls.daq_port = daq_port
-        cls.tsc_port = tsc_port
-
-        cls.create_settings_file()
 
     @classmethod
     def save_profile_index(cls, profile_index):

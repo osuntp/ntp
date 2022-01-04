@@ -382,8 +382,6 @@ class Presenter:
         daq_port = self.ui.setup.daq_port_field.text()
         tsc_port = self.ui.setup.controller_port_field.text()
 
-        SettingsManager.save_arduino_ports(daq_port, tsc_port)
-
         self.test_stand_connecting_state.daq_port = daq_port
         self.test_stand_connecting_state.tsc_port = tsc_port
 
@@ -462,7 +460,14 @@ class Presenter:
         Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
     
     def configuration_load_clicked(self):
-        print('load was clicked. implementation to come')
+        file_name = Config.select_file()
+        
+        if(file_name == ''):
+            return
+      
+        config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
+
+        self.ui.configuration.load_values(config)
 
     def configuration_send_to_run_page_clicked(self):
         profile_name = self.test_stand_trial_running_state.current_profile.name
@@ -479,8 +484,8 @@ class Presenter:
 
         for i in range (table.rowCount()-1):
             blue_lines_time_step.append(float(table.item(i, 0).text()))
-            blue_lines_sensor_type.append(table.item(i, 1).text())
-            blue_lines_limit_type.append(table.item(i,2).text())
+            blue_lines_sensor_type.append(table.cellWidget(i, 1).currentText())
+            blue_lines_limit_type.append(table.cellWidget(i, 2).currentText())
             blue_lines_value.append(float(table.item(i,3).text()))
 
         sequence_values = []
@@ -493,7 +498,6 @@ class Presenter:
                 
                 value_list.append(table.item(j,i).text())
 
-            print(value_list)
             sequence_values.append(value_list)
 
         config = Config.Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)

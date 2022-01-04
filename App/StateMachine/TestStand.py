@@ -49,9 +49,6 @@ class BlueLines:
         self.sensor_sequence = sensor
         self.limit_type_sequence = limit_type
         self.value_sequence = value
-
-        print(self.sensor_sequence)
-
 # ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
 
     def condition_is_met(self):
