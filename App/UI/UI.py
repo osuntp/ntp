@@ -198,19 +198,9 @@ class Setup:
         self.daq_status_label = pyqt5.setup_daq_status_label
         self.controller_status_label = pyqt5.setup_controller_status_label
 
-        self.daq_port_field = pyqt5.setup_daq_port_field
-        self.controller_port_field = pyqt5.setup_controller_port_field
-
-        self.auto_connect_button = pyqt5.setup_autoconnect_button
-        self.manual_connect_button = pyqt5.setup_manualconnect_button
-
         self.test_stand_behaviour_field = pyqt5.setup_teststand_behaviour_field
 
         self.developer_mode_field = pyqt5.setup_developer_mode_field
-
-        Stylize.button([self.auto_connect_button, self.manual_connect_button])
-        Stylize.button([self.auto_connect_button])
-        self.auto_connect_button.setEnabled(False)
 
     def set_initial_values_from_settings(self, selected_behaviour_field: int, in_developer_mode: bool):
         self.test_stand_behaviour_field.setCurrentIndex(selected_behaviour_field)
@@ -222,18 +212,17 @@ class Logs:
         self.daq = pyqt5.logs_daq_log
         self.tsc = pyqt5.logs_controller_log
 
-    def update_python_log(self, file_path: str):
+    # def update_python_log(self, file_path: str):
 
-        with open(file_path, 'r') as file:
-            data_list = file.readlines()
-            data = ""
+    #     with open(file_path, 'r') as file:
+    #         data_list = file.readlines()
+    #         data = ""
 
-            for line in data_list:
-                data += line + "<br><br>"
-            self.python.setHtml(data)
+    #         for line in data_list:
+    #             data += line + "<br><br>"
+    #         self.python.setHtml(data)
 
-
-        self.python.verticalScrollBar().setValue(self.python.verticalScrollBar().maximum())
+    #     self.python.verticalScrollBar().setValue(self.python.verticalScrollBar().maximum())
 
 class Manual:
     def __init__(self, pyqt5: Ui_MainWindow):

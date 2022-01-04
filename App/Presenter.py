@@ -33,7 +33,6 @@ class Presenter:
         self.ui.tabs[5].clicked.connect(lambda: self.tab_clicked(5))
 
         # Setup
-        self.ui.setup.manual_connect_button.clicked.connect(self.setup_manual_connect_clicked)
         self.ui.setup.test_stand_behaviour_field.activated.connect(self.setup_behaviour_change_clicked)
         self.ui.setup.developer_mode_field.clicked.connect(self.setup_developer_mode_clicked)
         self.ui.setup.test_stand_behaviour_field.setCurrentIndex = profile_index
@@ -169,8 +168,6 @@ class Presenter:
         if(page == 5):
             self.ui.setup.daq_status_label.setText(self.model.daq_status_text)
             self.ui.setup.controller_status_label.setText(self.model.tsc_status_text)
-
-            self.ui.setup.manual_connect_button.setEnabled(self.model.connect_arduinos_button_enabled)
 
         # Diagnostics Page
         if(page == 0):
@@ -378,15 +375,6 @@ class Presenter:
             self.test_stand.switch_state(self.test_stand_trial_aborted_state)
 
 # SETUP PAGE LOGIC
-    def setup_manual_connect_clicked(self): 
-        daq_port = self.ui.setup.daq_port_field.text()
-        tsc_port = self.ui.setup.controller_port_field.text()
-
-        self.test_stand_connecting_state.daq_port = daq_port
-        self.test_stand_connecting_state.tsc_port = tsc_port
-
-        self.test_stand.switch_state(self.test_stand_connecting_state)
-
     def setup_behaviour_change_clicked(self):
         i = self.ui.setup.test_stand_behaviour_field.currentIndex()
 
