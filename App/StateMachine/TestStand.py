@@ -3,6 +3,7 @@ import threading
 import time
 
 from pyqtgraph.Qt import App
+from App.SM import Arduino
 from UI.UI import UI
 from Log import Log
 
@@ -227,10 +228,70 @@ class BlueLines:
 
         self.current_sequence_step = 0
 
+class Heater:
+
+    serial_monitor: SerialMonitor = None
+
+    _desired_power: float = 0
+
+    _time_between_updates: float = 3 # seconds between each calculation
+    _time_since_last_update: float = 0
+    _rms_heater_power: float = 520
+
+    _running_total_weighted_power: float = 0
+    _running_total_time: float = 0
+    _heater_is_on: bool = False
+    _previous_timestamp: float = 0
+
+    def __init__(self):
+        self._previous_timestamp = time.time()
+
+    def set_power(self, power: float):
+        self._running_sum_weighted_power = 0
+        self._running_total_time = 0
+        self._time_since_last_update = 0
+
+        self._desired_power = power
+
+    def _tick(self):
+        self._time_since_last_update = self._time_since_last_update + (time.time() - self._previous_timestamp)
+        self._previous_timestamp = time.time()
+
+        if(self._time_since_last_update >= self._time_between_updates):
+            self._update_heater()
+    
+    def _update_heater(self):
+        self._running_total_weighted_power = self._running_total_weighted_power + (self._rms_heater_power * self._time_since_last_update)
+        self._running_total_time = self._running_total_time + self._time_since_last_update
+
+        self._time_since_last_update = 0
+        
+        average_power = self._running_total_weighted_power / self._running_total_time
+
+        if(self._heater_is_on):
+            if(average_power > self._desired_power):
+                self._turn_off_heater()
+        else:
+            if(average_power < self._desired_power):
+                self._turn_on_heater()
+
+    def _turn_off_heater(self):
+
+        message = "<heater, off>"
+
+        self.serial_monitor.write(Arduino.CONTROLLER, message)
+
+    def _turn_on_heater(self):
+
+        message = "<heater, on>"
+
+        self.serial_monitor.write(Arduino.CONTROLLER, message)
+
 class TestStand:
 
     # References
     blue_lines: BlueLines = None
+    heater: Heater = None
     ui: UI = None
     app: App = None
     current_state = None
@@ -266,6 +327,9 @@ class TestStand:
     state_machine_stopped = False
 
     def setup(self, initial_state):
+        self.heater = Heater()
+        self.heater.serial_monitor = self.serial_monitor
+
         self.blue_lines = BlueLines()
         self.blue_lines.test_stand = self
 
@@ -279,6 +343,8 @@ class TestStand:
         while(True):
             if(self.state_machine_stopped):
                 return
+
+            self.heater._tick()
 
             self.current_state.tick()
             time.sleep(0.1)
