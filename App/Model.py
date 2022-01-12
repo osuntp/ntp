@@ -62,8 +62,8 @@ class Model:
     def update(self, message: List):
         current_time = time.time()
         message.insert(0, current_time)
-        message.append(self.test_stand.valve_position)
-        message.append(self.test_stand.heater_is_on)
+        message.append(self.test_stand.valve.position)
+        message.append(self.test_stand.heater.is_on)
         
         # print(message)
 

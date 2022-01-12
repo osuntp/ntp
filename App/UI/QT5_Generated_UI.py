@@ -1013,6 +1013,7 @@ class Ui_MainWindow(object):
         self.manual_currentValvePosLabel.setObjectName("manual_currentValvePosLabel")
         self.verticalLayout_13.addWidget(self.manual_currentValvePosLabel)
         self.manual_valveSpinBox = QtWidgets.QSpinBox(self.verticalLayoutWidget)
+        self.manual_valveSpinBox.setMaximum(90)
         self.manual_valveSpinBox.setObjectName("manual_valveSpinBox")
         self.verticalLayout_13.addWidget(self.manual_valveSpinBox)
         self.manual_sendValveCommandButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
@@ -1032,6 +1033,7 @@ class Ui_MainWindow(object):
         self.manual_currentHeaterLabel.setObjectName("manual_currentHeaterLabel")
         self.verticalLayout_16.addWidget(self.manual_currentHeaterLabel)
         self.manual_heatersSpinBox = QtWidgets.QSpinBox(self.verticalLayoutWidget_2)
+        self.manual_heatersSpinBox.setMaximum(520)
         self.manual_heatersSpinBox.setObjectName("manual_heatersSpinBox")
         self.verticalLayout_16.addWidget(self.manual_heatersSpinBox)
         self.manual_sendHeaterCommandButton = QtWidgets.QPushButton(self.verticalLayoutWidget_2)
@@ -2020,7 +2022,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(5)
+        self.stacked_widget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

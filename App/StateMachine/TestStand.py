@@ -3,7 +3,7 @@ import threading
 import time
 
 from pyqtgraph.Qt import App
-from App.SM import Arduino
+from SM import Arduino
 from UI.UI import UI
 from Log import Log
 
@@ -240,7 +240,7 @@ class Heater:
 
     _running_total_weighted_power: float = 0
     _running_total_time: float = 0
-    _heater_is_on: bool = False
+    is_on: bool = False
     _previous_timestamp: float = 0
 
     def __init__(self):
@@ -261,37 +261,53 @@ class Heater:
             self._update_heater()
     
     def _update_heater(self):
-        self._running_total_weighted_power = self._running_total_weighted_power + (self._rms_heater_power * self._time_since_last_update)
+
+        if(self.is_on):
+            self._running_total_weighted_power = self._running_total_weighted_power + (self._rms_heater_power * self._time_since_last_update)
+
         self._running_total_time = self._running_total_time + self._time_since_last_update
 
-        self._time_since_last_update = 0
-        
         average_power = self._running_total_weighted_power / self._running_total_time
 
-        if(self._heater_is_on):
+        print(str(average_power) + " " + str(self._desired_power) + " " + str(self._time_since_last_update))
+
+        if(self.is_on):
             if(average_power > self._desired_power):
                 self._turn_off_heater()
         else:
             if(average_power < self._desired_power):
                 self._turn_on_heater()
 
+        self._time_since_last_update = 0
+
     def _turn_off_heater(self):
 
-        message = "<heater, off>"
-
+        message = "<stdin, heater, off>\n"
+        self.is_on = False
         self.serial_monitor.write(Arduino.CONTROLLER, message)
 
     def _turn_on_heater(self):
 
-        message = "<heater, on>"
-
+        message = "<stdin, heater, on>\n"
+        self.is_on = True
         self.serial_monitor.write(Arduino.CONTROLLER, message)
+
+class Valve:
+    position = 0
+    serial_monitor: SerialMonitor = None
+
+    def set_position(self, position: float):
+        self.position = position
+        message = '<stdin, valve, ' + str(position) + '>\n'
+
+        self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
 class TestStand:
 
     # References
     blue_lines: BlueLines = None
     heater: Heater = None
+    valve: Valve = None
     ui: UI = None
     app: App = None
     current_state = None
@@ -305,9 +321,6 @@ class TestStand:
     end_trial_time = 0
 
     # Test Stand Values
-    valve_position = 90
-    heater_is_on = False
-
     inlet_temp = 0
     mid_temp = 0
     outlet_temp = 0
@@ -329,6 +342,10 @@ class TestStand:
     def setup(self, initial_state):
         self.heater = Heater()
         self.heater.serial_monitor = self.serial_monitor
+        self.ui.manual.heater_field.setMaximum(self.heater._rms_heater_power)
+
+        self.valve = Valve()
+        self.valve.serial_monitor = self.serial_monitor
 
         self.blue_lines = BlueLines()
         self.blue_lines.test_stand = self
@@ -368,11 +385,3 @@ class TestStand:
 
     def end_trial(self):
         self.switch_state(self.trial_ended_state)
-
-    def set_valve_position(self, new_position):
-        Log.python.info('Test Stand sending message to TSC to set valve to following position: ' + str(new_position))
-
-        self.valve_position = new_position
-        message = '<stdin, valve, ' + str(new_position) + '>\n'
-
-        self.serial_monitor.write(SM.Arduino.CONTROLLER, message)

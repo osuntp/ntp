@@ -92,10 +92,10 @@ class Presenter:
             self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
 
             self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
-            self.ui.sidebar_valveposition.setText(str(self.test_stand.valve_position))   
+            self.ui.sidebar_valveposition.setText(str(self.test_stand.valve.position))   
 
             self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater_power))
-            if(self.test_stand.heater_is_on):
+            if(self.test_stand.heater.is_on):
                 text = 'On'
             else:
                 text = 'Off'
@@ -129,7 +129,7 @@ class Presenter:
             self.ui.sidebar_valveposition.setText('NA')   
 
             self.ui.sidebar_heaterpower.setText('NA')
-            if(self.test_stand.heater_is_on):
+            if(self.test_stand.heater.is_on):
                 text = 'On'
             else:
                 text = 'Off'
@@ -174,12 +174,12 @@ class Presenter:
 
             self.ui.diagnostics.test_stand_status.setText(str(self.model.state_text))
 
-            self.ui.diagnostics.valve_voltage.setText(str(self.test_stand.valve_position))
+            self.ui.diagnostics.valve_voltage.setText(str(self.test_stand.valve.position))
             self.ui.diagnostics.mass_flow.setText(str(self.test_stand.mass_flow))
             self.ui.diagnostics.heater_current.setText(str(self.test_stand.heater_current))
             self.ui.diagnostics.heater_duty_cycle.setText('NA')
             self.ui.diagnostics.heater_power.setText(str(self.test_stand.heater_power))
-            self.ui.diagnostics.heater_state.setText(str(self.test_stand.heater_is_on))
+            self.ui.diagnostics.heater_state.setText(str(self.test_stand.heater.is_on))
             self.ui.diagnostics.heater_set_point.setText('NA')
 
             # Update Plot1
@@ -412,10 +412,11 @@ class Presenter:
 
         if(value>=0 and value<=90):
             self.ui.manual.current_valve_position_label.setText('Current: ' + str(value))
-            self.test_stand.set_valve_position(value)
+            self.test_stand.valve.set_position(value)
 
     def manual_send_heater_command_clicked(self):
-        pass
+        value = self.ui.manual.heater_field.value()
+        self.test_stand.heater.set_power(value)
 
 # CONFIGURATION PAGE LOGIC
     def configuration_blue_lines_plus_clicked(self):

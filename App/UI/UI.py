@@ -212,18 +212,6 @@ class Logs:
         self.daq = pyqt5.logs_daq_log
         self.tsc = pyqt5.logs_controller_log
 
-    # def update_python_log(self, file_path: str):
-
-    #     with open(file_path, 'r') as file:
-    #         data_list = file.readlines()
-    #         data = ""
-
-    #         for line in data_list:
-    #             data += line + "<br><br>"
-    #         self.python.setHtml(data)
-
-    #     self.python.verticalScrollBar().setValue(self.python.verticalScrollBar().maximum())
-
 class Manual:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.current_valve_position_label = pyqt5.manual_currentValvePosLabel
@@ -237,7 +225,6 @@ class Manual:
     def set_command_buttons_active(self, is_active):
         self.send_valve_command_button.setEnabled(is_active)
         self.send_heater_command_button.setEnabled(is_active)
-
 
 class Configuration:
     def __init__(self, pyqt5: Ui_MainWindow):
