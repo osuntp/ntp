@@ -27,7 +27,7 @@ class StandbyState():
         self.model.connect_arduinos_button_enabled = True
         
         if(self.serial_monitor.is_fully_connected):
-            self.test_stand.set_valve_position(90)
+            self.test_stand.valve.set_position(90)
 
     def tick(self):
         pass

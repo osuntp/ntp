@@ -32,7 +32,7 @@ class TestStandBehaviour:
             if(self.trial_time > self.timestep[self.current_step + 1]):
                  self.current_step = self.current_step + 1
 
-        valve_position = self.test_stand.valve_position
+        valve_position = self.test_stand.valve.position
 
         # Open valve if mass flow is too low, Close valve if mass flow is too high
 
@@ -55,7 +55,7 @@ class TestStandBehaviour:
             if(new_valve_position < 0):
                 new_valve_position = 0
                 
-            self.test_stand.set_valve_position(new_valve_position)
+            self.test_stand.valve.set_position(new_valve_position)
 
         elif(self.test_stand.mass_flow > (self.target_mass_flow[self.current_step]+5)):
 
@@ -74,7 +74,7 @@ class TestStandBehaviour:
             if(new_valve_position > 90):
                 new_valve_position = 90
 
-            self.test_stand.set_valve_position(new_valve_position)
+            self.test_stand.valve.set_position(new_valve_position)
         
     def end(self):
         pass

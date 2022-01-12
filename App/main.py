@@ -36,23 +36,21 @@ if __name__ == "__main__":
     profiles = []
 
     for file in os.listdir('App/TestStandProfiles'):
+
         if file.endswith('.py'):
-            
-            file_location = cwd + '\App\TestStandProfiles\\'
-            
-            spec = importlib.util.spec_from_file_location('module.name', os.path.join(file_location, file))
-            
-            module = importlib.util.module_from_spec(spec)
-            
-            spec.loader.exec_module(module)
 
-            profile = module.TestStandBehaviour()
-
-            profile.test_stand = test_stand
-
-            profiles.append(profile)
-
-            ui.setup.test_stand_behaviour_field.addItem(profile.name)
+            if(file != "AbstractProfile.py"):
+                file_location = cwd + '\App\TestStandProfiles\\'
+                spec = importlib.util.spec_from_file_location('PythonFile', os.path.join(file_location, file))
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                profile = module.TestStandBehaviour()
+                profile.test_stand = test_stand
+                profiles.append(profile)
+                try:
+                    ui.setup.test_stand_behaviour_field.addItem(profile.name)
+                except AttributeError:
+                    ui.setup.test_stand_behaviour_field.addItem("Err: Unnamed Profile")
 
     test_stand.profiles = profiles
 
