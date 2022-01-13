@@ -110,7 +110,7 @@ class TrialEndedState():
     text = ''
 
     def enter_state(self):
-        self.test_stand.set_valve_position(90)
+        self.test_stand.valve.set_position(90)
 
         self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
@@ -167,9 +167,8 @@ class TrialAbortedState():
     start_timestamp = 0
 
     def enter_state(self):
-        self.test_stand.set_valve_position(0)
-        # self.test_stand.set_heater_power(0)
-        print('Abort state does not currently disable the heater. Implement this in the future.')
+        self.test_stand.valve.set_position(0)
+        self.test_stand.heater.set_power(0)
 
         self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
@@ -232,8 +231,6 @@ class TrialRunningState():
     def enter_state(self):
         self.model.reset_dataframe()
         self.start_timestamp = time.time()
-        self.trial_time = 0
-        self.current_sequence_row = 0
         self.model.trial_is_running = True
         self.model.state_text = 'RUNNING'
 
@@ -246,25 +243,30 @@ class TrialRunningState():
 
         self.test_stand.blue_lines.start_sequence()
 
+        self.current_profile.current_step = 0
+        self.current_profile.trial_time = 0
         self.current_profile.start()
 
     def tick(self):
-
         self.test_stand.blue_lines.update_sequence()
 
         if(not self.test_stand.blue_lines.condition_is_met()):
             self.test_stand.end_trial()
 
-        self.test_stand.trial_time = time.time() - self.start_timestamp
-        self.current_profile.trial_time = self.test_stand.trial_time
+        trial_time = time.time() - self.start_timestamp
+        self.current_profile.trial_time = trial_time
 
-        if(self.test_stand.trial_time > self.test_stand.end_trial_time):
+        if(trial_time > self.test_stand.end_trial_time):
             self.test_stand.end_trial()
             return
 
-        time_string = '%.1f' % self.test_stand.trial_time
-
+        time_string = '%.1f' % trial_time
         self.model.start_button_text = 'Running Trial - ' + time_string
+
+        if(self.current_profile.current_step > self.current_profile.sequence_step_count):
+            self.test_stand.end_trial()
+            return
+
         self.model.run_sequence_bolded_row = self.current_profile.current_step
 
         self.current_profile.tick()

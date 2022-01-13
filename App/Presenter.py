@@ -396,7 +396,6 @@ class Presenter:
             if(i > 4.5):
                 return
             self.ui.sidebar_other_name[i].setText(values[i])
-            
 
     def setup_developer_mode_clicked(self):
 

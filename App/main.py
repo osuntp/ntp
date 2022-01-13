@@ -1,3 +1,4 @@
+import types
 from StateMachine import TestStandStates
 from StateMachine.TestStand import TestStand
 from SM import SerialMonitor
@@ -11,6 +12,22 @@ import sys
 import os
 import importlib.util
 from SettingsManager import SettingsManager
+
+def profile_is_valid(profile):
+    if(not getattr(profile, "start", None)):
+        Log.python.error()
+        return False
+    else:
+        if(not callable(getattr(profile, "start", None))):
+            print("there is something called start but it is not a method")
+            return False
+        elif(profile.start() is not None):
+            print("there is a start method, but it returns the wrong type")
+            
+
+
+
+    return True                
 
 if __name__ == "__main__":
     Log.create()
@@ -38,20 +55,29 @@ if __name__ == "__main__":
     for file in os.listdir('App/TestStandProfiles'):
 
         if file.endswith('.py'):
-
             if(file != "AbstractProfile.py"):
                 file_location = cwd + '\App\TestStandProfiles\\'
                 spec = importlib.util.spec_from_file_location('PythonFile', os.path.join(file_location, file))
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                profile = module.TestStandBehaviour()
-                profile.test_stand = test_stand
-                profiles.append(profile)
-                try:
-                    ui.setup.test_stand_behaviour_field.addItem(profile.name)
-                except AttributeError:
-                    ui.setup.test_stand_behaviour_field.addItem("Err: Unnamed Profile")
 
+                try:
+                    profile = module.TestStandBehaviour()
+
+                    should_load = profile_is_valid(profile)
+
+                    if(should_load):
+                        profile.test_stand = test_stand
+                        profiles.append(profile)
+
+                        try:
+                            ui.setup.test_stand_behaviour_field.addItem(profile.name)
+                        except AttributeError:
+                            ui.setup.test_stand_behaviour_field.addItem(file)
+                except ModuleNotFoundError:
+                    Log.python.error("Tried to create proile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
+
+                
     test_stand.profiles = profiles
 
     ui.setup.set_initial_values_from_settings(settings.profile_index, settings.developer_mode)

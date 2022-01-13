@@ -11,8 +11,6 @@ class Model:
     shown_data_buffer = 10
     diagnostics_data_buffer = 15
 
-    latest_values = [0]
-
     time_between_plot_points = 0.5
     time_of_last_run_plot_point = 0
     time_of_last_diagnostics_plot_point = 0
@@ -180,6 +178,7 @@ class Model:
 
             self.test_stand.end_trial_time = float(config.trial_end_timestep)
             self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+            self.test_stand_trial_running_state.current_profile.sequence_step_count = len(config.sequence_values[0])
 
             self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
             self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
