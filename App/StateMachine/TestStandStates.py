@@ -29,6 +29,7 @@ class StandbyState():
         if(self.serial_monitor.is_fully_connected):
             self.test_stand.valve.set_position(90)
 
+
     def tick(self):
         pass
     
@@ -245,7 +246,10 @@ class TrialRunningState():
 
         self.current_profile.current_step = 0
         self.current_profile.trial_time = 0
-        self.current_profile.start()
+        try:
+            self.current_profile.start()
+        except Exception as e:
+            Log.python.error("There was an error with the current profile's start method: " + e)
 
     def tick(self):
         self.test_stand.blue_lines.update_sequence()
@@ -269,12 +273,20 @@ class TrialRunningState():
 
         self.model.run_sequence_bolded_row = self.current_profile.current_step
 
-        self.current_profile.tick()
+        try:
+            self.current_profile.tick()
+        except Exception as e:
+            Log.python.error("Tried to run trial but there was an error with the current profile's tick method: " + e)
+            self.test_stand.end_trial()
 
     def exit_state(self):
         self.model.trial_is_running = False
         self.model.abort_button_enabled = False
-        self.current_profile.end()
+        
+        try:
+            self.current_profile.end()
+        except Exception as e:
+            Log.python.error("There was an error with the current profile's end method: " + e)
 
     def set_current_profile(self, profile):
         self.current_profile = profile

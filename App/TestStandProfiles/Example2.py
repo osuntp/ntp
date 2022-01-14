@@ -1,9 +1,13 @@
-from TestStandProfiles.AbstractProfile import AbstractProfile
+if __name__ == "__main__":
+    from AbstractProfile import AbstractProfile
+else:
+    from TestStandProfiles.AbstractProfile import AbstractProfile
+### DO NOT EDIT ABOVE ###
 
 class TestStandBehaviour(AbstractProfile):
-    # def start(self):
-    #     return 5
     pass
+
+### DO NOT EDIT BELOW ###
 if __name__ == "__main__":
-    a = TestStandBehaviour()
-    
+    instance = TestStandBehaviour()
+    instance.is_valid()

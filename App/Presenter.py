@@ -146,7 +146,7 @@ class Presenter:
             self.ui.sidebar_inletpress.setText('NA')
             self.ui.sidebar_midpress.setText('NA')
             self.ui.sidebar_outletpress.setText('NA')
-
+            
             other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
 
             for i in range(len(other_values)):

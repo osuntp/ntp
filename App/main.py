@@ -12,23 +12,7 @@ import sys
 import os
 import importlib.util
 from SettingsManager import SettingsManager
-
-def profile_is_valid(profile):
-    if(not getattr(profile, "start", None)):
-        Log.python.error()
-        return False
-    else:
-        if(not callable(getattr(profile, "start", None))):
-            print("there is something called start but it is not a method")
-            return False
-        elif(profile.start() is not None):
-            print("there is a start method, but it returns the wrong type")
-            
-
-
-
-    return True                
-
+              
 if __name__ == "__main__":
     Log.create()
     settings = SettingsManager.open_settings_file()
@@ -64,16 +48,15 @@ if __name__ == "__main__":
                 try:
                     profile = module.TestStandBehaviour()
 
-                    should_load = profile_is_valid(profile)
+                    profile.test_stand = test_stand
+                    profiles.append(profile)
 
-                    if(should_load):
-                        profile.test_stand = test_stand
-                        profiles.append(profile)
+                    try:
+                        ui.setup.test_stand_behaviour_field.addItem(profile.name)
+                    except AttributeError:
+                        profile.name = file
+                        ui.setup.test_stand_behaviour_field.addItem(file)
 
-                        try:
-                            ui.setup.test_stand_behaviour_field.addItem(profile.name)
-                        except AttributeError:
-                            ui.setup.test_stand_behaviour_field.addItem(file)
                 except ModuleNotFoundError:
                     Log.python.error("Tried to create proile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
 
