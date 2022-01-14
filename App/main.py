@@ -47,7 +47,16 @@ if __name__ == "__main__":
 
                 try:
                     profile = module.TestStandBehaviour()
+                except ModuleNotFoundError:
+                    Log.python.error("Tried to create profile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
 
+                try:
+                    is_valid = profile.is_valid()
+                except AttributeError:
+                    Log.python.error("Tried to create profile from /TestStandProfiles/" + file + ", but the \"TestStandBehaviour\" class was invalid.")
+                    is_valid = False
+
+                if(is_valid):
                     profile.test_stand = test_stand
                     profiles.append(profile)
 
@@ -56,11 +65,7 @@ if __name__ == "__main__":
                     except AttributeError:
                         profile.name = file
                         ui.setup.test_stand_behaviour_field.addItem(file)
-
-                except ModuleNotFoundError:
-                    Log.python.error("Tried to create proile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
-
-                
+   
     test_stand.profiles = profiles
 
     ui.setup.set_initial_values_from_settings(settings.profile_index, settings.developer_mode)

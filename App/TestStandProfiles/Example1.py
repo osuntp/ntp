@@ -1,8 +1,13 @@
-from StateMachine.TestStand import TestStand
+if __name__ == "__main__":
+    from AbstractProfile import AbstractProfile
+else:
+    from TestStandProfiles.AbstractProfile import AbstractProfile
+### DO NOT EDIT ABOVE ###
+
 import time
 import random
 
-class TestStandBehaviour:
+class TestStandBehaviour(AbstractProfile):
 
     name = 'Noahs Mass Flow Control'
 
@@ -15,11 +20,6 @@ class TestStandBehaviour:
     # Other Values
     delta_valve_position = 0.25
 
-    # DO NOT REMOVE
-    current_step = 0
-    trial_time = 0
-    test_stand: TestStand = None
-    
     def start(self):
         self.current_step = 0
         self.trial_time = 0
@@ -135,3 +135,8 @@ class TestStandBehaviour:
         ]
 
         return values
+
+### DO NOT EDIT BELOW ###
+if __name__ == "__main__":
+    instance = TestStandBehaviour()
+    instance.is_valid()
