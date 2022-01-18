@@ -4,7 +4,7 @@ else:
     from TestStandProfiles.AbstractProfile import AbstractProfile
 ### DO NOT EDIT ABOVE ###
 
-class TestStandBehaviour(AbstractProfile):
+class TestStandBehavior(AbstractProfile):
 
     def start(self):
         pass
@@ -29,5 +29,5 @@ class TestStandBehaviour(AbstractProfile):
 
 ### DO NOT EDIT BELOW ###
 if __name__ == "__main__":
-    instance = TestStandBehaviour()
+    instance = TestStandBehavior()
     instance.is_valid()

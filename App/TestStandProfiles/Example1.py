@@ -7,7 +7,7 @@ else:
 import time
 import random
 
-class TestStandBehaviour(AbstractProfile):
+class TestStandBehavior(AbstractProfile):
 
     name = 'Noahs Mass Flow Control'
 
@@ -138,5 +138,5 @@ class TestStandBehaviour(AbstractProfile):
 
 ### DO NOT EDIT BELOW ###
 if __name__ == "__main__":
-    instance = TestStandBehaviour()
+    instance = TestStandBehavior()
     instance.is_valid()

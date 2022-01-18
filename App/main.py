@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 spec.loader.exec_module(module)
 
                 try:
-                    profile = module.TestStandBehaviour()
+                    profile = module.TestStandBehavior()
                 except ModuleNotFoundError:
                     Log.python.error("Tried to create profile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
 
