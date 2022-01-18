@@ -267,7 +267,7 @@ class TrialRunningState():
         time_string = '%.1f' % trial_time
         self.model.start_button_text = 'Running Trial - ' + time_string
 
-        if(self.current_profile.current_step > self.current_profile.sequence_step_count):
+        if(self.current_profile.current_step > self.current_profile.step_count-1):
             self.test_stand.end_trial()
             return
 

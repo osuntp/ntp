@@ -254,14 +254,18 @@ class Heater:
         self._desired_power = power
 
     def _tick(self):
+        if(not self.serial_monitor.is_fully_connected):
+            if(self.serial_monitor.tsc_arduino is not None):
+                self._turn_off_heater()
+            
+            return
         self._time_since_last_update = self._time_since_last_update + (time.time() - self._previous_timestamp)
         self._previous_timestamp = time.time()
 
         if(self._time_since_last_update >= self._time_between_updates):
             self._update_heater()
     
-    def _update_heater(self):
-
+    def _update_heater(self):       
         if(self.is_on):
             self._running_total_weighted_power = self._running_total_weighted_power + (self._rms_heater_power * self._time_since_last_update)
 
@@ -302,12 +306,28 @@ class Valve:
 
         self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
+class Sensors:
+    inlet_temp = 0
+    mid_temp = 0
+    outlet_temp = 0
+    heater_temp = 0
+
+    inlet_press = 0
+    mid_press = 0
+    outlet_press = 0
+    supply_press = 0
+
+    flow_temp = 0
+    mass_flow = 0
+    heater_current = 0
+    
 class TestStand:
 
     # References
     blue_lines: BlueLines = None
     heater: Heater = None
     valve: Valve = None
+    sensors: Sensors = None
     ui: UI = None
     app: App = None
     current_state = None
@@ -319,8 +339,8 @@ class TestStand:
     # Trial Values
     trial_time = 0
     end_trial_time = 0
-
-    # Test Stand Values
+    
+    # TODO: Replace with sensors class
     inlet_temp = 0
     mid_temp = 0
     outlet_temp = 0
@@ -335,7 +355,7 @@ class TestStand:
     mass_flow = 0
     heater_current = 0
     heater_power = 0
-    
+
     # Other
     state_machine_stopped = False
 
@@ -346,6 +366,8 @@ class TestStand:
 
         self.valve = Valve()
         self.valve.serial_monitor = self.serial_monitor
+
+        self.sensors = Sensors()
 
         self.blue_lines = BlueLines()
         self.blue_lines.test_stand = self

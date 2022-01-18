@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 class AbstractProfile(ABC):
     test_stand: TestStand = None
     current_step = 0
+    step_count = 0
     trial_time = 0
 
     def is_valid(self):

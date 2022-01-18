@@ -180,6 +180,7 @@ class Model:
 
             self.test_stand.end_trial_time = float(config.trial_end_timestep)
             self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
+            self.test_stand_trial_running_state.current_profile.step_count = len(config.sequence_values[0])
 
             self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
             self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
