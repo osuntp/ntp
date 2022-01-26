@@ -12,6 +12,8 @@ char prefix[numChars];
 char message[numChars];
 boolean newMessageIsAvailable = false;
 
+int heater_pin = 53;
+
 void setup()
 {
 
@@ -22,6 +24,8 @@ void setup()
   Serial.println("<TSC>");
 
   massFlowValve.attach(9);
+
+  pinMode(heater_pin,OUTPUT);
 }
 
 void loop()
@@ -32,6 +36,13 @@ void loop()
   {
     HandleNewMessage();
   }
+
+  digitalWrite(heater_pin,HIGH);
+  Serial.println("ON");
+  delay(5000);
+  digitalWrite(heater_pin,LOW);
+  Serial.println("OFF");
+  delay(5000);  
 }
 
 void CheckSerialForMessage()
