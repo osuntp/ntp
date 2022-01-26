@@ -415,7 +415,10 @@ class Presenter:
 
     def manual_send_heater_command_clicked(self):
         value = self.ui.manual.heater_field.value()
-        self.test_stand.heater.set_power(value)
+
+        if(value >= 0 and value <= 520):
+            self.ui.manual.current_heater_label.setText('Current: ' + str(value))
+            self.test_stand.heater.set_power(value)
 
 # CONFIGURATION PAGE LOGIC
     def configuration_blue_lines_plus_clicked(self):

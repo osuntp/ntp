@@ -42,29 +42,10 @@ class TestStandBehavior(AbstractProfile):
             # add it to current valve position
             mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.mass_flow
             if mass_flow_diff > 50:
-                self.delta_valve_position = -1
-            elif mass_flow_diff > 25:
-                self.delta_valve_position = -0.5
-            elif mass_flow_diff > 10:
-                self.delta_valve_position = -0.5
-            else:
-                self.delta_valve_position = -0.25
-
-            new_valve_position = valve_position + self.delta_valve_position
-
-            if(new_valve_position < 0):
-                new_valve_position = 0
-                
-            self.test_stand.valve.set_position(new_valve_position)
-
-        elif(self.test_stand.mass_flow > (self.target_mass_flow[self.current_step]+5)):
-
-            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.mass_flow
-            if mass_flow_diff < -50:
                 self.delta_valve_position = 1
-            elif mass_flow_diff < -25:
+            elif mass_flow_diff > 25:
                 self.delta_valve_position = 0.5
-            elif mass_flow_diff < -10:
+            elif mass_flow_diff > 10:
                 self.delta_valve_position = 0.5
             else:
                 self.delta_valve_position = 0.25
@@ -73,6 +54,25 @@ class TestStandBehavior(AbstractProfile):
 
             if(new_valve_position > 90):
                 new_valve_position = 90
+                
+            self.test_stand.valve.set_position(new_valve_position)
+
+        elif(self.test_stand.mass_flow > (self.target_mass_flow[self.current_step]+5)):
+
+            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.mass_flow
+            if mass_flow_diff < -50:
+                self.delta_valve_position = -1
+            elif mass_flow_diff < -25:
+                self.delta_valve_position = -0.5
+            elif mass_flow_diff < -10:
+                self.delta_valve_position = -0.5
+            else:
+                self.delta_valve_position = -0.25
+
+            new_valve_position = valve_position + self.delta_valve_position
+
+            if(new_valve_position < 0):
+                new_valve_position = 0
 
             self.test_stand.valve.set_position(new_valve_position)
         
