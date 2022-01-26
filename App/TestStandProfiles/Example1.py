@@ -36,7 +36,7 @@ class TestStandBehavior(AbstractProfile):
 
         # Open valve if mass flow is too low, Close valve if mass flow is too high
 
-        if(self.test_stand.mass_flow < (self.target_mass_flow[self.current_step]-5)):
+        if(self.test_stand.sensors.mass_flow < (self.target_mass_flow[self.current_step]-5)):
             
             # calculate delta_valve_position
             # add it to current valve position
