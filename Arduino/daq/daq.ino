@@ -38,6 +38,7 @@ float press_psi_tank = 0;
 
 // Initialize heater current sensor
 int current_pin = A5;
+float current_reading = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -60,20 +61,20 @@ void setup() {
 
 
   /* Reset all I2C devices */
-      Serial.println("hit1");
+//      Serial.println("hit1");
   error = sensirion_i2c_general_call_reset();
   if (error) {
     Serial.println("<stderr,SFM general call reset failed>");
   }
-    Serial.println("hitt2");
+//    Serial.println("hitt2");
   /* Wait for the SFM3019 to initialize */
   sensirion_sleep_usec(SFM3019_SOFT_RESET_TIME_US);
-    Serial.println("hit3");
+//    Serial.println("hit3");
   while (sfm3019_probe()) {
     Serial.println("<stderr,SFM sensor probing failed>");
     sensirion_sleep_usec(100000);
   }
-    Serial.println("hit4");
+//    Serial.println("hit4");
   uint32_t product_number = 0;
   uint8_t serial_number[8] = {};
   error = sfm_common_read_product_identifier(SFM3019_I2C_ADDRESS,
@@ -194,11 +195,7 @@ void loop() {
   press_psi_outlet = press_psi_outlet / 1024 * 100;
   press_psi_tank = (((press_psi_tank / 1024) * 5) -1) * (200/4);
 
-  //  float heater_current = 0;
-  //  float heater_temp = 0;
-  //  float heater_it = 0;
-  //  float mid_press = 0;
-  //  float outlet_press = 0;
+  current_reading = 0.0266 * analogRead(current_pint); // [A]
 
   // Send data stream
   Serial.print("<stdout, ");
@@ -206,7 +203,7 @@ void loop() {
   Serial.print(", ");
   Serial.print(flow_temperature);
   Serial.print(", ");
-  Serial.print(0); // Serial.print(heater_current);
+  Serial.print(current_reading); // Serial.print(heater_current);
   Serial.print(", ");
   Serial.print(c4);
   Serial.print(", ");
@@ -232,8 +229,6 @@ void loop() {
   Serial.print(", ");
   Serial.print(press_psi_outlet, 7);
   Serial.println(">");
-  Serial.println(analogRead(current_pin));
-  Serial.print(" ");
 
   delay(20);
 }

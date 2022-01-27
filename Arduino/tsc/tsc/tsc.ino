@@ -35,14 +35,7 @@ void loop()
   if (newMessageIsAvailable)
   {
     HandleNewMessage();
-  }
-
-  digitalWrite(heater_pin,HIGH);
-  Serial.println("ON");
-  delay(5000);
-  digitalWrite(heater_pin,LOW);
-  Serial.println("OFF");
-  delay(5000);  
+  } 
 }
 
 void CheckSerialForMessage()
