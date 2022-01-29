@@ -300,8 +300,9 @@ class Valve:
     position = 0
     serial_monitor: SerialMonitor = None
 
+    # TODO: ORDERS FROM NOAH: 0 is closed, 90 is open
     def set_position(self, position: float):
-        self.position = position
+        self.position = 90 - position
         message = '<stdin, valve, ' + str(position) + '>\n'
 
         self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
