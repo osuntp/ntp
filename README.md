@@ -3,9 +3,9 @@
  <img height=200px src="media/logo.png?raw=true" alt="Project logo"></a>
 </p>
 
-<h1 align="center">NTP @ OSU</h3>
+<h1 align="center">NTP (NET) Software</h3>
 
-<p align="center"> This repository contains the code developed for NTP tie tube simulator test facility at The Ohio State University.
+<p align="center">This repository contains the software developed for the Nonnuclear Environmental Testing (NET) Facility, located at The Ohio State University.
     <br> 
 </p>
 
@@ -16,7 +16,15 @@
 - [Authors](#authors)
 
 ## About <a name = "about"></a>
-Within this repository are the codes, configuration files, data processing workflows, and documentation related to conducting experiments using the NTP tie tube simulator test facility, located in W092, Scott Lab. 
+Within this repository are the codes, configuration files, data processing workflows, and documentation related to conducting experiments using the NTP NET Facility, located in W092, Scott Lab.
+
+## Directory
+At a high level, the repository is broken down into several subdirectories. The big ones are:
+- `App`: main directory for code relating to the test facility software
+- `Arduino`: firmware for the data acquisition system and the insturmentation control system
+- `Post`: code used to post-process test data
+
+And there are additional subdirectories for logs, configuration files, documentation, a sandbox, etc.
 
 ## Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
@@ -35,7 +43,7 @@ In Conda, ensure your desired environment is active, and open the `CMD.exe Promp
 
 where "`ntp`" is the name of the environment you created in Conda. Next, navigate to wherever you downloaded the source code to (using the `cd` command, for example), and enter
 ```
->pip3 install -r requirements.txt
+> pip3 install -r requirements.txt
 ```
 
 This will automatically install the Python modules and packages necessary to run the source code. Once this is complete, you can enter
@@ -46,13 +54,6 @@ to launch the software and verify that everything was installed correctly.
 
 ## Usage <a name="usage"></a>
 Complete documentation on the usage and its instructions are still being created. In the meantime, running the `main.py` Python file in the `App` directory will start the software.
-
-At a high level, the repository is broken down into several subdirectories. The big ones are:
-- App: main directory for code relating to the test facility software
-- Arduino: firmware for the data acquisition system and the insturmentation control system
-- Post: code used to post-process test data
-
-And there are additional subdirectories for logs, configuration files, documentation, a sandbox, etc.
 
 ### Development
 There is no formal development methodology in this project. The authors of the software are aerospace engineers, not software engineers, and therefore, features and fixes have been implemented on an "as needed" basis in response to issues discovered in lab or while using the software. There is no product road map extending beyond what can be achieved in the next couple of weeks.
