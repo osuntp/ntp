@@ -195,7 +195,7 @@ void loop() {
   press_psi_outlet = press_psi_outlet / 1024 * 100;
   press_psi_tank = (((press_psi_tank / 1024) * 5) -1) * (200/4);
 
-  current_reading = 0.0266 * analogRead(current_pint); // [A]
+  current_reading = 0.0266 * analogRead(current_pin); // [A]
 
   // Send data stream
   Serial.print("<stdout, ");
