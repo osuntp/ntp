@@ -2,6 +2,7 @@ from __future__ import annotations
 from inspect import signature
 from abc import ABC
 from typing import TYPE_CHECKING, List
+from Log import Log
 
 if TYPE_CHECKING:
     from StateMachine.TestStand import TestStand
@@ -9,8 +10,18 @@ if TYPE_CHECKING:
 class AbstractProfile(ABC):
     test_stand: TestStand = None
     current_step = 0
+    step_time = 0
     step_count = 0
     trial_time = 0
+
+    def move_to_next_step(self):
+        self.current_step = self.current_step + 1
+        self.step_time = 0
+
+        if(self.current_step > self.step_count - 1):
+            self.current_step = self.step_count - 1
+            Log.python.info('There are no more sequence steps. Ending Trial.')
+            self.test_stand.end_trial()
 
     def is_valid(self):
         _is_valid = True
@@ -77,4 +88,3 @@ class AbstractProfile(ABC):
         if(_is_valid):
             print("TestStandBehaviour is Valid.")
         return _is_valid
-

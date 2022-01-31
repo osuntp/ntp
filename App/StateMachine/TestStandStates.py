@@ -226,6 +226,7 @@ class TrialRunningState():
     trial_ended_state: TrialEndedState = None
 
     start_timestamp = 0
+    last_timestamp = 0
 
     current_profile = None
 
@@ -246,21 +247,25 @@ class TrialRunningState():
 
         self.current_profile.current_step = 0
         self.current_profile.trial_time = 0
+        self.current_profile.step_time = 0
+
+        self.last_timestamp = time.time()
+
         try:
             self.current_profile.start()
         except Exception as e:
-            Log.python.error("There was an error with the current profile's start method: " + e)
+            Log.python.error("There was an error with the current profile's start method: " + str(e))
 
     def tick(self):
-        self.test_stand.blue_lines.update_sequence()
-
-        if(not self.test_stand.blue_lines.condition_is_met()):
-            self.test_stand.end_trial()
-
         trial_time = time.time() - self.start_timestamp
         self.current_profile.trial_time = trial_time
+        self.current_profile.step_time = self.current_profile.step_time + time.time() - self.last_timestamp
 
-        if(trial_time > self.test_stand.end_trial_time):
+        self.last_timestamp = time.time()
+
+        self.test_stand.blue_lines.update_sequence(trial_time)
+
+        if(not self.test_stand.blue_lines.condition_is_met()):
             self.test_stand.end_trial()
             return
 
@@ -276,7 +281,7 @@ class TrialRunningState():
         try:
             self.current_profile.tick()
         except Exception as e:
-            Log.python.error("Tried to run trial but there was an error with the current profile's tick method: " + e)
+            Log.python.error("Tried to run trial but there was an error with the current profile's tick method: " + str(e))
             self.test_stand.end_trial()
 
     def exit_state(self):
@@ -286,7 +291,7 @@ class TrialRunningState():
         try:
             self.current_profile.end()
         except Exception as e:
-            Log.python.error("There was an error with the current profile's end method: " + e)
+            Log.python.error("There was an error with the current profile's end method: " + str(e))
 
     def set_current_profile(self, profile):
         self.current_profile = profile

@@ -43,7 +43,10 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
         time_step += (str(blue_lines.item(i,0).text()))
         sensor_type += (str(blue_lines.cellWidget(i,1).currentText()))
         limit_type += blue_lines.cellWidget(i, 2).currentText()
-        value += (str(blue_lines.item(i, 3).text()))
+        try:
+            value += (str(blue_lines.item(i, 3).text()))
+        except AttributeError:
+            value = str(0)
 
         if(i < (blue_lines.rowCount() - 1)):
             time_step += ', '

@@ -12,7 +12,7 @@ class TestStandBehavior(AbstractProfile):
     name = 'Noahs Mass Flow Control'
 
     # Sequence Values
-    timestep = []
+    duration = []
     power = []
     target_mass_flow = []
     OF_instruction = []
@@ -25,12 +25,9 @@ class TestStandBehavior(AbstractProfile):
         self.trial_time = 0
 
     def tick(self):
-        # If this is not the last time step
-        if(self.current_step is not len(self.timestep)-1):
-
-            # If the trial time has passed time to move to the next time step
-            if(self.trial_time > self.timestep[self.current_step + 1]):
-                 self.current_step = self.current_step + 1
+        # If the trial time has passed time to move to the next time step
+        if(self.step_time > self.duration[self.current_step]):
+            self.move_to_next_step()
 
         valve_position = self.test_stand.valve.position
 
@@ -90,7 +87,7 @@ class TestStandBehavior(AbstractProfile):
         return [random.random(), random.random(), random.random()]
 
     sequence_columns = [
-        'Timestep (s)', 
+        'Duration (s)', 
         'Power (W)', 
         'Mass Flow Rate (slm)', 
         'Valve Position', 
@@ -98,7 +95,7 @@ class TestStandBehavior(AbstractProfile):
         ]
     
     def set_sequence_values(self, values):
-        self.timestep = [float(value) for value in values[0]]
+        self.duration = [float(value) for value in values[0]]
         self.power = [float(value) for value in values[1]]
         self.target_mass_flow = [float(value) for value in values[2]]
         self.OF_instruction = [str(value) for value in values[3]]
@@ -121,16 +118,16 @@ class TestStandBehavior(AbstractProfile):
     def get_dataframe_values(self):
         values = [
             time.time(),
-            self.test_stand.mass_flow,
+            self.test_stand.sensors.mass_flow,
             0,
-            self.test_stand.inlet_temp,
+            self.test_stand.sensors.inlet_temp,
             0,
-            self.test_stand.mid_temp,
+            self.test_stand.sensors.mid_temp,
             0,
-            self.test_stand.outlet_temp,
+            self.test_stand.sensors.outlet_temp,
             0,
-            self.test_stand.supply_press,
-            self.test_stand.inlet_press,
+            self.test_stand.sensors.supply_press,
+            self.test_stand.sensors.inlet_press,
             self.test_stand.valve.position
         ]
 

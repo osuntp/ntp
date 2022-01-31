@@ -473,11 +473,17 @@ class Presenter:
 
         table = self.ui.configuration.blue_lines_table
 
-        for i in range (table.rowCount()-1):
+        for i in range(table.rowCount()):
             blue_lines_time_step.append(float(table.item(i, 0).text()))
             blue_lines_sensor_type.append(table.cellWidget(i, 1).currentText())
             blue_lines_limit_type.append(table.cellWidget(i, 2).currentText())
-            blue_lines_value.append(float(table.item(i,3).text()))
+
+            try:
+                blue_lines_value.append(float(table.item(i,3).text()))
+            except AttributeError:
+                blue_lines_value.append(0)
+            except ValueError:
+                blue_lines_value.append(0)
 
         sequence_values = []
         table = self.ui.configuration.sequence_table
@@ -508,6 +514,8 @@ class Presenter:
             return
       
         config: Config.Config = Config.open_file(file_name, len(self.test_stand_trial_running_state.current_profile.sequence_columns))
+
+        print(config.blue_lines_time_step)
 
         self.model.set_config(config)       
     

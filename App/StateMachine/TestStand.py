@@ -7,35 +7,49 @@ from SM import Arduino
 from UI.UI import UI
 from Log import Log
 
-
 from SM import SerialMonitor
 import SM
+
+class Sensors:
+    mass_flow = 0
+    flow_temp = 0
+    heater_current = 0
+
+    heater_temp = 0
+    inlet_temp = 0
+    mid_temp = 0
+    outlet_temp = 0
+    
+    supply_press = 0
+    inlet_press = 0
+    mid_press = 0
+    outlet_press = 0
 
 class BlueLines:
 
     test_stand = None
 
-    mass_flow_min = 0
-    heater_current_min = 0
-    heater_temp_min = 0
-    inlet_temp_min = 0
-    mid_temp_min = 0
-    outlet_temp_min = 0
-    supply_press_min = 0
-    inlet_press_min = 0
-    mid_press_min = 0
-    outlet_press_min = 0
+    mass_flow_min = None
+    heater_current_min = None
+    heater_temp_min = None
+    inlet_temp_min = None
+    mid_temp_min = None
+    outlet_temp_min = None
+    supply_press_min = None
+    inlet_press_min = None
+    mid_press_min = None
+    outlet_press_min = None
 
-    mass_flow_max = -1
-    heater_current_max = -1
-    heater_temp_max = -1
-    inlet_temp_max = -1
-    mid_temp_max = -1
-    outlet_temp_max = -1
-    supply_press_max = -1
-    inlet_press_max = -1
-    mid_press_max = -1
-    outlet_press_max = -1
+    mass_flow_max = None
+    heater_current_max = None
+    heater_temp_max = None
+    inlet_temp_max = None
+    mid_temp_max = None
+    outlet_temp_max = None
+    supply_press_max = None
+    inlet_press_max = None
+    mid_press_max = None
+    outlet_press_max = None
 
     time_step_sequence = []
     sensor_sequence = []
@@ -53,89 +67,99 @@ class BlueLines:
 # ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
 
     def condition_is_met(self):
-        mass_flow = self.test_stand.mass_flow
-        heater_current = self.test_stand.heater_current
-        heater_temp = self.test_stand.heater_temp
-        in_temp = self.test_stand.inlet_temp
-        mid_temp = self.test_stand.mid_temp
-        out_temp = self.test_stand.outlet_temp
-        supply_press = self.test_stand.supply_press
-        in_press = self.test_stand.inlet_press
-        mid_press = self.test_stand.mid_press
-        out_press = self.test_stand.outlet_press
+        mass_flow = self.test_stand.sensors.mass_flow
+        heater_current = self.test_stand.sensors.heater_current
+        heater_temp = self.test_stand.sensors.heater_temp
+        in_temp = self.test_stand.sensors.inlet_temp
+        mid_temp = self.test_stand.sensors.mid_temp
+        out_temp = self.test_stand.sensors.outlet_temp
+        supply_press = self.test_stand.sensors.supply_press
+        in_press = self.test_stand.sensors.inlet_press
+        mid_press = self.test_stand.sensors.mid_press
+        out_press = self.test_stand.sensors.outlet_press
               
         is_valid = True
 
         log_output = 'Trial ended early due to blue lines. '
+        
+        if(self.mass_flow_min is not None):
+            if(mass_flow < self.mass_flow_min):
+                is_valid = False
+                log_output = log_output + 'The mass flow was ' + str(mass_flow) + ' which is below the blue line minimum of ' + str(self.mass_flow_min) + '.'
+        if(self.heater_current_min is not None):
+            if(heater_current < self.heater_current_min):
+                is_valid = False
+                log_output = log_output + 'The heater current was ' + str(heater_current) + ' which is below the blue line minimum of ' + str(self.heater_current_min) + '.'
+        if(self.heater_temp_min is not None):
+            if(heater_temp < self.heater_temp_min):
+                is_valid = False
+                log_output = log_output + 'The heater temperature was ' + str(heater_temp) + ' which is below the blue line minimum of ' + str(self.heater_temp_min) + '.'
+        if(self.inlet_temp_min is not None):
+            if(in_temp < self.inlet_temp_min):
+                is_valid = False
+                log_output = log_output + 'The inlet temperature was ' + str(in_temp) + ' which is below the blue line minimum of ' + str(self.inlet_temp_min) + '.'
+        if(self.mid_temp_min is not None):
+            if(mid_temp < self.mid_temp_min):
+                is_valid = False
+                log_output = log_output + 'The midpoint temperature was ' + str(mid_temp) + ' which is below the blue line minimum of ' + str(self.mid_temp_min) + '.'
+        if(self.outlet_temp_min is not None):
+            if(out_temp < self.outlet_temp_min):
+                is_valid = False
+                log_output = log_output + 'The outlet temperature was ' + str(out_temp) + ' which is below the blue line minimum of ' + str(self.outlet_temp_min) + '.'
+        if(self.supply_press_min is not None):
+            if(supply_press < self.supply_press_min):
+                is_valid = False
+                log_output = log_output + 'The supply pressure was ' + str(supply_press) + ' which is below the blue line minimum of ' + str(self.supply_press_min) + '.'
+        if(self.inlet_press_min is not None):
+            if(in_press < self.inlet_press_min):
+                is_valid = False
+                log_output = log_output + 'The inlet pressure was ' + str(in_press) + ' which is below the blue line minimum of ' + str(self.inlet_press_min) + '.'
+        if(self.mid_press_min is not None):
+            if(mid_press < self.mid_press_min):
+                is_valid = False
+                log_output = log_output + 'The midpoint pressure was ' + str(mid_press) + ' which is below the blue line minimum of ' + str(self.mid_press_min) + '.'
+        if(self.outlet_press_min is not None):
+            if(out_press < self.outlet_press_min):
+                is_valid = False
+                log_output = log_output + 'The outlet pressure was ' + str(out_press) + ' which is below the blue line minimum of ' + str(self.outlet_press_min) + '.'
 
-        if(mass_flow < self.mass_flow_min):
-            is_valid = False
-            log_output = log_output + 'The mass flow was ' + str(mass_flow) + ' which is below the blue line minimum of ' + str(self.mass_flow_min) + '.'
-        if(heater_current < self.heater_current_min):
-            is_valid = False
-            log_output = log_output + 'The heater current was ' + str(heater_current) + ' which is below the blue line minimum of ' + str(self.heater_current_min) + '.'
-        if(heater_temp < self.heater_temp_min):
-            is_valid = False
-            log_output = log_output + 'The heater temperature was ' + str(heater_temp) + ' which is below the blue line minimum of ' + str(self.heater_temp_min) + '.'
-        if(in_temp < self.inlet_temp_min):
-            is_valid = False
-            log_output = log_output + 'The inlet temperature was ' + str(in_temp) + ' which is below the blue line minimum of ' + str(self.inlet_temp_min) + '.'
-        if(mid_temp < self.mid_temp_min):
-            is_valid = False
-            log_output = log_output + 'The midpoint temperature was ' + str(mid_temp) + ' which is below the blue line minimum of ' + str(self.mid_temp_min) + '.'
-        if(out_temp < self.outlet_temp_min):
-            is_valid = False
-            log_output = log_output + 'The outlet temperature was ' + str(out_temp) + ' which is below the blue line minimum of ' + str(self.outlet_temp_min) + '.'
-        if(supply_press < self.supply_press_min):
-            is_valid = False
-            log_output = log_output + 'The supply pressure was ' + str(supply_press) + ' which is below the blue line minimum of ' + str(self.supply_press_min) + '.'
-        if(in_press < self.inlet_press_min):
-            is_valid = False
-            log_output = log_output + 'The inlet pressure was ' + str(in_press) + ' which is below the blue line minimum of ' + str(self.inlet_press_min) + '.'
-        if(mid_press < self.mid_press_min):
-            is_valid = False
-            log_output = log_output + 'The midpoint pressure was ' + str(mid_press) + ' which is below the blue line minimum of ' + str(self.mid_press_min) + '.'
-        if(out_press < self.outlet_press_min):
-            is_valid = False
-            log_output = log_output + 'The outlet pressure was ' + str(out_press) + ' which is below the blue line minimum of ' + str(self.outlet_press_min) + '.'
-
-        if(self.mass_flow_max != -1):
+        if(self.mass_flow_max is not None):
             if(mass_flow > self.mass_flow_max):
                 is_valid = False
                 log_output = log_output + 'The mass flow was ' + str(mass_flow) + ' which is above the blue line maximum of ' + str(self.mass_flow_max) + '.'
-        if(self.heater_current_max != -1):
+        if(self.heater_current_max is not None):
             if(heater_current > self.heater_current_max):
                 is_valid = False
                 log_output = log_output + 'The heater_current was ' + str(heater_current) + ' which is above the blue line maximum of ' + str(self.heater_current_max) + '.'
-        if(self.heater_temp_max != -1):
+        if(self.heater_temp_max is not None):
             if(heater_temp > self.heater_temp_max):
                 is_valid = False
                 log_output = log_output + 'The heater temperature was ' + str(heater_temp) + ' which is above the blue line maximum of ' + str(self.heater_temp_max) + '.'
-        if(self.inlet_temp_max != -1):
+        if(self.inlet_temp_max is not None):
             if(in_temp > self.inlet_temp_max):
                 is_valid = False
                 log_output = log_output + 'The inlet temperature was ' + str(in_temp) + ' which is above the blue line maximum of ' + str(self.inlet_temp_max) + '. '
-        if(self.mid_temp_max != -1):
+        if(self.mid_temp_max is not None):
             if(mid_temp > self.mid_temp_max):
                 is_valid = False
                 log_output = log_output + 'The midpoint temperature was ' + str(mid_temp) + ' which is above the blue line maximum of ' + str(self.mid_temp_max) + '. '
-        if(self.outlet_temp_max != -1):
+        if(self.outlet_temp_max is not None):
             if(out_temp > self.outlet_temp_max):
                 is_valid = False
                 log_output = log_output + 'The outlet temperature was ' + str(out_temp) + ' which is above the blue line maximum of ' + str(self.outlet_temp_max) + '. '
-        if(self.supply_press_max != -1):
+        if(self.supply_press_max is not None):
             if(supply_press > self.supply_press_max):
                 is_valid = False
                 log_output = log_output + 'The supply pressure was ' + str(supply_press) + ' which is above the blue line maximum of ' + str(self.supply_press_max) + '. '
-        if(self.inlet_press_max != -1):
+        if(self.inlet_press_max is not None):
             if(in_press > self.inlet_press_max):
                 is_valid = False
                 log_output = log_output + 'The inlet pressure was ' + str(in_press) + ' which is above the blue line maximum of ' + str(self.inlet_press_max) + '. '
-        if(self.mid_press_max != -1):
+        if(self.mid_press_max is not None):
             if(mid_press > self.mid_press_max):
                 is_valid = False
                 log_output = log_output + 'The midpoint pressure was ' + str(mid_press) + ' which is above the blue line maximum of ' + str(self.mid_press_max) + '. '
-        if(self.outlet_press_max != -1):
+        if(self.outlet_press_max is not None):
             if(out_press > self.outlet_press_max):
                 is_valid = False
                 log_output = log_output + 'The outlet pressure was ' + str(out_press) + ' which is above the blue line maximum of ' + str(self.outlet_press_max) + '. '
@@ -145,12 +169,10 @@ class BlueLines:
 
         return is_valid
 
-    def update_sequence(self):
+    def update_sequence(self, trial_time):
         if(self.current_sequence_step != len(self.time_step_sequence)):
 
-            current_time = time.time()
-
-            while(current_time >= self.time_step_sequence[self.current_sequence_step]):
+            while(trial_time >= self.time_step_sequence[self.current_sequence_step]):
                 sensor = self.sensor_sequence[self.current_sequence_step]
                 limit_type = self.limit_type_sequence[self.current_sequence_step]
                 value = self.value_sequence[self.current_sequence_step]
@@ -176,7 +198,7 @@ class BlueLines:
                         self.mid_press_max
                     elif(sensor == 'Outlet Press'):
                         self.outlet_press_max = value
-                else:
+                elif (limit_type == 'Min'):
                     if(sensor == 'Mass Flow'):
                         self.mass_flow_min = value
                     elif(sensor == 'Heater Current'):
@@ -197,6 +219,27 @@ class BlueLines:
                         self.mid_press_min = value
                     elif(sensor == 'Outlet Press'):
                         self.outlet_press_min = value
+                elif (limit_type == 'None'):
+                    if(sensor == 'Mass Flow'):
+                        self.mass_flow_min = None
+                    elif(sensor == 'Heater Current'):
+                        self.heater_current_min = None
+                    elif(sensor == 'Heater Temp'):
+                        self.heater_temp_min = None
+                    elif(sensor == 'Inlet Temp'):
+                        self.inlet_temp_min = None
+                    elif(sensor == 'Midpoint Temp'):
+                        self.mid_temp_min = None
+                    elif(sensor == 'Outlet Temp'):
+                        self.outlet_temp_min = None
+                    elif(sensor == 'Supply Press'):
+                        self.supply_press_min = None
+                    elif(sensor == 'Inlet Press'):
+                        self.inlet_press_min = None
+                    elif(sensor == 'Midpoint Press'):
+                        self.mid_press_min = None
+                    elif(sensor == 'Outlet Press'):
+                        self.outlet_press_min = None
 
                 self.current_sequence_step = self.current_sequence_step + 1
 
@@ -204,27 +247,27 @@ class BlueLines:
                     return
 
     def start_sequence(self):
-        self.mass_flow_min = 0
-        self.heater_current_min = 0
-        self.heater_temp_min = 0
-        self.inlet_temp_min = 0
-        self.mid_temp_min = 0
-        self.outlet_temp_min = 0
-        self.supply_press_min = 0
-        self.inlet_press_min = 0
-        self.mid_press_min = 0
-        self.outlet_press_min = 0
+        self.mass_flow_min = None
+        self.heater_current_min = None
+        self.heater_temp_min = None
+        self.inlet_temp_min = None
+        self.mid_temp_min = None
+        self.outlet_temp_min = None
+        self.supply_press_min = None
+        self.inlet_press_min = None
+        self.mid_press_min = None
+        self.outlet_press_min = None
 
-        self.mass_flow_max = -1
-        self.heater_current_max = -1
-        self.heater_temp_max = -1
-        self.inlet_temp_max = -1
-        self.mid_temp_max = -1
-        self.outlet_temp_max = -1
-        self.supply_press_max = -1
-        self.inlet_press_max = -1
-        self.mid_press_max = -1
-        self.outlet_press_max = -1
+        self.mass_flow_max = None
+        self.heater_current_max = None
+        self.heater_temp_max = None
+        self.inlet_temp_max = None
+        self.mid_temp_max = None
+        self.outlet_temp_max = None
+        self.supply_press_max = None
+        self.inlet_press_max = None
+        self.mid_press_max = None
+        self.outlet_press_max = None
 
         self.current_sequence_step = 0
 
@@ -302,26 +345,11 @@ class Valve:
 
     # TODO: ORDERS FROM NOAH: 0 is closed, 90 is open
     def set_position(self, position: float):
-        self.position = 90 - position
+        self.position = position
         message = '<stdin, valve, ' + str(position) + '>\n'
-
+        print('Message Sent to CONTROLLER: ' + message)
         self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
-class Sensors:
-    mass_flow = 0
-    flow_temp = 0
-    heater_current = 0
-
-    heater_temp = 0
-    inlet_temp = 0
-    mid_temp = 0
-    outlet_temp = 0
-    
-    supply_press = 0
-    inlet_press = 0
-    mid_press = 0
-    outlet_press = 0
-    
 class TestStand:
 
     # References

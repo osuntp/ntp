@@ -271,7 +271,7 @@ class Configuration:
         table.setCellWidget(row_count, 1, combo)
 
 
-        combo_box_options = ['Min', 'Max']    
+        combo_box_options = ['Min', 'Max', 'None']    
         combo = QtWidgets.QComboBox()
 
         for option in combo_box_options:
@@ -346,7 +346,7 @@ class Configuration:
             combo.setCurrentIndex(combo_box_options.index(config.blue_lines_sensor_type[i]))
             table.setCellWidget(table.rowCount()-1, 1, combo)
 
-            combo_box_options = ['Min', 'Max']            
+            combo_box_options = ['Min', 'Max', 'None']            
             combo = QtWidgets.QComboBox()
 
             for option in combo_box_options:
@@ -354,7 +354,10 @@ class Configuration:
             combo.setCurrentIndex(combo_box_options.index(config.blue_lines_limit_type[i]))
             table.setCellWidget(table.rowCount()-1, 2, combo)
 
-            text = str(config.blue_lines_value[i])
+            try:
+                text = str(config.blue_lines_value[i])
+            except IndexError:
+                text = ''
             item = QtWidgets.QTableWidgetItem()
             item.setText(text)
             table.setItem(table.rowCount()-1, 3, item)
