@@ -86,17 +86,17 @@ class Model:
         # 16 - Valve Position
         # 17 - Heater Status
 
-        self.test_stand.mass_flow = message[1]
-        self.test_stand.flow_temp = message[2]
-        self.test_stand.heater_current = message[3]
-        self.test_stand.heater_temp = message[4]
-        self.test_stand.inlet_temp = message[6]
-        self.test_stand.mid_temp = message[8]
-        self.test_stand.outlet_temp = message[10]
-        self.test_stand.supply_press = message[12]
-        self.test_stand.inlet_press = message[13]
-        self.test_stand.mid_press = message[14]
-        self.test_stand.outlet_press = message[15]
+        self.test_stand.sensors.mass_flow = message[1]
+        self.test_stand.sensors.flow_temp = message[2]
+        self.test_stand.sensors.heater_current = message[3]
+        self.test_stand.sensors.heater_temp = message[4]
+        self.test_stand.sensors.inlet_temp = message[6]
+        self.test_stand.sensors.mid_temp = message[8]
+        self.test_stand.sensors.outlet_temp = message[10]
+        self.test_stand.sensors.supply_press = message[12]
+        self.test_stand.sensors.inlet_press = message[13]
+        self.test_stand.sensors.mid_press = message[14]
+        self.test_stand.sensors.outlet_press = message[15]
 
         # Add data point to diagnostics dataframe      
         if((current_time - self.time_of_last_diagnostics_plot_point) >= self.time_between_plot_points):

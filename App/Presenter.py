@@ -91,27 +91,27 @@ class Presenter:
             self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
             self.ui.sidebar_tscstatus.setText(self.model.tsc_status_text)
 
-            self.ui.sidebar_massflow.setText(str(self.test_stand.mass_flow))
+            self.ui.sidebar_massflow.setText(str(self.test_stand.sensors.mass_flow))
             self.ui.sidebar_valveposition.setText(str(self.test_stand.valve.position))   
 
-            self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater_power))
+            self.ui.sidebar_heaterpower.setText(str(self.test_stand.heater.desired_power))
             if(self.test_stand.heater.is_on):
                 text = 'On'
             else:
                 text = 'Off'
             self.ui.sidebar_heaterstatus.setText(text)
-            self.ui.sidebar_heatercurrent.setText(str(self.test_stand.heater_current))
-            self.ui.sidebar_heatertemp.setText(str(self.test_stand.heater_temp))
+            self.ui.sidebar_heatercurrent.setText(str(self.test_stand.sensors.heater_current))
+            self.ui.sidebar_heatertemp.setText(str(self.test_stand.sensors.heater_temp))
 
-            self.ui.sidebar_inlettemp.setText(str(self.test_stand.inlet_temp))
-            self.ui.sidebar_supplytemp.setText(str(self.test_stand.flow_temp))
-            self.ui.sidebar_midtemp.setText(str(self.test_stand.mid_temp))
-            self.ui.sidebar_outlettemp.setText(str(self.test_stand.outlet_temp))
+            self.ui.sidebar_inlettemp.setText(str(self.test_stand.sensors.inlet_temp))
+            self.ui.sidebar_supplytemp.setText(str(self.test_stand.sensors.flow_temp))
+            self.ui.sidebar_midtemp.setText(str(self.test_stand.sensors.mid_temp))
+            self.ui.sidebar_outlettemp.setText(str(self.test_stand.sensors.outlet_temp))
 
-            self.ui.sidebar_supplypress.setText(str(self.test_stand.supply_press))
-            self.ui.sidebar_inletpress.setText(str(self.test_stand.inlet_press))
-            self.ui.sidebar_midpress.setText(str(self.test_stand.mid_press))
-            self.ui.sidebar_outletpress.setText(str(self.test_stand.outlet_press))
+            self.ui.sidebar_supplypress.setText(str(self.test_stand.sensors.supply_press))
+            self.ui.sidebar_inletpress.setText(str(self.test_stand.sensors.inlet_press))
+            self.ui.sidebar_midpress.setText(str(self.test_stand.sensors.mid_press))
+            self.ui.sidebar_outletpress.setText(str(self.test_stand.sensors.outlet_press))
 
             other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
 
@@ -175,10 +175,10 @@ class Presenter:
             self.ui.diagnostics.test_stand_status.setText(str(self.model.state_text))
 
             self.ui.diagnostics.valve_voltage.setText(str(self.test_stand.valve.position))
-            self.ui.diagnostics.mass_flow.setText(str(self.test_stand.mass_flow))
-            self.ui.diagnostics.heater_current.setText(str(self.test_stand.heater_current))
+            self.ui.diagnostics.mass_flow.setText(str(self.test_stand.sensors.mass_flow))
+            self.ui.diagnostics.heater_current.setText(str(self.test_stand.sensors.heater_current))
             self.ui.diagnostics.heater_duty_cycle.setText('NA')
-            self.ui.diagnostics.heater_power.setText(str(self.test_stand.heater_power))
+            self.ui.diagnostics.heater_power.setText(str(self.test_stand.heater.desired_power))
             self.ui.diagnostics.heater_state.setText(str(self.test_stand.heater.is_on))
             self.ui.diagnostics.heater_set_point.setText('NA')
 

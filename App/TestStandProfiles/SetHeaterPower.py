@@ -11,7 +11,7 @@ class TestStandBehavior(AbstractProfile):
     name = "Set Heater Power"
 
     timestamp = []
-    desired_heater_power = []
+    desired_heater_power = ['']
 
     def start(self):
         pass

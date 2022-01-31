@@ -40,7 +40,7 @@ class TestStandBehavior(AbstractProfile):
             
             # calculate delta_valve_position
             # add it to current valve position
-            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.mass_flow
+            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.sensors.mass_flow
             if mass_flow_diff > 50:
                 self.delta_valve_position = 1
             elif mass_flow_diff > 25:
@@ -57,9 +57,9 @@ class TestStandBehavior(AbstractProfile):
                 
             self.test_stand.valve.set_position(new_valve_position)
 
-        elif(self.test_stand.mass_flow > (self.target_mass_flow[self.current_step]+5)):
+        elif(self.test_stand.sensors.mass_flow > (self.target_mass_flow[self.current_step]+5)):
 
-            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.mass_flow
+            mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.sensors.mass_flow
             if mass_flow_diff < -50:
                 self.delta_valve_position = -1
             elif mass_flow_diff < -25:

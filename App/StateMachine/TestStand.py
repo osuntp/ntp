@@ -232,7 +232,7 @@ class Heater:
 
     serial_monitor: SerialMonitor = None
 
-    _desired_power: float = 0
+    desired_power: float = 0
 
     _time_between_updates: float = 3 # seconds between each calculation
     _time_since_last_update: float = 0
@@ -251,7 +251,7 @@ class Heater:
         self._running_total_time = 0
         self._time_since_last_update = 0
 
-        self._desired_power = power
+        self.desired_power = power
 
     def _tick(self):
         if(not self.serial_monitor.is_fully_connected):
@@ -273,13 +273,13 @@ class Heater:
 
         average_power = self._running_total_weighted_power / self._running_total_time
 
-        print(str(average_power) + " " + str(self._desired_power) + " " + str(self._time_since_last_update))
+        print(str(average_power) + " " + str(self.desired_power) + " " + str(self._time_since_last_update))
 
         if(self.is_on):
-            if(average_power > self._desired_power):
+            if(average_power > self.desired_power):
                 self._turn_off_heater()
         else:
-            if(average_power < self._desired_power):
+            if(average_power < self.desired_power):
                 self._turn_on_heater()
 
         self._time_since_last_update = 0
@@ -308,19 +308,19 @@ class Valve:
         self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
 class Sensors:
+    mass_flow = 0
+    flow_temp = 0
+    heater_current = 0
+
+    heater_temp = 0
     inlet_temp = 0
     mid_temp = 0
     outlet_temp = 0
-    heater_temp = 0
-
+    
+    supply_press = 0
     inlet_press = 0
     mid_press = 0
     outlet_press = 0
-    supply_press = 0
-
-    flow_temp = 0
-    mass_flow = 0
-    heater_current = 0
     
 class TestStand:
 
@@ -340,22 +340,6 @@ class TestStand:
     # Trial Values
     trial_time = 0
     end_trial_time = 0
-    
-    # TODO: Replace with sensors class
-    inlet_temp = 0
-    mid_temp = 0
-    outlet_temp = 0
-    heater_temp = 0
-
-    inlet_press = 0
-    mid_press = 0
-    outlet_press = 0
-    supply_press = 0
-
-    flow_temp = 0
-    mass_flow = 0
-    heater_current = 0
-    heater_power = 0
 
     # Other
     state_machine_stopped = False
