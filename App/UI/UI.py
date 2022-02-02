@@ -627,7 +627,6 @@ class Run:
         if(row_int == -1):
             row_int = row_count-1
 
-        # print(row_count)
         for i in range(row_count):
             for j in range(column_count-1):
                 

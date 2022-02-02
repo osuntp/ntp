@@ -15,9 +15,15 @@ class TestStandBehavior(AbstractProfile):
     def end(self):
         pass
 
-    sidebar_values = []
+    sidebar_values = ['OpenFOAM Progress', 'Duration Remaining', 'Datapoints Collected']
+
+    openfoam_progress = 0
+    duration_remaining = 0
+    num_of_datapoints = 0
+
+
     def get_sidebar_values(self):
-        return []
+        return [self.openfoam_progress, self.duration_remaining, self.num_of_datapoints]
 
     sequence_columns = []
     def set_sequence_values(self):

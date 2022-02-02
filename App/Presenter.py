@@ -114,12 +114,16 @@ class Presenter:
             self.ui.sidebar_outletpress.setText(str(self.test_stand.sensors.outlet_press))
 
             other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
-
+            
             for i in range(len(other_values)):
                 if i > 4.5:
-                    break
-
-                self.ui.sidebar_other[i].setText(str(other_values[i]))
+                        break
+                if(self.test_stand.current_state == self.test_stand.trial_running_state):
+                    self.ui.sidebar_other[i].setText(str(other_values[i]))
+                
+                else:
+                    self.ui.sidebar_other[i].setText('NA')
+        
         else:
             self.ui.side_bar_state_text.setText(self.model.state_text)
             self.ui.sidebar_daqstatus.setText(self.model.daq_status_text)
