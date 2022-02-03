@@ -137,4 +137,5 @@ App/UI/pyuic5.exe
 Logs/**
 TrialConfigs/**
 Saved_Data/**
-
+.vscode/**
+Settings.ini

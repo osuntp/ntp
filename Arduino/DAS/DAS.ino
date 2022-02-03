@@ -71,7 +71,7 @@ void setup() {
   sensirion_sleep_usec(SFM3019_SOFT_RESET_TIME_US);
 //    Serial.println("hit3");
   while (sfm3019_probe()) {
-    Serial.println("<stderr,SFM sensor probing failed>");
+    Serial.println("<stderr, SFM sensor probing failed>");
     sensirion_sleep_usec(100000);
   }
 //    Serial.println("hit4");
