@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img height=200px src="media/logo.png?raw=true" alt="Project logo"></a>
+ <img height=200px src="_media/logo.png?raw=true" alt="Project logo"></a>
 </p>
 
 <h1 align="center">NTP (NET) Software</h3>

@@ -139,3 +139,5 @@ TrialConfigs/**
 Saved_Data/**
 .vscode/**
 Settings.ini
+_docs/**
+_archive/**
