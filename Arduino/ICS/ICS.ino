@@ -9,7 +9,7 @@ char prefix[numChars];
 char message[numChars];
 boolean newMessageIsAvailable = false;
 
-int heater_pin = 53;
+int heater_pin = 52;
 
 void setup()
 {
@@ -97,6 +97,27 @@ void HandleNewMessage()
       Serial.print("<stdinfo, TSC set the Valve Position to ");
       Serial.print(valvePosition);
       Serial.println(">");
+    }
+
+    if (strcmp(prefix, "heater") == 0)
+    {
+      strtokIndx = strtok(NULL, ", ");
+      char heaterState;
+      heaterState = atof(strtokIndx);
+
+      if (strcmp(heaterState, "on") == 0)
+      {
+        digitalWrite(heater_pin,HIGH);
+        delay(15);
+        Serial.println("<stdinfo, ICS set heater ON>");
+      }
+      
+      if (strcmp(heaterState, "off") == 0)
+      {
+        digitalWrite(heater_pin,LOW);
+        delay(15);
+        Serial.println("<stdinfo, ICS set heater OFF>");
+      }
     }
   }
   

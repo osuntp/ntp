@@ -21,10 +21,10 @@ int error = 0;
 SfmConfig sfm3019;
 
 // Initialize pressure variables
-int press_pin_inlet = A1;
-int press_pin_mid = A2;
-int press_pin_outlet = A3;
-int press_pin_tank = A4;
+int press_pin_inlet = A4;
+int press_pin_mid = A6;
+int press_pin_outlet = A8;
+int press_pin_tank = A2;
 
 int press_analog_inlet = 0;
 int press_analog_mid = 0;
@@ -37,7 +37,7 @@ float press_psi_outlet = 0;
 float press_psi_tank = 0;
 
 // Initialize heater current sensor
-int current_pin = A5;
+int current_pin = A0;
 float current_reading = 0;
 
 void setup() {
@@ -50,11 +50,11 @@ void setup() {
   // Setup mass flow meter
   const char* driver_version = sfm_common_get_driver_version();
   if (driver_version) {
-    Serial.print("<stdinfo,SFM Driver Version: ");
+    Serial.print("<stdinfo, SFM Driver Version: ");
     Serial.print(driver_version);
     Serial.println(">");
   } else {
-    Serial.println("<stderr,Could not get SFM driver version>");
+    Serial.println("<stderr, Could not get SFM driver version>");
   }
 
   sensirion_i2c_init();
@@ -64,7 +64,7 @@ void setup() {
 //      Serial.println("hit1");
   error = sensirion_i2c_general_call_reset();
   if (error) {
-    Serial.println("<stderr,SFM general call reset failed>");
+    Serial.println("<stderr, SFM general call reset failed>");
   }
 //    Serial.println("hitt2");
   /* Wait for the SFM3019 to initialize */
@@ -81,9 +81,9 @@ void setup() {
           &product_number, &serial_number);
   //    Serial.println("hit5");
   if (error) {
-    Serial.println("<stderr,SFM failed to read product identifier>");
+    Serial.println("<stderr, SFM failed to read product identifier>");
   } else {
-    Serial.print("<stdinfo,SFM product: 0x");
+    Serial.print("<stdinfo, SFM product: 0x");
     Serial.print(product_number, HEX);
     Serial.print(" serial: 0x");
     for (size_t i = 0; i < 8; ++i) {
@@ -99,7 +99,7 @@ void setup() {
             &sfm3019, SFM3019_CMD_START_CONTINUOUS_MEASUREMENT_AIR);
 
   if (error) {
-    Serial.println("<stderro,SFM failed to start measurement>");
+    Serial.println("<stderro, SFM failed to start measurement>");
   }
 
   /* Wait for the first measurement to be available. Wait for
@@ -107,27 +107,27 @@ void setup() {
   sensirion_sleep_usec(SFM3019_MEASUREMENT_INITIALIZATION_TIME_US);
 
   //Setup thermocouples
-  Serial.println("<stdinfo,Initializing thermocouples>");
+  Serial.println("<stdinfo, Initializing thermocouples>");
   if (!TC1.begin()) {
-    Serial.println("<stderr,TC1 did not start>");
+    Serial.println("<stderr, TC1 did not start>");
   }
   if (!TC2.begin()) {
-    Serial.println("<stderr,TC2 did not start>");
+    Serial.println("<stderr, TC2 did not start>");
   }
   if (!TC3.begin()) {
-    Serial.println("<stderr,TC3 did not start>");
+    Serial.println("<stderr, TC3 did not start>");
   }
   if (!TC4.begin()) {
-    Serial.println("<stderr,TC4 did not start>");
+    Serial.println("<stderr, TC4 did not start>");
   }
-  Serial.println("<stdinfo,Thermocouples initialized>");
+  Serial.println("<stdinfo, Thermocouples initialized>");
 
 }
 
 void loop() {
   // Call setup again if there were errors
   if (error) {
-    Serial.println("<stderr,SFM error: redoing setup>");
+    Serial.println("<stderr, SFM error: redoing setup>");
     sensirion_sleep_usec(100000);
     error = 0;
     setup();
@@ -141,13 +141,13 @@ void loop() {
   float flow;
   float flow_temperature;
   if (error) {
-    Serial.println("<stderr,SFM error while reading measurement>");
+    Serial.println("<stderr, SFM error while reading measurement>");
     return;
   } else {
 
     error = sfm_common_convert_flow_float(&sfm3019, flow_raw, &flow);
     if (error) {
-      Serial.println("<stderr,SFM error while converting flow>");
+      Serial.println("<stderr, SFM error while converting flow>");
       return;
     }
     flow_temperature = sfm_common_convert_temperature_float(temperature_raw);
@@ -164,16 +164,16 @@ void loop() {
   double c3 = TC3.readCelsius();
   double c4 = TC4.readCelsius();
   if (isnan(c1)) {
-    Serial.println("<stderr,TC1 NaN>");
+    Serial.println("<stderr, TC1 NaN>");
   }
   if (isnan(c2)) {
-    Serial.println("<stderr,TC2 NaN>");
+    Serial.println("<stderr, TC2 NaN>");
   }
   if (isnan(c3)) {
-    Serial.println("<stderr,TC3 NaN>");
+    Serial.println("<stderr, TC3 NaN>");
   }
   if (isnan(c4)) {
-    Serial.println("<stderr,TC4 NaN>");
+    Serial.println("<stderr, TC4 NaN>");
   }
   double it1 = TC1.readInternal();
   double it2 = TC2.readInternal();
