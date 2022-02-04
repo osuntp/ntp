@@ -82,8 +82,12 @@ class Presenter:
         self.ui_update_thread.start()
 
     def on_ui_update(self):
-
         self.ui.abort_tab.setEnabled(self.model.abort_button_enabled)
+
+        if(self.test_stand.sensors.heater_temp > 40):
+            self.ui.set_hot_stand_status_light_is_lit(False)
+        else:
+            self.ui.set_hot_stand_status_light_is_lit(True)
 
         # Sidebar
         if(self.test_stand.current_state != self.test_stand_connecting_state):

@@ -45,6 +45,7 @@ class UI:
         self.sidebar_tscstatus = self.pyqt5.sidebar_tsc_status
 
         self.side_bar_hot_stand_status = self.pyqt5.side_bar_hot_stand_status
+        self.side_bar_hot_stand_label = self.pyqt5.side_bar_hot_stand_label
         self.side_bar_state_text = self.pyqt5.side_bar_state_status
 
         self.sidebar_massflow = self.pyqt5.sidebar_mass_flow
@@ -90,6 +91,10 @@ class UI:
 
     def set_hot_stand_status_light_is_lit(self, isLit: bool):
         self.side_bar_hot_stand_is_lit = isLit
+        if(isLit):
+            self.side_bar_hot_stand_label.setText("Stand is Safe")
+        else:
+            self.side_bar_hot_stand_label.setText("Stand is Hot")
         Stylize.set_status_light_is_lit(self.side_bar_hot_stand_status, isLit)
 
     def set_abort_tab_clickable(self, is_active):

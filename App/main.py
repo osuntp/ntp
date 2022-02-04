@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
                 try:
                     profile = module.TestStandBehavior()
-                except ModuleNotFoundError:
+                except ModuleNotFoundError or AttributeError:
                     Log.python.error("Tried to create profile from /TestStandProfiles/" + file + ", but there was no \"TestStandBehaviour\" class found.")
 
                 try:
