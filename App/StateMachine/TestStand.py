@@ -290,7 +290,7 @@ class Heater:
         self._previous_timestamp = time.time()
 
     def set_power(self, power: float):
-        self._running_sum_weighted_power = 0
+        self._running_total_weighted_power = 0
         self._running_total_time = 0
         self._time_since_last_update = 0
 
