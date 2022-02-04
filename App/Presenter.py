@@ -314,7 +314,7 @@ class Presenter:
                 self.ui.run.plot1_outlet.setData([0],[0])
 
             if(self.ui.run.plot1_heat_sink_check.isChecked()):
-                x, y = self.model.get_run_plot_data('Flow Temperature', self.model.plot1_buffer)
+                x, y = self.model.get_run_plot_data('Heater Temperature', self.model.plot1_buffer)
                 self.ui.run.plot1_heat_sink.setData(x,y)
             else:
                 self.ui.run.plot1_heat_sink.setData([0],[0])

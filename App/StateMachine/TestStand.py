@@ -316,8 +316,6 @@ class Heater:
 
         average_power = self._running_total_weighted_power / self._running_total_time
 
-        print(str(average_power) + " " + str(self.desired_power) + " " + str(self._time_since_last_update))
-
         if(self.is_on):
             if(average_power > self.desired_power):
                 self._turn_off_heater()
