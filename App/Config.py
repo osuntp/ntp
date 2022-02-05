@@ -11,7 +11,6 @@ class Config:
     profile_name: str
     trial_name: str
     description: str
-    trial_end_timestep: str
 
     blue_lines_time_step: List[float]
     blue_lines_sensor_type: List[str]
@@ -20,7 +19,7 @@ class Config:
 
     sequence_values: List
 
-def create_file(file_name: str, profile_name:str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, num_of_test_sequence_var:int, test_sequence: QtWidgets.QTableWidget, trial_end_timestep: str):
+def create_file(file_name: str, profile_name:str, trial_name:str, description:str, blue_lines: QtWidgets.QTableWidget, num_of_test_sequence_var:int, test_sequence: QtWidgets.QTableWidget):
     config = ConfigParser()
 
     config.add_section('main')
@@ -30,7 +29,6 @@ def create_file(file_name: str, profile_name:str, trial_name:str, description:st
     config.set('main', 'profile_name', profile_name)
     config.set('main','trial_name', trial_name)
     config.set('main', 'description', description)
-    config.set('main', 'trial_end_timestep', trial_end_timestep)
 
 # Blue Lines Data
     time_step = ''
@@ -113,12 +111,17 @@ def open_file(file_name: str, num_of_sequence_columns: int):
     profile_name = parser.get('main', 'profile_name')
     trial_name = parser.get('main', 'trial_name')
     description = parser.get('main','description')
-    trial_end_timestep = parser.get('main', 'trial_end_timestep')
 
     blue_lines_time_step = parser.get('blue_lines', 'time_step').split(sep = ', ')
     blue_lines_sensor_type = parser.get('blue_lines', 'sensor_type').split(sep = ', ')
     blue_lines_value = parser.get('blue_lines', 'value').split(sep = ', ')
     blue_lines_limit_type = parser.get('blue_lines', 'limit_type').split(sep=', ')
+
+    if(blue_lines_time_step[0] == ''):
+        blue_lines_time_step = []
+        blue_lines_sensor_type = []
+        blue_lines_value = []
+        blue_lines_limit_type = []
 
     blue_lines_time_step = [float(x) for x in blue_lines_time_step]
     blue_lines_value = [float(x) for x in blue_lines_value]
@@ -133,4 +136,4 @@ def open_file(file_name: str, num_of_sequence_columns: int):
         values = [float(x) for x in values]
         sequence_values.append(values)
 
-    return Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
+    return Config(profile_name, trial_name, description, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)

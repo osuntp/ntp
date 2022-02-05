@@ -26,7 +26,7 @@ class Model:
     plot2_buffer = 10
     plot3_buffer = 10
     plot4_buffer = 10
-    
+
     test_stand = None
     test_stand_trial_running_state = None
     test_stand_standby_state = None
@@ -47,6 +47,10 @@ class Model:
 
     # Diagnostics Page
 
+    # Configuration
+    config_validation_text = ''
+    time_to_reset_validation_text = 0
+    config_validation_text_is_shown = False
 
     # Run Page
     start_button_text = 'Start Trial'
@@ -178,12 +182,11 @@ class Model:
             self.config_is_loaded = True
             self.loaded_config_trial_name = config.trial_name
 
-            self.test_stand.end_trial_time = float(config.trial_end_timestep)
             self.test_stand_trial_running_state.current_profile.set_sequence_values(config.sequence_values)
             self.test_stand_trial_running_state.current_profile.step_count = len(config.sequence_values[0])
 
             self.test_stand.blue_lines.set_sequence_values(config.blue_lines_time_step, config.blue_lines_sensor_type, config.blue_lines_limit_type, config.blue_lines_value)
-            self.ui.run.set_sequence_table(config.sequence_values, self.test_stand.end_trial_time)
+            self.ui.run.set_sequence_table(config.sequence_values)
             
         else:
             Log.python.info('Tried to load configuration to run page, but the configuration was invalid.')
@@ -197,3 +200,13 @@ class Model:
             self.start_button_enabled = True
         else:
             self.start_button_enabled = False
+
+    def show_config_validation_text(self, message):
+        self.config_validation_text = message
+        self.time_to_reset_validation_text = time.time() + 3
+
+    def update_configuration_validation_text(self):
+        if(self.config_validation_text != ''):
+            if(time.time() > self.time_to_reset_validation_text):
+                self.config_validation_text = ''
+            

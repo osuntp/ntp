@@ -271,7 +271,8 @@ class Presenter:
 
         # Configuration Page
         if(page == 3):
-            pass
+            self.model.update_configuration_validation_text()
+            self.ui.configuration.validation_text.setText(self.model.config_validation_text)
 
         # Run Page
         if(page == 4):
@@ -443,20 +444,25 @@ class Presenter:
         self.ui.configuration.clear_all()
 
     def configuration_save_clicked(self):
-        file_name = Config.get_save_file_name_from_user()
+        try:
+            profile_name = self.test_stand_trial_running_state.current_profile.name
+            trial_name = self.ui.configuration.trial_name_field.text()
+            description = self.ui.configuration.description_field.toPlainText()
+            blue_lines = self.ui.configuration.blue_lines_table
+            num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.sequence_columns)
+            test_sequence = self.ui.configuration.sequence_table
+            
+            file_name = Config.get_save_file_name_from_user()
 
-        if(file_name == ''):
-            return
+            if(file_name == ''):
+                return
 
-        profile_name = self.test_stand_trial_running_state.current_profile.name
-        trial_name = self.ui.configuration.trial_name_field.text()
-        description = self.ui.configuration.description_field.toPlainText()
-        blue_lines = self.ui.configuration.blue_lines_table
-        num_of_test_sequence_var = len(self.test_stand_trial_running_state.current_profile.sequence_columns)
-        test_sequence = self.ui.configuration.sequence_table
-        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
-        
-        Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence, trial_end_timestep)
+            Config.create_file(file_name, profile_name, trial_name, description, blue_lines, num_of_test_sequence_var, test_sequence)
+            self.model.show_config_validation_text("Configuration was successfully saved.")
+
+        except Exception as e:
+            self.model.show_config_validation_text("Unable to save configuration due to error. Check Log.")
+            Log.python.error("Unable to save configuration to file due to error: " + str(e))
     
     def configuration_load_clicked(self):
         file_name = Config.select_file()
@@ -469,45 +475,49 @@ class Presenter:
         self.ui.configuration.load_values(config)
 
     def configuration_send_to_run_page_clicked(self):
-        profile_name = self.test_stand_trial_running_state.current_profile.name
-        trial_name = self.ui.configuration.trial_name_field.text()
-        description = self.ui.configuration.description_field.toPlainText()
-        trial_end_timestep = self.ui.configuration.trial_end_timestep_field.text()
+        try:
+            profile_name = self.test_stand_trial_running_state.current_profile.name
+            trial_name = self.ui.configuration.trial_name_field.text()
+            description = self.ui.configuration.description_field.toPlainText()
 
-        blue_lines_time_step = []
-        blue_lines_sensor_type = []
-        blue_lines_limit_type = []
-        blue_lines_value = []
+            blue_lines_time_step = []
+            blue_lines_sensor_type = []
+            blue_lines_limit_type = []
+            blue_lines_value = []
 
-        table = self.ui.configuration.blue_lines_table
+            table = self.ui.configuration.blue_lines_table
 
-        for i in range(table.rowCount()):
-            blue_lines_time_step.append(float(table.item(i, 0).text()))
-            blue_lines_sensor_type.append(table.cellWidget(i, 1).currentText())
-            blue_lines_limit_type.append(table.cellWidget(i, 2).currentText())
+            for i in range(table.rowCount()):
+                blue_lines_time_step.append(float(table.item(i, 0).text()))
+                blue_lines_sensor_type.append(table.cellWidget(i, 1).currentText())
+                blue_lines_limit_type.append(table.cellWidget(i, 2).currentText())
 
-            try:
-                blue_lines_value.append(float(table.item(i,3).text()))
-            except AttributeError:
-                blue_lines_value.append(0)
-            except ValueError:
-                blue_lines_value.append(0)
+                try:
+                    blue_lines_value.append(float(table.item(i,3).text()))
+                except AttributeError:
+                    blue_lines_value.append(0)
+                except ValueError:
+                    blue_lines_value.append(0)
 
-        sequence_values = []
-        table = self.ui.configuration.sequence_table
+            sequence_values = []
+            table = self.ui.configuration.sequence_table
 
-        for i in range(table.columnCount()):
-            value_list = []
+            for i in range(table.columnCount()):
+                value_list = []
 
-            for j in range(table.rowCount()):
-                
-                value_list.append(table.item(j,i).text())
+                for j in range(table.rowCount()):
+                    
+                    value_list.append(table.item(j,i).text())
 
-            sequence_values.append(value_list)
+                sequence_values.append(value_list)
 
-        config = Config.Config(profile_name, trial_name, description, trial_end_timestep, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
+            config = Config.Config(profile_name, trial_name, description, blue_lines_time_step, blue_lines_sensor_type, blue_lines_limit_type, blue_lines_value, sequence_values)
 
-        self.model.set_config(config)
+            self.model.set_config(config)
+            self.model.show_config_validation_text("Configuration was successfully sent to Run Page.")
+        except Exception as e:
+            self.model.show_config_validation_text("Unable to send configuration due to error. Check Log.")
+            Log.python.error("Unable to send configuration to run page due to error: " + str(e))
 
     def run_start_clicked(self):         
         self.test_stand.switch_state(self.test_stand_trial_running_state)
