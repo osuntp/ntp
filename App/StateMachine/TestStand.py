@@ -326,27 +326,32 @@ class Heater:
         self._time_since_last_update = 0
 
     def _turn_off_heater(self):
-
-        message = "<stdin, heater, off>\n"
-        self.is_on = False
-        self.serial_monitor.write(Arduino.CONTROLLER, message)
+        if(self.serial_monitor.tsc_arduino is not None):
+            message = "<stdin, heater, off>\n"
+            self.is_on = False
+            self.serial_monitor.write(Arduino.CONTROLLER, message)
 
     def _turn_on_heater(self):
-
-        message = "<stdin, heater, on>\n"
-        self.is_on = True
-        self.serial_monitor.write(Arduino.CONTROLLER, message)
+        if(self.serial_monitor.tsc_arduino is not None):
+            message = "<stdin, heater, on>\n"
+            self.is_on = True
+            self.serial_monitor.write(Arduino.CONTROLLER, message)
 
 class Valve:
     position = 0
     serial_monitor: SerialMonitor = None
 
-    # TODO: ORDERS FROM NOAH: 0 is closed, 90 is open
     def set_position(self, position: float):
-        self.position = position
-        message = '<stdin, valve, ' + str(position) + '>\n'
-        print('Message Sent to CONTROLLER: ' + message)
-        self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
+
+        if(position < 0 or position > 90):
+            Log.python.warning('User tried to set valve position to ' + str(position) + ', which is out of bounds. Ignoring this command.')
+            return
+
+        if(self.serial_monitor.tsc_arduino is not None):
+            self.position = position
+            message = '<stdin, valve, ' + str(position) + '>\n'
+            print('Message Sent to CONTROLLER: ' + message)
+            self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
 class TestStand:
 

@@ -37,7 +37,6 @@ if __name__ == "__main__":
     profiles = []
 
     for file in os.listdir('App/TestStandProfiles'):
-
         if file.endswith('.py'):
             if(file != "AbstractProfile.py"):
                 file_location = cwd + '\App\TestStandProfiles\\'
