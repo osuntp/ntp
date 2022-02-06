@@ -347,7 +347,7 @@ class Valve:
             Log.python.warning('User tried to set valve position to ' + str(position) + ', which is out of bounds. Ignoring this command.')
             return
 
-        if(self.serial_monitor.tsc_arduino is not None):
+        if(self.serial_monitor.tsc_arduino is not None or self.serial_monitor.in_developer_mode):
             self.position = position
             message = '<stdin, valve, ' + str(position) + '>\n'
             print('Message Sent to CONTROLLER: ' + message)

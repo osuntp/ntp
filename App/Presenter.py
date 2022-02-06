@@ -264,7 +264,8 @@ class Presenter:
         # Manual Page
         if(page == 2):
             self.ui.manual.set_command_buttons_active(not self.model.trial_is_running)
-
+            self.ui.manual.current_valve_position_label.setText('Current: ' + str(self.test_stand.valve.position))
+            self.ui.manual.current_heater_label.setText('Current: ' + str(self.test_stand.heater.desired_power))
             # TODO: Update manual control page
             # self.ui.currentValvePosLabel.setText(_translate("MainWindow","Current: <valve pos> "))
             # self.ui.currentHeaterLabel.setText(_translate("MainWindow","Current: <heater power> "))
