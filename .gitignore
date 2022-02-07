@@ -136,7 +136,7 @@ App/UI/pyuic5.exe
 .vscode/c_cpp_properties.json
 Logs/**
 TrialConfigs/**
-Saved_Data/**
+
 .vscode/**
 Settings.ini
 _docs/**
