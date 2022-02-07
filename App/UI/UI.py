@@ -7,7 +7,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 # from UI.QT5_Generated_UI import Ui_window
 from UI.Stylize import Stylize
-from SettingsManager import Settings
 
 import pyqtgraph
 from PyQt5 import QtWidgets
@@ -235,7 +234,6 @@ class Configuration:
     def __init__(self, pyqt5: Ui_MainWindow):
         self.trial_name_field = pyqt5.configuration_trialname_field
         self.description_field = pyqt5.configuration_description_field
-        self.trial_end_timestep_field = pyqt5.configuration_trial_end_timestep_field
 
         self.blue_lines_table = pyqt5.configuration_blue_lines_table
         self.blue_lines_plus_button = pyqt5.configuration_blue_lines_plus
@@ -250,6 +248,8 @@ class Configuration:
         self.save_button = pyqt5.configuration_save_button
         self.send_to_run_page_button = pyqt5.config_send_to_run_page_button
 
+        self.validation_text = pyqt5.configuration_validation_text
+
         buttons = [self.save_button, self.load_button, self.clear_button, self.blue_lines_plus_button, self.blue_lines_minus_button, self.sequence_plus_button, self.sequence_minus_button, self.send_to_run_page_button]
         
         self.clear_all()
@@ -263,9 +263,6 @@ class Configuration:
         row_count = table.rowCount()
 
         table.insertRow(row_count)
-        item = QtWidgets.QTableWidgetItem()
-        item.setText('')
-        table.setVerticalHeaderItem(table.rowCount(), item)
 
         combo_box_options = ['Mass Flow', 'Heater Current', 'Heater Temp', 'Inlet Temp', 'Midpoint Temp', 'Outlet Temp', 'Supply Press', 'Inlet Press', 'Midpoint Press', 'Outlet Press']
         combo = QtWidgets.QComboBox()
@@ -282,7 +279,6 @@ class Configuration:
         for option in combo_box_options:
             combo.addItem(option)
 
-
         table.setCellWidget(row_count, 2, combo)
 
         Stylize.table(table)
@@ -291,7 +287,7 @@ class Configuration:
         table = self.blue_lines_table
         row_count = table.rowCount()
 
-        if(row_count - 1 < 0.5):
+        if(row_count < 0.5):
             return
 
         table.removeRow(row_count - 1)
@@ -307,6 +303,7 @@ class Configuration:
             item = QtWidgets.QTableWidgetItem()
             item.setText(column_names[i])
             table.setHorizontalHeaderItem(i, item)
+            
 
     def add_row_to_sequence_table(self):
         table = self.sequence_table
@@ -382,8 +379,6 @@ class Configuration:
                 item.setText(text)
                 table.setItem(table.rowCount()-1, j, item)
 
-        self.trial_end_timestep_field.setText(str(config.trial_end_timestep))
-
     def clear_all(self):
         self.clear_blue_line_table()
         self.clear_sequence_table()
@@ -397,9 +392,6 @@ class Configuration:
         while(table.rowCount() > 0.5):
             
             table.removeRow(table.rowCount() - 1)
-
-        # Result will be 1 empty row
-        self.add_row_to_blue_lines_table()
 
     def clear_sequence_table(self):
         table = self.sequence_table
@@ -584,7 +576,7 @@ class Run:
             item.setText(column_names[i])
             table.setHorizontalHeaderItem(i, item)
 
-    def set_sequence_table(self, sequence_values: List, end_time: float):
+    def set_sequence_table(self, sequence_values: List):
         table = self.sequence_table
 
         while(table.rowCount() > 0.5):
@@ -593,27 +585,10 @@ class Run:
         for i in range(len(sequence_values[0])):
             table.insertRow(table.rowCount())
 
-            item = QtWidgets.QTableWidgetItem()
-            item.setText('')
-            table.setVerticalHeaderItem(table.rowCount()-1, item)
-
             for j in range(len(sequence_values)):
-
                 item = QtWidgets.QTableWidgetItem()
                 item.setText(str(sequence_values[j][i]))
                 table.setItem(table.rowCount()-1, j, item)
-        
-        table.insertRow(table.rowCount())
-
-        for j in range(len(sequence_values)):
-            item  = QtWidgets.QTableWidgetItem()
-
-            if(j == 0):
-                item.setText('End Trial at ' + str(end_time) + 's')
-            else:
-                item.setText('')
-
-            table.setItem(table.rowCount()-1, j, item)
         
     def set_sequence_table_row_bold(self, row_int):
 

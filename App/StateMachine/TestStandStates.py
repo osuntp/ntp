@@ -28,6 +28,7 @@ class StandbyState():
         
         if(self.serial_monitor.is_fully_connected):
             self.test_stand.valve.set_position(0)
+            self.test_stand.heater.set_power(0)
 
 
     def tick(self):
@@ -51,6 +52,10 @@ class ConnectingState():
     tsc_port: str = None
 
     def enter_state(self):
+
+        if(self.serial_monitor.tsc_arduino is not None):
+            self.test_stand.heater.set_power(0)
+
         self.start_time = time.time()
 
         self.model.state_text = 'CONNECTING'
@@ -112,6 +117,7 @@ class TrialEndedState():
 
     def enter_state(self):
         self.test_stand.valve.set_position(0)
+        self.test_stand.heater.set_power(0)
 
         self.model.trial_is_running = False
         self.model.run_sequence_bolded_row = -1
@@ -287,6 +293,9 @@ class TrialRunningState():
     def exit_state(self):
         self.model.trial_is_running = False
         self.model.abort_button_enabled = False
+
+        self.test_stand.valve.set_position(0)
+        self.test_stand.heater.set_power(0)
         
         try:
             self.current_profile.end()
