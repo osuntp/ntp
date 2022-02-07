@@ -1,12 +1,10 @@
-from sympy import sequence
-import time
-
 if __name__ == "__main__":
     from AbstractProfile import AbstractProfile
 else:
     from TestStandProfiles.AbstractProfile import AbstractProfile
 ### DO NOT EDIT ABOVE ###
 
+import time
 class TestStandBehavior(AbstractProfile):
 
     name = 'Test Facility Characterization'
@@ -100,6 +98,7 @@ class TestStandBehavior(AbstractProfile):
         'Heater Power',
         'Heater Current'
         ]
+        
     def get_dataframe_values(self):
         values = [
             time.time(),

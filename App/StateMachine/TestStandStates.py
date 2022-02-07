@@ -217,7 +217,7 @@ class TrialAbortedState():
 
         self.model.start_button_text = text
 
-        if(time_passed > 1.5):
+        if(time_passed > 10):
             self.test_stand.switch_state(self.standby_state)
 
         
