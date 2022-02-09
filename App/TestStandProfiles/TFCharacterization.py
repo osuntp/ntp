@@ -94,12 +94,13 @@ class TestStandBehavior(AbstractProfile):
         'Inlet Pressure',
         'Midpoint Pressure',
         'Outlet Pressure', 
-        'Valve Position'
+        'Valve Position',
         'Heater Power',
         'Heater Current'
         ]
         
     def get_dataframe_values(self):
+
         values = [
             time.time(),
             self.trial_time,
@@ -118,9 +119,11 @@ class TestStandBehavior(AbstractProfile):
             self.test_stand.heater.desired_power,
             self.test_stand.sensors.heater_current
         ]
+
         return values
 
 ### DO NOT EDIT BELOW ###
 if __name__ == "__main__":
     instance = TestStandBehavior()
+    
     instance.is_valid()
