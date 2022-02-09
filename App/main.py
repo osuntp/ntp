@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     for file in os.listdir('App/TestStandProfiles'):
         if file.endswith('.py'):
-            if(file != "AbstractProfile.py"):
+            if(file != "AbstractProfile.py" and file != "ProfileTemplate.py"):
                 file_location = cwd + '\App\TestStandProfiles\\'
                 spec = importlib.util.spec_from_file_location('PythonFile', os.path.join(file_location, file))
                 module = importlib.util.module_from_spec(spec)
