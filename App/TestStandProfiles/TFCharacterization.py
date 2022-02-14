@@ -74,7 +74,7 @@ class TestStandBehavior(AbstractProfile):
 
     # List of controllable variables (e.g., heater, valve position)
     sequence_columns = ['Duration','Heater Power','Mass Flow']
-    def set_sequence_values(self,values):
+    def set_sequence_values(self, values):
         self.duration = [float(value) for value in values[0]]
         self.heater_power = [float(value) for value in values[1]]
         self.mass_flow = [float(value) for value in values[2]]

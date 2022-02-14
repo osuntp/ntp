@@ -117,16 +117,14 @@ class Presenter:
             self.ui.sidebar_midpress.setText(str(self.test_stand.sensors.mid_press))
             self.ui.sidebar_outletpress.setText(str(self.test_stand.sensors.outlet_press))
 
-            other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+            if(self.test_stand.current_state == self.test_stand.trial_running_state):
+                other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
             
-            for i in range(len(other_values)):
-                if i > 4.5:
+                for i in range(len(other_values)):
+                    if i > 4.5:
                         break
-                if(self.test_stand.current_state == self.test_stand.trial_running_state):
+                    
                     self.ui.sidebar_other[i].setText(str(other_values[i]))
-                
-                else:
-                    self.ui.sidebar_other[i].setText('NA')
         
         else:
             self.ui.side_bar_state_text.setText(self.model.state_text)
@@ -155,13 +153,14 @@ class Presenter:
             self.ui.sidebar_midpress.setText('NA')
             self.ui.sidebar_outletpress.setText('NA')
             
-            other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+            
+            if(self.test_stand.current_state == self.test_stand.trial_running_state):
+                other_values = self.test_stand_trial_running_state.current_profile.get_sidebar_values()
+                for i in range(len(other_values)):
+                    if i > 4.5:
+                        break
 
-            for i in range(len(other_values)):
-                if i > 4.5:
-                    break
-
-                self.ui.sidebar_other[i].setText('NA')
+                    self.ui.sidebar_other[i].setText('NA')
             
         page = self.ui.pyqt5.stacked_widget.currentIndex()
 

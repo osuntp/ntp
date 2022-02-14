@@ -350,7 +350,6 @@ class Valve:
         if(self.serial_monitor.tsc_arduino is not None or self.serial_monitor.in_developer_mode):
             self.position = position
             message = '<stdin, valve, ' + str(position) + '>\n'
-            print('Message Sent to CONTROLLER: ' + message)
             self.serial_monitor.write(SM.Arduino.CONTROLLER, message)
 
 class TestStand:
