@@ -91,6 +91,9 @@ void HandleNewMessage()
       float valvePosition;
       valvePosition = atof(strtokIndx);
 
+      valvePosition = map(valvePosition,0,90,27,90);
+      valvePosition = round(valvePosition);
+
       massFlowValve.write(valvePosition);
       delay(15);
       
