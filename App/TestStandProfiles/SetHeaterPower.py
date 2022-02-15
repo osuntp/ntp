@@ -11,37 +11,69 @@ class TestStandBehavior(AbstractProfile):
     name = "Set Heater Power"
 
     timestamp = []
-    desired_heater_power = ['']
+    heater_power = []
 
     def start(self):
-        pass
+        self.test_stand.heater.set_power(self.heater_power[0])
+        self.test_stand.valve.position(90)
 
     def tick(self):
-        # If this is not the last time step
-        if(self.current_step is not len(self.timestep)-1):
 
-            # If the trial time has passed time to move to the next time step
-            if(self.trial_time > self.timestep[self.current_step + 1]):
-                self.current_step = self.current_step + 1
-
-                self.test_stand.heater.set_power(self.desired_heater_power[self.current_step])
+        # If the trial time has passed time to move to the next time step
+        if self.step_time > self.duration[self.current_step]:
+            self.move_to_next_step()
+            self.test_stand.heater.set_power(self.heater_power[self.current_step])
                 
     def end(self):
         pass
 
-    sidebar_values = ['Desired Power']
+    sidebar_values = []
     def get_sidebar_values(self):
-        return [self.desired_heater_power[self.current_step]]
+        return []
 
-    sequence_columns = ['Timestamp', 'Heater Power']
+    sequence_columns = ['Duration (s)', 'Heater Power (W)']
     def set_sequence_values(self, values):
-        self.timestamp = values[0]
-        self.desired_heater_power = values[1]
+        self.duration = [float(value) for value in values[0]]
+        self.heater_power = [float(value) for value in values[1]]
 
-    dataframe_columns = ['Time (s)', 'Desired Power', 'Heater Current', 'Inlet Temperature', 'Mid Temperature', 'Outlet Temperature']
+    dataframe_columns = [
+        'Time',
+        'Elapsed Time',
+        'Mass Flow',
+        'MFM Temperature', 
+        'Inlet Temperature',
+        'Midpoint Temperature',
+        'Outlet Temperature',
+        'Heater Temperature',
+        'Supply Pressure', 
+        'Inlet Pressure',
+        'Midpoint Pressure',
+        'Outlet Pressure', 
+        'Valve Position',
+        'Heater Power',
+        'Heater Current'
+        ]
+
     def get_dataframe_values(self):
-        return [time.time(), self.desired_heater_power[self.current_step], self.test_stand.sensors.heater_current, self.test_stand.sensors.inlet_temp, self.test_stand.mid_temp, self.test_stand.sensors.outlet_temp]
+        values = [
+            time.time(),
+            self.trial_time,
+            self.test_stand.sensors.mass_flow,
+            self.test_stand.sensors.flow_temp,
+            self.test_stand.sensors.inlet_temp,
+            self.test_stand.sensors.mid_temp,
+            self.test_stand.sensors.outlet_temp,
+            self.test_stand.sensors.heater_temp,
+            self.test_stand.sensors.supply_press,
+            self.test_stand.sensors.inlet_press,
+            self.test_stand.sensors.mid_press,
+            self.test_stand.sensors.outlet_press,
+            self.test_stand.valve.position,
+            self.test_stand.heater.desired_power,
+            self.test_stand.sensors.heater_current
+        ]
 
+        return values
 ### DO NOT EDIT BELOW ###
 if __name__ == "__main__":
     instance = TestStandBehavior()
