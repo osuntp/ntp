@@ -1161,8 +1161,8 @@ class Ui_MainWindow(object):
         self.configuration_blue_lines_table.setHorizontalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
         self.configuration_blue_lines_table.setHorizontalHeaderItem(3, item)
-        self.configuration_blue_lines_table.horizontalHeader().setVisible(True)
-        self.configuration_blue_lines_table.verticalHeader().setVisible(True)
+        self.configuration_blue_lines_table.horizontalHeader().setVisible(False)
+        self.configuration_blue_lines_table.verticalHeader().setVisible(False)
         self.verticalLayout_9.addWidget(self.configuration_blue_lines_table)
         spacerItem24 = QtWidgets.QSpacerItem(20, 15, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         self.verticalLayout_9.addItem(spacerItem24)
@@ -2007,7 +2007,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stacked_widget.setCurrentIndex(3)
+        self.stacked_widget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2157,7 +2157,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "New Column"))
         item = self.run_test_sequence_table.horizontalHeaderItem(5)
         item.setText(_translate("MainWindow", "New Column"))
-        self.run_plot0_title_14.setText(_translate("MainWindow", "Pressures (Pa)"))
+        self.run_plot0_title_14.setText(_translate("MainWindow", "Pressures (psi)"))
         self.label_67.setText(_translate("MainWindow", "Show On Graph:"))
         self.run_plot2_inlet_check.setText(_translate("MainWindow", "Inlet"))
         self.run_plot2_midpoint_check.setText(_translate("MainWindow", "Midpoint"))
@@ -2175,7 +2175,7 @@ class Ui_MainWindow(object):
         self.label_58.setText(_translate("MainWindow", "Data Buffer (Max 90):"))
         self.run_plot1_buffer_field.setText(_translate("MainWindow", "10"))
         self.run_plot1_apply_buffer_button.setText(_translate("MainWindow", "Apply"))
-        self.run_plot0_title_13.setText(_translate("MainWindow", "Mass Flow (kg/s)"))
+        self.run_plot0_title_13.setText(_translate("MainWindow", "Mass Flow (slm)"))
         self.label_72.setText(_translate("MainWindow", "Data Buffer (Max 90):"))
         self.run_plot3_buffer_field.setText(_translate("MainWindow", "10"))
         self.run_plot3_apply_buffer_button.setText(_translate("MainWindow", "Apply"))

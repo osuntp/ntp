@@ -1523,7 +1523,7 @@ color: rgb(255, 255, 255);</string>
          <string notr="true">background-color: rgb(221, 221, 221);</string>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="diagnostics_page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2956,10 +2956,10 @@ border: 1px solid white;</string>
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
                 <attribute name="horizontalHeaderVisible">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </attribute>
                 <attribute name="verticalHeaderVisible">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </attribute>
                 <column>
                  <property name="text">
@@ -3890,7 +3890,7 @@ border: 1px solid white;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Pressures (Pa)</string>
+                 <string>Pressures (psi)</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -4378,7 +4378,7 @@ border:2px solid black;</string>
 border: 1px solid white;</string>
                 </property>
                 <property name="text">
-                 <string>Mass Flow (kg/s)</string>
+                 <string>Mass Flow (slm)</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>

@@ -179,7 +179,7 @@ class Diagnostics:
         plot_item = pyqt5.diagnostics_plot2.getPlotItem()
         plot_item.layout.setContentsMargins(margin_left,margin_top,margin_right,margin_bottom)
         plot_item.setLabel('bottom', 'Time (s)')
-        plot_item.setLabel('left', 'Pressure (Pa)')
+        plot_item.setLabel('left', 'Pressure (psi)')
         plot_item.showGrid(x=True, y=True)
 
         legend = plot_item.addLegend()
