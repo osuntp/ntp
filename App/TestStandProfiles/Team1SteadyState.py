@@ -11,25 +11,25 @@ class TestStandBehavior(AbstractProfile):
 
     name = 'Team 1 Steady State'
 
-    minimum_time_for_SS_calc = 180 #10 min
+    minimum_time_for_SS_calc = 600 #10 min
 
     outlet_temps = []
-    graphite_temps = []
+    heater_temps = []
 
     outlet_temp_residual = 999
-    graphite_temp_residual = 999
+    heater_temp_residual = 999
 
     acceptable_outlet_residual = 1
-    acceptable_graphite_residual = 2
+    acceptable_heater_residual = 2
 
     def start(self):
         self.test_stand.heater.set_power(self.heater_power[0])
         self.test_stand.valve.set_position(90)
 
         self.outlet_temps = []
-        self.graphite_temps = []
+        self.heater_temps = []
 
-        self.graphite_temp_residual = 999   
+        self.heater_temp_residual = 999   
         self.outlet_temp_residual = 999
 
     def tick(self):
@@ -44,19 +44,19 @@ class TestStandBehavior(AbstractProfile):
     
     def update_steady_state_values(self):
         self.outlet_temps.append(self.test_stand.sensors.outlet_temp)
-        self.graphite_temps.append(self.test_stand.sensors.heater_temp)  
+        self.heater_temps.append(self.test_stand.sensors.heater_temp)  
 
         if(self.step_time > self.minimum_time_for_SS_calc):
             self.outlet_temps.pop(0)
-            self.graphite_temps.pop(0)
+            self.heater_temps.pop(0)
 
             #Mean of the first half of outlet_temps array minus the mean of the second half of outlet_temps array
             self.outlet_temp_residual = abs(mean(self.outlet_temps[:len(self.outlet_temps)//2]) - mean(self.outlet_temps[len(self.outlet_temps)//2:]))
-            self.graphite_temp_residual = abs(mean(self.graphite_temps[:len(self.graphite_temps)//2]) - mean(self.graphite_temps[len(self.graphite_temps)//2:]))
+            self.heater_temp_residual = abs(mean(self.heater_temps[:len(self.heater_temps)//2]) - mean(self.heater_temps[len(self.heater_temps)//2:]))
                   
 
     def check_if_steady_state_is_reached(self):
-        if((self.outlet_temp_residual < self.acceptable_outlet_residual) and (self.graphite_temp_residual < self.acceptable_graphite_residual)):
+        if((self.outlet_temp_residual < self.acceptable_outlet_residual) and (self.heater_temp_residual < self.acceptable_heater_residual)):
             self.move_to_next_step()
 
     # Appear to the left side of the GUI
@@ -71,7 +71,7 @@ class TestStandBehavior(AbstractProfile):
         return [
             str(not self.checking_for_steady_state[self.current_step]), 
             str('%.1f' % percent_value),
-            str(self.graphite_temp_residual),
+            str(self.heater_temp_residual),
             str(self.outlet_temp_residual)
             ]
 
