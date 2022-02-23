@@ -11,31 +11,29 @@ class TestStandBehavior(AbstractProfile):
 
     name = 'Team 1 Steady State'
 
-    # We want this value to be 1500 for tests
-    num_of_values_for_ss = 1500
+    minimum_time_for_SS_calc = 180 #10 min
 
-    old_outlet_temps = []
-    current_outlet_temps = []
+    outlet_temps = []
+    graphite_temps = []
 
     outlet_temp_residual = 999
-    acceptable_residual = 0.5
+    graphite_temp_residual = 999
 
+    acceptable_outlet_residual = 1
+    acceptable_graphite_residual = 2
 
     def start(self):
         self.test_stand.heater.set_power(self.heater_power[0])
-        self.start_time = time.time()
+        self.test_stand.valve.set_position(90)
 
-        self.old_outlet_temps = []
-        self.current_outlet_temps = []
+        self.outlet_temps = []
+        self.graphite_temps = []
+
+        self.graphite_temp_residual = 999   
         self.outlet_temp_residual = 999
 
     def tick(self):
-        if(self.checking_for_steady_state[self.current_step]):
-
-            if(self.steady_state_condition_is_met()):
-                self.move_to_next_step()
-            
-        else:
+        if(not self.checking_for_steady_state[self.current_step]):
             # Move to next step if elapsed time is greater than step duration
             if self.step_time > self.duration[self.current_step]:
                 self.move_to_next_step()
@@ -45,29 +43,35 @@ class TestStandBehavior(AbstractProfile):
         pass
     
     def update_steady_state_values(self):
-        self.current_outlet_temps.append(self.test_stand.sensors.outlet_temp)
+        self.outlet_temps.append(self.test_stand.sensors.outlet_temp)
+        self.graphite_temps.append(self.test_stand.sensors.heater_temp)  
 
-        if(len(self.current_outlet_temps) > self.num_of_values_for_ss):
-            value = self.current_outlet_temps.pop(0)
-            self.old_outlet_temps.append(value)
+        if(self.step_time > self.minimum_time_for_SS_calc):
+            self.outlet_temps.pop(0)
+            self.graphite_temps.pop(0)
 
-            if(len(self.old_outlet_temps) > self.num_of_values_for_ss):
-                self.old_outlet_temps.pop(0)
+            #Mean of the first half of outlet_temps array minus the mean of the second half of outlet_temps array
+            self.outlet_temp_residual = abs(mean(self.outlet_temps[:len(self.outlet_temps)//2]) - mean(self.outlet_temps[len(self.outlet_temps)//2:]))
+            self.graphite_temp_residual = abs(mean(self.graphite_temps[:len(self.graphite_temps)//2]) - mean(self.graphite_temps[len(self.graphite_temps)//2:]))
+                  
 
-                self.outlet_temp_residual = abs(mean(self.old_outlet_temps) - mean(self.current_outlet_temps))
-            
-    def steady_state_condition_is_met(self):
-        if(len(self.old_outlet_temps) == self.num_of_values_for_ss):
-            return (self.outlet_temp_residual < self.acceptable_residual)
-        else:
-            return False
-            
+    def check_if_steady_state_is_reached(self):
+        if((self.outlet_temp_residual < self.acceptable_outlet_residual) and (self.graphite_temp_residual < self.acceptable_graphite_residual)):
+            self.move_to_next_step()
+
     # Appear to the left side of the GUI
-    sidebar_values = ['In Steady State:', '% SS Eval:', 'Outlet Residual:']
+    sidebar_values = ['In Steady State:', '% SS Eval:', 'Graphite Residual:', 'Outlet Residual:']
     def get_sidebar_values(self):
+
+        percent_value = 100*self.step_time/self.minimum_time_for_SS_calc
+
+        if(percent_value > 100):
+            percent_value = 100
+
         return [
             str(not self.checking_for_steady_state[self.current_step]), 
-            '%.1f' % float(100*(len(self.old_outlet_temps)+len(self.current_outlet_temps))/(2*self.num_of_values_for_ss)), 
+            str('%.1f' % percent_value),
+            str(self.graphite_temp_residual),
             str(self.outlet_temp_residual)
             ]
 
@@ -99,8 +103,9 @@ class TestStandBehavior(AbstractProfile):
         ]
         
     def get_dataframe_values(self):
-        
-        self.update_steady_state_values()
+        if(self.checking_for_steady_state[self.current_step]):
+            self.update_steady_state_values()
+            self.check_if_steady_state_is_reached()
 
         values = [
             time.time(),
