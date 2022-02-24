@@ -99,7 +99,9 @@ class TestStandBehavior(AbstractProfile):
         'Valve Position',
         'Heater Power',
         'Heater Current',
-        'Checking For Steady State'
+        'Checking For Steady State',
+        'Heater Residual',
+        'Outlet Residual'
         ]
         
     def get_dataframe_values(self):
@@ -123,7 +125,9 @@ class TestStandBehavior(AbstractProfile):
             self.test_stand.valve.position,
             self.test_stand.heater.desired_power,
             self.test_stand.sensors.heater_current,
-            str(self.checking_for_steady_state[self.current_step])
+            str(self.checking_for_steady_state[self.current_step]),
+            str(self.heater_temp_residual),
+            str(self.outlet_temp_residual)
         ]
 
         return values
