@@ -8,6 +8,8 @@ from hashlib import new
 import time
 import random
 
+from numpy import sign
+
 class TestStandBehavior(AbstractProfile):
 
     name = 'Mass Flow Controller Evaluation'
@@ -22,7 +24,8 @@ class TestStandBehavior(AbstractProfile):
         valve_position = self.test_stand.valve.position
 
         # Calculate graded delta valve position based on magnitude of mass_flow_diff
-        mass_flow_diff = self.target_mass_flow[self.current_step] - self.test_stand.sensors.mass_flow
+        mass_flow_diff = self.target_mass_flow[self.current_step] - \
+            self.test_stand.sensors.mass_flow
         if abs(mass_flow_diff) > 50:
             self.delta_valve_position = 0.5
         elif abs(mass_flow_diff) > 25:
@@ -36,10 +39,8 @@ class TestStandBehavior(AbstractProfile):
             self.delta_valve_position = 0
 
         # Close or open the valve depending on whether mass_flow_diff is positive or negative
-        if mass_flow_diff > 0:
-            new_valve_position = valve_position + self.delta_valve_position
-        else:
-            new_valve_position = valve_position - self.delta_valve_position
+        new_valve_position = valve_position + sign(mass_flow_diff) * \
+            self.delta_valve_position
 
         # Set new valve position
         if self.controller_state[self.current_step] > 0.5:
