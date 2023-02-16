@@ -244,7 +244,7 @@ urllib3==1.26.5
 watchdog==1.0.2
 wcwidth==0.2.5
 webencodings==0.5.1
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 wheel==0.36.2
 widgetsnbextension==3.5.1
 win-inet-pton==1.1.0
